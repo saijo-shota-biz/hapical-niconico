@@ -32,7 +32,7 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
-    "lint:eslint:fix": "eslint --fix --ignore-path .gitignore --ext .js,.ts,.tsx ."
+    "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts,.tsx ."
   },
   "eslintConfig": {
     "extends": [

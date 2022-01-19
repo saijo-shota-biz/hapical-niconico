@@ -1,6 +1,7 @@
+import { FirebaseAuthProvider } from '@function/FirebaseAuthProvider';
 import { RoutesProvider } from '@function/RoutesProvider';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import React from 'react';
+import { Toaster } from '@ui/utils/Toaster';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
@@ -14,7 +15,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
+          <FirebaseAuthProvider />
           <RoutesProvider />
+          <Toaster />
         </BrowserRouter>
       </ThemeProvider>
     </RecoilRoot>

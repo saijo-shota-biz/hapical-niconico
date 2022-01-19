@@ -1,12 +1,86 @@
 import { createTheme } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { grey, lightBlue } from '@mui/material/colors';
+import { CSSProperties } from 'react';
 
 const white = '#ffffff';
 const black = '#000000';
 
+declare module '@mui/material/styles' {
+  interface TypographyVariants {
+    'label-sm': CSSProperties;
+    'label-md': CSSProperties;
+    'label-lg': CSSProperties;
+    'description-sm': CSSProperties;
+    'description-md': CSSProperties;
+    'description-lg': CSSProperties;
+  }
+
+  // allow configuration using `createTheme`
+  interface TypographyVariantsOptions {
+    'label-sm'?: CSSProperties;
+    'label-md'?: CSSProperties;
+    'label-lg'?: CSSProperties;
+    'description-sm'?: CSSProperties;
+    'description-md'?: CSSProperties;
+    'description-lg'?: CSSProperties;
+  }
+}
+
+// Update the Typography's variant prop options
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    'label-sm': true;
+    'label-md': true;
+    'label-lg': true;
+    'description-sm': true;
+    'description-md': true;
+    'description-lg': true;
+    h1: false;
+    h2: false;
+    h3: false;
+    h4: false;
+    h5: false;
+    h6: false;
+    subtitle1: false;
+    subtitle2: false;
+    body1: false;
+    body2: false;
+  }
+}
+
 export const theme = createTheme({
   typography: {
     fontFamily: ['Noto Sans JP', 'Roboto', 'sans-serif'].join(',') + ' !important',
+    'label-sm': {
+      fontSize: '14px',
+      lineHeight: '14px',
+      fontWeight: 'normal',
+    },
+    'label-md': {
+      fontSize: '16px',
+      lineHeight: '16px',
+      fontWeight: 'normal',
+    },
+    'label-lg': {
+      fontSize: '18px',
+      lineHeight: '18px',
+      fontWeight: 'normal',
+    },
+    'description-sm': {
+      fontSize: '14px',
+      lineHeight: '21px',
+      fontWeight: 'normal',
+    },
+    'description-md': {
+      fontSize: '16px',
+      lineHeight: '24px',
+      fontWeight: 'normal',
+    },
+    'description-lg': {
+      fontSize: '18px',
+      lineHeight: '27px',
+      fontWeight: 'normal',
+    },
   },
   palette: {
     common: {
@@ -16,6 +90,11 @@ export const theme = createTheme({
     text: {
       primary: black,
       disabled: grey['300'],
+    },
+    primary: {
+      ...lightBlue,
+      main: lightBlue['500'],
+      contrastText: white,
     },
     background: {
       default: grey['50'],
