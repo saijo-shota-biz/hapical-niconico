@@ -12,6 +12,7 @@ export const useUserDomain = () => {
     const docRef = getDocRef(uid);
     await setDoc(docRef, rest, { merge: true });
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const updateUser = () => {};
 
   return { addUser };

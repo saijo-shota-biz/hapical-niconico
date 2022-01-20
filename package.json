@@ -64,7 +64,9 @@
       "eol-last": [
         "error",
         "always"
-      ]
+      ],
+      "react-hooks/exhaustive-deps": "off",
+      "curly": "error"
     }
   },
   "prettier": {
