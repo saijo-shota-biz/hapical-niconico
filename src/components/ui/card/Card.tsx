@@ -1,11 +1,13 @@
 import { Card as MuiCard, CardProps } from '@mui/material';
-import { VFC } from 'react';
+import { ForwardedRef, VFC } from 'react';
 
-type Props = CardProps;
+type Props = CardProps & {
+  forwardRef?: ForwardedRef<HTMLDivElement>;
+};
 
-export const Card: VFC<Props> = ({ children, sx, ...rest }) => {
+export const Card: VFC<Props> = ({ children, forwardRef, sx, ...rest }) => {
   return (
-    <MuiCard sx={{ padding: 0, ...sx }} {...rest}>
+    <MuiCard sx={{ padding: 0, ...sx }} ref={forwardRef} {...rest}>
       {children}
     </MuiCard>
   );

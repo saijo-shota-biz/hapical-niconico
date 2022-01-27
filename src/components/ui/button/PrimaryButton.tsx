@@ -1,8 +1,9 @@
-import { Box, Button, ButtonProps } from '@mui/material';
+import { Box } from '@mui/material';
+import { AppButton, AppButtonProps } from '@ui/button/AppButton';
 import { Loading } from '@ui/utils/Loading';
 import { VFC } from 'react';
 
-type Props = Omit<ButtonProps, 'color' | 'variant' | 'disableElevation'> & {
+type Props = Omit<AppButtonProps, 'color' | 'variant'> & {
   loading?: boolean;
 };
 
@@ -10,9 +11,9 @@ export const PrimaryButton: VFC<Props> = ({ children, loading = false, disabled 
   return (
     <>
       <Box sx={{ position: 'relative' }}>
-        <Button {...rest} color={'primary'} variant={'contained'} disableElevation disabled={loading || disabled}>
+        <AppButton disabled={loading || disabled} {...rest}>
           {children}
-        </Button>
+        </AppButton>
         {loading && (
           <Loading
             size={24}

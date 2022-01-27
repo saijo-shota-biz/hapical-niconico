@@ -13,36 +13,23 @@ export const useAuth = () => {
   const { firebaseAuth } = useFirebaseAuth();
 
   const signUp = useCallback((email: string, password: string): Promise<User> => {
-    return createUserWithEmailAndPassword(firebaseAuth, email, password)
-      .then((credential) => ({
-        uid: credential.user.uid,
-        name: credential.user.displayName || credential.user.email,
-        picture: credential.user.photoURL,
-      }))
-      .catch((error) => {
-        console.log(error.message);
-        return error;
-      });
+    return createUserWithEmailAndPassword(firebaseAuth, email, password).then((credential) => ({
+      uid: credential.user.uid,
+      name: credential.user.displayName || credential.user.email || '',
+      picture: credential.user.photoURL || '',
+    }));
   }, []);
 
   const signInWithEmail = useCallback((email: string, password: string): Promise<User> => {
-    return signInWithEmailAndPassword(firebaseAuth, email, password)
-      .then((credential) => ({
-        uid: credential.user.uid,
-        name: credential.user.displayName || credential.user.email,
-        picture: credential.user.photoURL,
-      }))
-      .catch((error) => {
-        console.log(error.message);
-        return error;
-      });
+    return signInWithEmailAndPassword(firebaseAuth, email, password).then((credential) => ({
+      uid: credential.user.uid,
+      name: credential.user.displayName || credential.user.email || '',
+      picture: credential.user.photoURL || '',
+    }));
   }, []);
 
   const signOut = useCallback(() => {
-    return firebaseSignOut(firebaseAuth).catch((error) => {
-      console.log(error.message);
-      return error;
-    });
+    return firebaseSignOut(firebaseAuth);
   }, []);
 
   const sendPasswordResetMail = useCallback((email: string) => {

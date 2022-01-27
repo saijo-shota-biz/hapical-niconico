@@ -12,8 +12,8 @@ export const FirebaseAuthProvider: VFC = () => {
       if (user) {
         setLoginUser({
           uid: user.uid,
-          name: user.displayName || user.email,
-          picture: user.photoURL,
+          name: user.displayName || user.email || '',
+          picture: user.photoURL || '',
         });
       } else {
         setLoginUser(null);

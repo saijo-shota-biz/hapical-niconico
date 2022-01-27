@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material';
-import { grey, lightBlue } from '@mui/material/colors';
+import { blueGrey, grey, lightBlue } from '@mui/material/colors';
 import { CSSProperties } from 'react';
 
 const white = '#ffffff';
@@ -93,11 +93,26 @@ export const theme = createTheme({
     },
     primary: {
       ...lightBlue,
-      main: lightBlue['500'],
       contrastText: white,
     },
+    neutral: blueGrey,
     background: {
       default: grey['50'],
     },
   },
 });
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    neutral: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    neutral: PaletteOptions['primary'];
+  }
+}
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    neutral: true;
+  }
+}
