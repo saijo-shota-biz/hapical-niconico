@@ -1,15 +1,12 @@
-import { useAuth } from '@hooks/util/useAuth';
 import { useDeleteConfirmModal } from '@hooks/util/useDeleteConfirmModal';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { Box, Link, Stack } from '@mui/material';
+import { Link, Stack } from '@mui/material';
 import { AppButton } from '@ui/button/AppButton';
-import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Description } from '@ui/typography/Description';
 import { Label } from '@ui/typography/Label';
 import { VFC } from 'react';
 
 export const HomePage: VFC = () => {
-  const { signOut } = useAuth();
   const { loginUser } = useLoginUser();
 
   const { confirm } = useDeleteConfirmModal();
