@@ -9,7 +9,7 @@ type ConfirmModalStateType = {
 } & ConfirmModalView;
 
 const ConfirmModalState = atom<ConfirmModalStateType>({
-  key: 'ConfirmModalState',
+  key: 'StateConfirmModal',
   default: {
     open: false,
     onClickOk: () => {},

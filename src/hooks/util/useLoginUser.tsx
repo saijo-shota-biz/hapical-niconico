@@ -5,14 +5,14 @@ import { User } from '@/types/User';
 
 const { persistAtom } = recoilPersist();
 
-const loginUserState = atom<User | null>({
-  key: 'state-current-user',
+export const LoginUserState = atom<User | null>({
+  key: 'StateLoginUser',
   default: null,
   effects_UNSTABLE: [persistAtom],
 });
 
 export const useLoginUser = () => {
-  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
+  const [loginUser, setLoginUser] = useRecoilState(LoginUserState);
 
   return { loginUser, setLoginUser };
 };

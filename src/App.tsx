@@ -6,9 +6,9 @@ import { Toaster } from '@ui/utils/Toaster';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
-import { theme } from '@/theme';
-
 import './firebase';
+
+import { theme } from '@/theme';
 
 function App() {
   return (

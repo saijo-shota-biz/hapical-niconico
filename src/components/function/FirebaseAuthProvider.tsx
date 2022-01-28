@@ -1,14 +1,14 @@
-import { useFirebaseAuth } from '@hooks/util/useFirebaseAuth';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, VFC } from 'react';
 
+import { auth } from '@/firebase';
+
 export const FirebaseAuthProvider: VFC = () => {
-  const { firebaseAuth } = useFirebaseAuth();
   const { setLoginUser } = useLoginUser();
 
   useEffect(() => {
-    return onAuthStateChanged(firebaseAuth, (user) => {
+    return onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoginUser({
           uid: user.uid,

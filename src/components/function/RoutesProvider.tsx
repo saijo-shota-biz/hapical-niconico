@@ -1,3 +1,4 @@
+import { AppLayout } from '@domain/AppLayout';
 import { PublicPage } from '@function/PublicPage';
 import { SecurityPage } from '@function/SecurityPage';
 import { AccountPage } from '@page/AccountPage';
@@ -6,7 +7,6 @@ import { PasswordResetPage } from '@page/PasswordResetPage';
 import { SignupPage } from '@page/SignupPage';
 import { SinginPage } from '@page/SinginPage';
 import { TeamListPage } from '@page/TeamListPage';
-import { Layout } from '@ui/Layout';
 import { VFC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ export const RoutesProvider: VFC = () => {
   return (
     <Routes>
       <Route element={<SecurityPage />}>
-        <Route element={<Layout />}>
+        <Route element={<AppLayout />}>
           <Route path={'/'} element={<HomePage />} />
           <Route path={'/team-list'} element={<TeamListPage />} />
           <Route path={'/account'} element={<AccountPage />} />

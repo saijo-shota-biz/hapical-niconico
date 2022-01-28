@@ -1,5 +1,7 @@
+import { useTeamList } from '@hooks/domain/useTeamList';
 import { VFC } from 'react';
 
 export const TeamListPage: VFC = () => {
-  return <>チーム</>;
+  const teamList = useTeamList();
+  return <>{JSON.stringify(teamList)}</>;
 };

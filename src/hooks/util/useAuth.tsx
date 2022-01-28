@@ -1,4 +1,3 @@
-import { useFirebaseAuth } from '@hooks/util/useFirebaseAuth';
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -7,13 +6,12 @@ import {
 } from 'firebase/auth';
 import { useCallback } from 'react';
 
+import { auth } from '@/firebase';
 import { User } from '@/types/User';
 
 export const useAuth = () => {
-  const { firebaseAuth } = useFirebaseAuth();
-
   const signUp = useCallback((email: string, password: string): Promise<User> => {
-    return createUserWithEmailAndPassword(firebaseAuth, email, password).then((credential) => ({
+    return createUserWithEmailAndPassword(auth, email, password).then((credential) => ({
       uid: credential.user.uid,
       name: credential.user.displayName || credential.user.email || '',
       picture: credential.user.photoURL || '',
@@ -21,7 +19,7 @@ export const useAuth = () => {
   }, []);
 
   const signInWithEmail = useCallback((email: string, password: string): Promise<User> => {
-    return signInWithEmailAndPassword(firebaseAuth, email, password).then((credential) => ({
+    return signInWithEmailAndPassword(auth, email, password).then((credential) => ({
       uid: credential.user.uid,
       name: credential.user.displayName || credential.user.email || '',
       picture: credential.user.photoURL || '',
@@ -29,11 +27,11 @@ export const useAuth = () => {
   }, []);
 
   const signOut = useCallback(() => {
-    return firebaseSignOut(firebaseAuth);
+    return firebaseSignOut(auth);
   }, []);
 
   const sendPasswordResetMail = useCallback((email: string) => {
-    return sendPasswordResetEmail(firebaseAuth, email);
+    return sendPasswordResetEmail(auth, email);
   }, []);
 
   return { signUp, signInWithEmail, signOut, sendPasswordResetMail };
