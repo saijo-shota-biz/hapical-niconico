@@ -1,4 +1,4 @@
-import { useTeamList } from '@hooks/domain/useTeamList';
+import { useTeamList } from '@hooks/domain/query/useTeamList';
 import { VFC } from 'react';
 
 export const TeamListPage: VFC = () => {

@@ -19,7 +19,7 @@ export const Layout: VFC<Props> = ({ children }) => {
       <AppBar position="static" elevation={0}>
         <Toolbar sx={{ display: 'flex' }}>{header}</Toolbar>
       </AppBar>
-      <Box sx={{ flexGrow: 1, flexBasis: 0 }}>{main}</Box>
+      <Box sx={{ flexGrow: 1, flexBasis: 0, display: 'flex', flexDirection: 'column' }}>{main}</Box>
     </>
   );
 };

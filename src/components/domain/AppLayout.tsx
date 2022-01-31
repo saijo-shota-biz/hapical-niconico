@@ -34,7 +34,9 @@ export const AppLayout = () => {
                   alt={loginUser.name}
                   src={loginUser.picture}
                   sx={{ width: '32px', height: '32px', backgroundColor: 'primary.600' }}
-                />
+                >
+                  {!loginUser.picture && loginUser.name[0]}
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu open={open} anchorEl={anchorEl} onClose={closeMenu}>

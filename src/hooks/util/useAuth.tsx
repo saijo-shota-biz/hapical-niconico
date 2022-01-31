@@ -10,7 +10,7 @@ import { auth } from '@/firebase';
 import { User } from '@/types/User';
 
 export const useAuth = () => {
-  const signUp = useCallback((email: string, password: string): Promise<User> => {
+  const signUp = useCallback((email: string, password: string): Promise<Omit<User, 'calendar'>> => {
     return createUserWithEmailAndPassword(auth, email, password).then((credential) => ({
       uid: credential.user.uid,
       name: credential.user.displayName || credential.user.email || '',
@@ -18,7 +18,7 @@ export const useAuth = () => {
     }));
   }, []);
 
-  const signInWithEmail = useCallback((email: string, password: string): Promise<User> => {
+  const signInWithEmail = useCallback((email: string, password: string): Promise<Omit<User, 'calendar'>> => {
     return signInWithEmailAndPassword(auth, email, password).then((credential) => ({
       uid: credential.user.uid,
       name: credential.user.displayName || credential.user.email || '',

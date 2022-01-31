@@ -25,6 +25,7 @@ export const HomePage: VFC = () => {
       </Stack>
       <Stack spacing={2}>
         <Label>リンク</Label>
+        <Link href={'/calendar'}>カレンダー</Link>
         <Link href={'/team-list'}>チーム一覧</Link>
       </Stack>
       <Stack spacing={2}>

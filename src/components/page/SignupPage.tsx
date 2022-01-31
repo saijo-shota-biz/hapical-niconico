@@ -1,4 +1,4 @@
-import { useUserDomain } from '@hooks/domain/useUserDomain';
+import { useCreateUser } from '@hooks/domain/command/useCreateUser';
 import { useAuth } from '@hooks/util/useAuth';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
@@ -17,14 +17,14 @@ export const SignupPage: VFC = () => {
 
   const { signUp } = useAuth();
   const { push } = useRouter();
-  const { addUser } = useUserDomain();
+  const { createUser } = useCreateUser();
 
   const [loading, setLoading] = useState(false);
 
   const onClickSignupButton = async () => {
     setLoading(true);
     const user = await signUp(email.value, password.value);
-    await addUser(user);
+    await createUser(user);
     setLoading(false);
     push('/');
   };
