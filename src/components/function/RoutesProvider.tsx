@@ -7,7 +7,6 @@ import { HomePage } from '@page/HomePage';
 import { PasswordResetPage } from '@page/PasswordResetPage';
 import { SignupPage } from '@page/SignupPage';
 import { SinginPage } from '@page/SinginPage';
-import { TeamListPage } from '@page/TeamListPage';
 import { VFC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -17,8 +16,7 @@ export const RoutesProvider: VFC = () => {
       <Route element={<SecurityPage />}>
         <Route element={<AppLayout />}>
           <Route path={'/'} element={<HomePage />} />
-          <Route path={'/calendar'} element={<CalendarPage />} />
-          <Route path={'/team-list'} element={<TeamListPage />} />
+          <Route path={'/calendars/:calendarId'} element={<CalendarPage />} />
           <Route path={'/account'} element={<AccountPage />} />
         </Route>
       </Route>
