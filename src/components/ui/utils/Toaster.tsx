@@ -1,4 +1,4 @@
-import { useToaster } from '@hooks/util/useToaster';
+import { useToaster } from '@hooks/components/useToaster';
 import { Alert, Snackbar } from '@mui/material';
 import { VFC } from 'react';
 

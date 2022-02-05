@@ -1,4 +1,4 @@
-import { useDeleteConfirmModal } from '@hooks/util/useDeleteConfirmModal';
+import { useDeleteConfirmModal } from '@hooks/components/useDeleteConfirmModal';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { Link, Stack } from '@mui/material';
 import { AppButton } from '@ui/button/AppButton';
@@ -25,8 +25,7 @@ export const HomePage: VFC = () => {
       </Stack>
       <Stack spacing={2}>
         <Label>リンク</Label>
-        <Link href={loginUser?.calendar}>カレンダー</Link>
-        <Link href={'/teams'}>チーム一覧</Link>
+        <Link href={'/calendars'}>カレンダー一覧</Link>
       </Stack>
       <Stack spacing={2}>
         <Label>サンドボックス</Label>

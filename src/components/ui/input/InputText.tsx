@@ -8,7 +8,7 @@ type Props = Omit<TextFieldProps, 'variant' | 'label'> & {
 
 export const InputText: VFC<Props> = ({ label = null, sx, ...rest }) => {
   return (
-    <Box sx={{ width: '100%', ...sx }}>
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', ...sx }}>
       {label && (
         <Label size={'sm'} sx={{ display: 'inline-block', marginBottom: 1, color: 'grey.500' }}>
           {label}

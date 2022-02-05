@@ -1,3 +1,4 @@
+import { useInputText } from '@hooks/components/useInputText';
 import { useAuth } from '@hooks/util/useAuth';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
@@ -6,7 +7,6 @@ import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { useInputText } from '@ui/input/useInputText';
 import { VFC } from 'react';
 
 export const SinginPage: VFC = () => {

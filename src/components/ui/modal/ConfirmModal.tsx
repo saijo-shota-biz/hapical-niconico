@@ -1,4 +1,4 @@
-import { useConfirmModal } from '@hooks/util/useConfirmModal';
+import { useConfirmModal } from '@hooks/components/useConfirmModal';
 import { CardProps, Modal } from '@mui/material';
 import { AppButton } from '@ui/button/AppButton';
 import { Card } from '@ui/card/Card';

@@ -3,6 +3,8 @@ import { PublicPage } from '@function/PublicPage';
 import { SecurityPage } from '@function/SecurityPage';
 import { AccountPage } from '@page/AccountPage';
 import { CalendarPage } from '@page/CalendarPage';
+import { CalendarSettingsPage } from '@page/CalendarSettingsPage';
+import { CalendarsPage } from '@page/CalendarsPage';
 import { HomePage } from '@page/HomePage';
 import { PasswordResetPage } from '@page/PasswordResetPage';
 import { SignupPage } from '@page/SignupPage';
@@ -16,7 +18,9 @@ export const RoutesProvider: VFC = () => {
       <Route element={<SecurityPage />}>
         <Route element={<AppLayout />}>
           <Route path={'/'} element={<HomePage />} />
+          <Route path={'/calendars'} element={<CalendarsPage />} />
           <Route path={'/calendars/:calendarId'} element={<CalendarPage />} />
+          <Route path={'/calendars/:calendarId/settings'} element={<CalendarSettingsPage />} />
           <Route path={'/account'} element={<AccountPage />} />
         </Route>
       </Route>

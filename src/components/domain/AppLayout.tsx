@@ -1,6 +1,6 @@
+import { useMenu } from '@hooks/components/useMenu';
 import { useAuth } from '@hooks/util/useAuth';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { useMenu } from '@hooks/util/useMenu';
 import { useRouter } from '@hooks/util/useRouter';
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { Layout } from '@ui/Layout';

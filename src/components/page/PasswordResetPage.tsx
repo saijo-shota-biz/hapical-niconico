@@ -1,13 +1,13 @@
+import { useInputText } from '@hooks/components/useInputText';
+import { useToaster } from '@hooks/components/useToaster';
 import { useAuth } from '@hooks/util/useAuth';
 import { useRouter } from '@hooks/util/useRouter';
-import { useToaster } from '@hooks/util/useToaster';
 import { Box } from '@mui/material';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { useInputText } from '@ui/input/useInputText';
 import { VFC } from 'react';
 
 export const PasswordResetPage: VFC = () => {

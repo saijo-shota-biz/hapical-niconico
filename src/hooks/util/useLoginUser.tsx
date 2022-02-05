@@ -16,34 +16,14 @@ export const LoginUserState = atom<User | null>({
 export const useLoginUser = () => {
   const [value, setValue] = useRecoilState(LoginUserState);
 
-  const setLoginUser = async (user: Omit<User, 'calendar'> | null) => {
+  const setLoginUser = async (user: User | null) => {
     if (!user) {
       setValue(null);
       return;
     }
-    const docRef = doc(firestore, 'users', user.uid).withConverter({
-      toFirestore: (user: User) => {
-        return {
-          name: user.name,
-          picture: user.picture,
-          calendar: user.calendar,
-        };
-      },
-      fromFirestore: (snapshot, options): User => {
-        const data = snapshot.data(options);
-        return {
-          uid: snapshot.id,
-          name: data.name,
-          picture: data.picture,
-          calendar: data.calendar,
-        };
-      },
-    });
-    const ds = await getDoc(docRef);
-    const data = ds.data();
-    if (data) {
-      setValue(data);
-    }
+    const docRef = doc(firestore, 'users', user.uid);
+    const userDoc = await getDoc(docRef);
+    setValue({ uid: userDoc.id, ...userDoc.data() } as User);
   };
 
   return { loginUser: value, setLoginUser };

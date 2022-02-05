@@ -1,4 +1,5 @@
-import { useCreateUser } from '@hooks/domain/command/useCreateUser';
+import { useInputText } from '@hooks/components/useInputText';
+import { useUserCommand } from '@hooks/domain/command/useUserCommand';
 import { useAuth } from '@hooks/util/useAuth';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
@@ -7,7 +8,6 @@ import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { useInputText } from '@ui/input/useInputText';
 import { useState, VFC } from 'react';
 
 export const SignupPage: VFC = () => {
@@ -17,7 +17,7 @@ export const SignupPage: VFC = () => {
 
   const { signUp } = useAuth();
   const { push } = useRouter();
-  const { createUser } = useCreateUser();
+  const { create: createUser } = useUserCommand();
 
   const [loading, setLoading] = useState(false);
 

@@ -1,14 +1,20 @@
+import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
+import { useEmotion } from '@hooks/util/useEmotion';
 import { Box } from '@mui/material';
 import { Label } from '@ui/typography/Label';
 import { useEffect, useState, VFC } from 'react';
+
+import { CalendarReport } from '@/types/Calendar';
 
 type Props = {
   baseDate: Date;
 };
 
 export const Calendar: VFC<Props> = ({ baseDate }) => {
-  const { isToday } = useDate();
+  const { parseDateFromYmd, formatYmd, formatMd, isToday, isSameYmd, isSameYm } = useDate();
+  const { getEmotionText } = useEmotion();
+  const { calendar } = useCalendarQuery();
   const [dateList, setDateList] = useState<Date[]>([]);
 
   useEffect(() => {
@@ -39,10 +45,19 @@ export const Calendar: VFC<Props> = ({ baseDate }) => {
   };
 
   const getThisMonthColor = (date: Date) => {
-    if (date.getMonth() !== baseDate.getMonth()) {
+    if (!isSameYm(baseDate, date)) {
       return { color: 'grey.500' };
     }
     return {};
+  };
+
+  const getReport = (date: Date): CalendarReport | undefined => {
+    return calendar?.reports.find((e) => isSameYmd(parseDateFromYmd(e.year, e.month, e.date), date));
+  };
+
+  const getReportEmotionText = (date: Date) => {
+    const report = getReport(date);
+    return report && getEmotionText(report.emotion);
   };
 
   return (
@@ -88,7 +103,7 @@ export const Calendar: VFC<Props> = ({ baseDate }) => {
         <Box sx={{ display: 'flex', flexWrap: 'wrap', height: '100%' }}>
           {dateList.map((date) => (
             <Box
-              key={`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`}
+              key={formatYmd(date)}
               sx={{
                 border: 'solid 1px',
                 borderColor: 'grey.200',
@@ -117,9 +132,10 @@ export const Calendar: VFC<Props> = ({ baseDate }) => {
                     ...getTodayColor(date),
                   }}
                 >
-                  {`${date.getDate() === 1 ? `${date.getMonth() + 1}/` : ''}${date.getDate()}`}
+                  {date.getDate() === 1 ? formatMd(date) : date.getDate()}
                 </Label>
               </Box>
+              <Box>{getReportEmotionText(date)}</Box>
             </Box>
           ))}
         </Box>

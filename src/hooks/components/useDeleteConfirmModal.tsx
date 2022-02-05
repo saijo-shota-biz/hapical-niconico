@@ -1,4 +1,4 @@
-import { useConfirmModal } from '@hooks/util/useConfirmModal';
+import { useConfirmModal } from '@hooks/components/useConfirmModal';
 
 export const useDeleteConfirmModal = () => {
   const { confirm } = useConfirmModal();

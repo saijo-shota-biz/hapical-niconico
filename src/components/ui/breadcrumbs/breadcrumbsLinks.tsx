@@ -13,8 +13,11 @@ export const CalendarsBreadcrumbs = (): BreadcrumbsType => ({
   link: '/calendars',
 });
 
-export const CalendarBreadcrumbs = (calendarName: string, calendarId: string): BreadcrumbsType => ({
-  label: `${calendarName}のカレンダー`,
+export const CalendarBreadcrumbs = (
+  calendarName: string = '名無しのカレンダー',
+  calendarId: string
+): BreadcrumbsType => ({
+  label: calendarName,
   Icon: CalendarToday,
   link: `/calendars/${calendarId}`,
 });
