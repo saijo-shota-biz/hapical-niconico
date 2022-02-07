@@ -1,5 +1,5 @@
 import { VFC } from 'react';
 
 export const CalendarSettingsPage: VFC = () => {
-  return <></>;
+  return <>カレンダー設定</>;
 };

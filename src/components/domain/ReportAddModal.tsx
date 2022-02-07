@@ -1,32 +1,26 @@
 import { useReportAddModal } from '@hooks/components/useReportAddModal';
+import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
-import {
-  Box,
-  CardProps,
-  FormControl,
-  FormControlLabel,
-  Modal,
-  Radio,
-  RadioGroup,
-  SelectChangeEvent,
-} from '@mui/material';
+import { useLoginUser } from '@hooks/util/useLoginUser';
+import { Box, FormControl, FormControlLabel, Modal, Radio, RadioGroup, SelectChangeEvent } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
-import { Card } from '@ui/card/Card';
+import { RefCard } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
 import { InputSelect } from '@ui/input/InputSelect';
 import { InputText } from '@ui/input/InputText';
-import { ChangeEvent, forwardRef, useState, VFC } from 'react';
+import { ChangeEvent, useEffect, useState, VFC } from 'react';
 
 import { Emotion, NORMAL } from '@/types/Calendar';
 
-const RefCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => <Card forwardRef={ref} {...props} />);
-
 export const ReportAddModal: VFC = () => {
   const { formatYmd, beforeDate } = useDate();
+  const { calendar } = useCalendarQuery();
+  const { loginUser } = useLoginUser();
+  const { isSameYmd, parseDateFromYmd, parseDateFromString } = useDate();
 
   const { open, onClickOk, onClickCancel } = useReportAddModal();
   const { emotions, isEmotionStr, getEmotionText } = useEmotion();
@@ -38,9 +32,26 @@ export const ReportAddModal: VFC = () => {
     .map((e) => ({ value: formatYmd(e), label: formatYmd(e) }));
   const [emotion, setEmotion] = useState<Emotion>(NORMAL);
   const [comment, setComment] = useState('');
+  const [reportId, setReportId] = useState('');
+
+  useEffect(() => {
+    const report = calendar?.reports.find(
+      (e) =>
+        e.userId === loginUser?.uid && isSameYmd(parseDateFromYmd(e.year, e.month, e.date), parseDateFromString(date))
+    );
+    if (report) {
+      setReportId(report.uid);
+      setEmotion(report.emotion);
+      setComment(report.comment);
+    } else {
+      setReportId('');
+      setEmotion(NORMAL);
+      setComment('');
+    }
+  }, [date]);
 
   const onClickOkButton = () => {
-    onClickOk({ date, emotion, comment });
+    onClickOk({ uid: reportId, date, emotion, comment });
     resetForm();
   };
 
@@ -50,6 +61,7 @@ export const ReportAddModal: VFC = () => {
   };
 
   const resetForm = () => {
+    setDate(formatYmd(today));
     setEmotion(NORMAL);
     setComment('');
   };

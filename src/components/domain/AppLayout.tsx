@@ -30,13 +30,7 @@ export const AppLayout = () => {
           <>
             <Tooltip title="設定を開く">
               <IconButton size={'small'} onClick={(e) => openMenu(e.currentTarget)} sx={{ p: 0 }}>
-                <Avatar
-                  alt={loginUser.name}
-                  src={loginUser.picture}
-                  sx={{ width: '32px', height: '32px', backgroundColor: 'primary.600' }}
-                >
-                  {!loginUser.picture && loginUser.name[0]}
-                </Avatar>
+                <Avatar alt={loginUser.name} src={loginUser.picture} sx={{ width: '32px', height: '32px' }} />
               </IconButton>
             </Tooltip>
             <Menu open={open} anchorEl={anchorEl} onClose={closeMenu}>

@@ -1,13 +1,11 @@
 import { useConfirmModal } from '@hooks/components/useConfirmModal';
-import { CardProps, Modal } from '@mui/material';
+import { Modal } from '@mui/material';
 import { AppButton } from '@ui/button/AppButton';
-import { Card } from '@ui/card/Card';
+import { RefCard } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
-import { forwardRef, VFC } from 'react';
-
-const RefCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => <Card forwardRef={ref} {...props} />);
+import { VFC } from 'react';
 
 export const ConfirmModal: VFC = () => {
   const { open, close, header, content, action, onClickOk, onClickCancel } = useConfirmModal();

@@ -5,7 +5,7 @@ type Props = CardContentProps;
 
 export const CardContent: VFC<Props> = ({ children, sx, ...rest }) => {
   return (
-    <MuiCardContent sx={{ padding: 3 }} {...rest}>
+    <MuiCardContent sx={{ padding: 3, ...sx }} {...rest}>
       {children}
     </MuiCardContent>
   );

@@ -9,9 +9,10 @@ import { CalendarReport } from '@/types/Calendar';
 
 type Props = {
   baseDate: Date;
+  onClickCalendarDate?: (date: Date) => void;
 };
 
-export const Calendar: VFC<Props> = ({ baseDate }) => {
+export const Calendar: VFC<Props> = ({ baseDate, onClickCalendarDate = () => {} }) => {
   const { parseDateFromYmd, formatYmd, formatMd, isToday, isSameYmd, isSameYm } = useDate();
   const { getEmotionText } = useEmotion();
   const { calendar } = useCalendarQuery();
@@ -51,13 +52,8 @@ export const Calendar: VFC<Props> = ({ baseDate }) => {
     return {};
   };
 
-  const getReport = (date: Date): CalendarReport | undefined => {
-    return calendar?.reports.find((e) => isSameYmd(parseDateFromYmd(e.year, e.month, e.date), date));
-  };
-
-  const getReportEmotionText = (date: Date) => {
-    const report = getReport(date);
-    return report && getEmotionText(report.emotion);
+  const getReports = (date: Date): CalendarReport[] => {
+    return calendar?.reports.filter((e) => isSameYmd(parseDateFromYmd(e.year, e.month, e.date), date)) || [];
   };
 
   return (
@@ -112,7 +108,9 @@ export const Calendar: VFC<Props> = ({ baseDate }) => {
                 height: 'calc(100% / 6)',
                 width: 'calc(100% / 7)',
                 backgroundColor: 'common.white',
+                cursor: 'pointer',
               }}
+              onClick={() => onClickCalendarDate(date)}
             >
               <Box
                 sx={{
@@ -135,7 +133,11 @@ export const Calendar: VFC<Props> = ({ baseDate }) => {
                   {date.getDate() === 1 ? formatMd(date) : date.getDate()}
                 </Label>
               </Box>
-              <Box>{getReportEmotionText(date)}</Box>
+              <Box>
+                {getReports(date).map((e) => (
+                  <Label key={e.uid}>{getEmotionText(e.emotion)}</Label>
+                ))}
+              </Box>
             </Box>
           ))}
         </Box>

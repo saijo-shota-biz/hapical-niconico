@@ -8,7 +8,7 @@ export const HomeBreadcrumbs = (): BreadcrumbsType => ({
 });
 
 export const CalendarsBreadcrumbs = (): BreadcrumbsType => ({
-  label: 'カレンダー',
+  label: 'カレンダー一覧',
   Icon: CalendarToday,
   link: '/calendars',
 });

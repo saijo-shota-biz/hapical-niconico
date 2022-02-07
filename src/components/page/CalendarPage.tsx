@@ -6,7 +6,7 @@ import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
-import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined, Add } from '@mui/icons-material';
+import { Add, ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import { Box, Fab, IconButton } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import { CalendarBreadcrumbs, CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
@@ -16,6 +16,7 @@ import { useEffect, useState, VFC } from 'react';
 export const CalendarPage: VFC = () => {
   const {
     params: { calendarId = '' },
+    push,
   } = useRouter();
   const { loginUser } = useLoginUser();
 
@@ -40,21 +41,28 @@ export const CalendarPage: VFC = () => {
     const result = await showReportAddModal();
     if (result) {
       const date = parseDateFromString(result.date);
-      await addReport({
-        calendarId: calendar?.uid || '',
-        userId: loginUser?.uid || '',
-        year: date.getFullYear(),
-        month: date.getMonth(),
-        date: date.getDate(),
-        emotion: result.emotion,
-        comment: result.comment,
-      });
+      await addReport(
+        {
+          calendarId: calendar?.uid || '',
+          userId: loginUser?.uid || '',
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          date: date.getDate(),
+          emotion: result.emotion,
+          comment: result.comment,
+        },
+        result.uid
+      );
       closeReportAddModal();
     }
   };
   useEffect(() => {
     return () => closeReportAddModal();
   }, []);
+
+  const onClickCalendarDate = (date: Date) => {
+    push(`/calendars/${calendar?.uid}/report`);
+  };
 
   return (
     <>
@@ -70,7 +78,7 @@ export const CalendarPage: VFC = () => {
               <ArrowForwardIosOutlined />
             </IconButton>
           </Box>
-          <Calendar baseDate={baseDate} />
+          <Calendar baseDate={baseDate} onClickCalendarDate={onClickCalendarDate} />
         </Box>
       </Box>
       <Fab

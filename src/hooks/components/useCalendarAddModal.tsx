@@ -1,21 +1,16 @@
 import { atom, useRecoilState } from 'recoil';
 
-import { Emotion } from '@/types/Calendar';
-
-type ReportAddModalStateType = {
+type CalendarAddModalStateType = {
   open: boolean;
-  onClickOk: (report: ReportState) => void;
+  onClickOk: (calendar: CalendarState) => void;
   onClickCancel: () => void;
 };
 
-type ReportState = {
-  uid?: string;
-  date: string;
-  emotion: Emotion;
-  comment: string;
+type CalendarState = {
+  name: string;
 };
 
-const ReportAddModalState = atom<ReportAddModalStateType>({
+const ReportAddModalState = atom<CalendarAddModalStateType>({
   key: 'StateReportAddModal',
   default: {
     open: false,
@@ -24,10 +19,10 @@ const ReportAddModalState = atom<ReportAddModalStateType>({
   },
 });
 
-export const useReportAddModal = () => {
+export const useCalendarAddModal = () => {
   const [state, setState] = useRecoilState(ReportAddModalState);
 
-  const showReportAddModal = (): Promise<ReportState | null> => {
+  const showCalendarAddModal = (): Promise<CalendarState | null> => {
     return new Promise((resolve) => {
       setState((prev) => ({
         ...prev,
@@ -36,14 +31,14 @@ export const useReportAddModal = () => {
           resolve(report);
         },
         onClickCancel: () => {
-          closeReportAddModal();
+          closeCalendarAddModal();
           resolve(null);
         },
       }));
     });
   };
 
-  const closeReportAddModal = () => {
+  const closeCalendarAddModal = () => {
     setState({
       open: false,
       onClickOk: () => {},
@@ -51,5 +46,5 @@ export const useReportAddModal = () => {
     });
   };
 
-  return { ...state, showReportAddModal, closeReportAddModal };
+  return { ...state, showCalendarAddModal, closeCalendarAddModal };
 };
