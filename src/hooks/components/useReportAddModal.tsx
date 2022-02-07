@@ -24,10 +24,17 @@ const ReportAddModalState = atom<ReportAddModalStateType>({
   },
 });
 
+const ReportAddModalDateState = atom<Date>({
+  key: 'StateReportAddModalDate',
+  default: new Date(),
+});
+
 export const useReportAddModal = () => {
   const [state, setState] = useRecoilState(ReportAddModalState);
+  const [date, setDate] = useRecoilState(ReportAddModalDateState);
 
-  const showReportAddModal = (): Promise<ReportState | null> => {
+  const showReportAddModal = (date: Date = new Date()): Promise<ReportState | null> => {
+    setDate(date);
     return new Promise((resolve) => {
       setState((prev) => ({
         ...prev,
@@ -51,5 +58,5 @@ export const useReportAddModal = () => {
     });
   };
 
-  return { ...state, showReportAddModal, closeReportAddModal };
+  return { ...state, date, showReportAddModal, closeReportAddModal };
 };

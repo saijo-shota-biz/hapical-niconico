@@ -20,24 +20,23 @@ export const ReportAddModal: VFC = () => {
   const { formatYmd, beforeDate } = useDate();
   const { calendar } = useCalendarQuery();
   const { loginUser } = useLoginUser();
-  const { isSameYmd, parseDateFromYmd, parseDateFromString } = useDate();
+  const { isSameYmd, parseDateFromYmd } = useDate();
 
-  const { open, onClickOk, onClickCancel } = useReportAddModal();
+  const { open, onClickOk, onClickCancel, date: selectDate } = useReportAddModal();
   const { emotions, isEmotionStr, getEmotionText } = useEmotion();
 
-  const today = new Date();
-  const [date, setDate] = useState(formatYmd(today));
+  const [date, setDate] = useState(formatYmd(selectDate));
   const dateOptions = [...Array(7)]
-    .map((_, i) => beforeDate(today, i))
+    .map((_, i) => beforeDate(selectDate, i))
     .map((e) => ({ value: formatYmd(e), label: formatYmd(e) }));
   const [emotion, setEmotion] = useState<Emotion>(NORMAL);
   const [comment, setComment] = useState('');
   const [reportId, setReportId] = useState('');
 
   useEffect(() => {
+    setDate(formatYmd(selectDate));
     const report = calendar?.reports.find(
-      (e) =>
-        e.userId === loginUser?.uid && isSameYmd(parseDateFromYmd(e.year, e.month, e.date), parseDateFromString(date))
+      (e) => e.userId === loginUser?.uid && isSameYmd(parseDateFromYmd(e.year, e.month, e.date), selectDate)
     );
     if (report) {
       setReportId(report.uid);
@@ -48,7 +47,7 @@ export const ReportAddModal: VFC = () => {
       setEmotion(NORMAL);
       setComment('');
     }
-  }, [date]);
+  }, [selectDate, calendar]);
 
   const onClickOkButton = () => {
     onClickOk({ uid: reportId, date, emotion, comment });
@@ -61,7 +60,7 @@ export const ReportAddModal: VFC = () => {
   };
 
   const resetForm = () => {
-    setDate(formatYmd(today));
+    setDate(formatYmd(selectDate));
     setEmotion(NORMAL);
     setComment('');
   };
@@ -86,7 +85,7 @@ export const ReportAddModal: VFC = () => {
   return (
     <Modal
       open={open}
-      onClose={onClickCancel}
+      onClose={onClickCancelButton}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -95,11 +94,11 @@ export const ReportAddModal: VFC = () => {
       }}
     >
       <RefCard sx={{ width: '60%' }}>
-        <CardHeader onClose={onClickCancel} />
+        <CardHeader onClose={onClickCancelButton}>レポートを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box>
             <InputSelect label={'日付'} value={date} onChange={onChangeDate} options={dateOptions} />
-            <FormControl>
+            <FormControl sx={{ marginTop: 2 }}>
               <RadioGroup row value={emotion} onChange={onChangeEmotion}>
                 {emotions.map((e) => (
                   <FormControlLabel key={e} value={e} control={<Radio />} label={getEmotionText(e)} />

@@ -46,7 +46,7 @@ export const useConfirmModal = () => {
         },
       },
     }
-  ) => {
+  ): Promise<boolean> => {
     return new Promise((resolve) => {
       setConfirmModal((prev) => ({
         ...prev,

@@ -1,16 +1,16 @@
-import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
+import { CalendarQueryResult, CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { LoginUserState } from '@hooks/util/useLoginUser';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { firestore } from '@/firebase';
-import { Calendar, CalendarReport, CalendarSettings } from '@/types/Calendar';
+import { CalendarReport, CalendarSettings } from '@/types/Calendar';
 
 export const CalendarReportsQuery = selector<CalendarReport[]>({
   key: 'QueryCalendarReports',
   get: async ({ get }) => {
     const { calendarId, year, month, date } = get(CalendarQueryState);
-    if (!calendarId) {
+    if (!calendarId || !year || !month) {
       return [];
     }
 
@@ -26,6 +26,11 @@ export const CalendarReportsQuery = selector<CalendarReport[]>({
     return reports;
   },
 });
+
+export type CalendarState = Omit<CalendarQueryResult, 'settings'> & {
+  settings: CalendarSettings;
+  reports: CalendarReport[];
+};
 
 export const CalendarQuery = selector<CalendarState | null>({
   key: 'QueryCalendar',
@@ -77,11 +82,6 @@ const CalendarQueryState = atom<CalendarQueryStateType>({
     date: null,
   },
 });
-
-type CalendarState = Omit<Calendar, 'settings'> & {
-  settings: CalendarSettings;
-  reports: CalendarReport[];
-};
 
 export const useCalendarQuery = () => {
   const calendar = useRecoilValue(CalendarQuery);

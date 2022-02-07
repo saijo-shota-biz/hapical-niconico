@@ -1,5 +1,8 @@
 import { Calendar } from '@domain/Calendar';
 import { ReportAddModal } from '@domain/ReportAddModal';
+import { ReportPageIconButton } from '@domain/ReportPageIconButton';
+import { SettingsPageIconButton } from '@domain/SettingsPageIconButton';
+import { UserAvatarList } from '@domain/UserAvatarList';
 import { useReportAddModal } from '@hooks/components/useReportAddModal';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
@@ -11,12 +14,12 @@ import { Box, Fab, IconButton } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import { CalendarBreadcrumbs, CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { Label } from '@ui/typography/Label';
+import { Spacer } from '@ui/utils/Spacer';
 import { useEffect, useState, VFC } from 'react';
 
 export const CalendarPage: VFC = () => {
   const {
     params: { calendarId = '' },
-    push,
   } = useRouter();
   const { loginUser } = useLoginUser();
 
@@ -37,8 +40,8 @@ export const CalendarPage: VFC = () => {
   const breadcrumbs = [HomeBreadcrumbs(), CalendarsBreadcrumbs(), CalendarBreadcrumbs(calendar?.name, calendarId)];
 
   const { showReportAddModal, closeReportAddModal } = useReportAddModal();
-  const onClickAddButton = async () => {
-    const result = await showReportAddModal();
+  const onClickAddButton = async (date: Date = new Date()) => {
+    const result = await showReportAddModal(date);
     if (result) {
       const date = parseDateFromString(result.date);
       await addReport(
@@ -60,10 +63,6 @@ export const CalendarPage: VFC = () => {
     return () => closeReportAddModal();
   }, []);
 
-  const onClickCalendarDate = (date: Date) => {
-    push(`/calendars/${calendar?.uid}/report`);
-  };
-
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -77,15 +76,21 @@ export const CalendarPage: VFC = () => {
             <IconButton disabled={isThisMonth(baseDate)} onClick={() => setBaseDate((prev) => nextMonth(prev))}>
               <ArrowForwardIosOutlined />
             </IconButton>
+            <Spacer />
+            <UserAvatarList users={calendar?.users || []} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ReportPageIconButton calendarId={calendarId} />
+              <SettingsPageIconButton calendarId={calendarId} />
+            </Box>
           </Box>
-          <Calendar baseDate={baseDate} onClickCalendarDate={onClickCalendarDate} />
+          <Calendar baseDate={baseDate} onClickDate={(date) => onClickAddButton(date)} />
         </Box>
       </Box>
       <Fab
         color="primary"
         size={'medium'}
         sx={{ position: 'absolute', bottom: '32px', right: '32px' }}
-        onClick={onClickAddButton}
+        onClick={() => onClickAddButton()}
       >
         <Add />
       </Fab>

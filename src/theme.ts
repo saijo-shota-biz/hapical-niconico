@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material';
-import { blueGrey, grey, lightBlue } from '@mui/material/colors';
+import { blueGrey, grey, lightBlue, red } from '@mui/material/colors';
 import { CSSProperties } from 'react';
 
 const white = '#ffffff';
@@ -91,11 +91,12 @@ export const theme = createTheme({
       primary: black,
       disabled: grey['300'],
     },
+    neutral: blueGrey,
     primary: {
       ...lightBlue,
       contrastText: white,
     },
-    neutral: blueGrey,
+    error: red,
     background: {
       default: grey['50'],
     },

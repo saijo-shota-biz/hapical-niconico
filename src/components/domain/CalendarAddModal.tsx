@@ -39,7 +39,7 @@ export const CalendarAddModal: VFC = () => {
       }}
     >
       <RefCard sx={{ width: '60%' }}>
-        <CardHeader onClose={onClickCancel} />
+        <CardHeader onClose={onClickCancel}>カレンダーを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box>
             <InputText label={'カレンダー名'} value={name} onChange={(e) => setName(e.currentTarget.value)} />

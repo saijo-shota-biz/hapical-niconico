@@ -1,6 +1,7 @@
-import { CalendarReportsQuery } from '@hooks/domain/query/useCalendarQuery';
+import { useToaster } from '@hooks/components/useToaster';
+import { CalendarReportsQuery, CalendarState } from '@hooks/domain/query/useCalendarQuery';
 import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { useRecoilRefresher_UNSTABLE } from 'recoil';
 
 import { firestore } from '@/firebase';
@@ -11,7 +12,9 @@ export const useCalendarCommand = () => {
   const refreshReports = useRecoilRefresher_UNSTABLE(CalendarReportsQuery);
   const refreshCalendars = useRecoilRefresher_UNSTABLE(CalendarsQuery);
 
-  const create = async (user: User, name?: string) => {
+  const { showToast } = useToaster();
+
+  const createCalendar = async (user: User, name?: string) => {
     const settingsData: Omit<CalendarSettings, 'uid'> = {};
     const settingsDocRef = await addDoc(collection(firestore, 'calendar-settings'), settingsData);
 
@@ -22,7 +25,39 @@ export const useCalendarCommand = () => {
     };
     const calendarDocRef = await addDoc(collection(firestore, 'calendars'), calendarData);
     refreshCalendars();
+    showToast({
+      status: 'success',
+      message: `${calendarData.name}を作成しました。`,
+    });
     return calendarDocRef.id;
+  };
+
+  const editCalendar = async (calendarId: string, name: string) => {
+    const calendarDocRef = doc(firestore, 'calendars', calendarId);
+    await setDoc(calendarDocRef, { name }, { merge: true });
+    refreshCalendars();
+    showToast({
+      status: 'success',
+      message: `カレンダー名を${name}に変更しました。`,
+    });
+  };
+
+  const deleteCalendar = async (calendar: CalendarState) => {
+    const calendarDocRef = doc(firestore, 'calendars', calendar.uid);
+    await deleteDoc(calendarDocRef);
+    const settingsDocRef = doc(firestore, 'calendar-settings', calendar.settings.uid);
+    deleteDoc(settingsDocRef);
+    const reportCollectionRef = collection(firestore, 'calendar-reports');
+    const q = query(reportCollectionRef, where('calendarId', '==', calendar.uid));
+    getDocs(q).then((reportDocs) => {
+      const reportDocRefs = reportDocs.docs.map((e) => doc(firestore, 'calendar-reports', e.id));
+      reportDocRefs.forEach((e) => deleteDoc(e));
+    });
+    refreshCalendars();
+    showToast({
+      status: 'success',
+      message: `${calendar.name}を削除しました。`,
+    });
   };
 
   const addReport = async (report: Omit<CalendarReport, 'uid'>, uid: string = '') => {
@@ -38,5 +73,5 @@ export const useCalendarCommand = () => {
     }
   };
 
-  return { create, addReport };
+  return { createCalendar, editCalendar, deleteCalendar, addReport };
 };

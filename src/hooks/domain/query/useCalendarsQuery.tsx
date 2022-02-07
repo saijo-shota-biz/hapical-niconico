@@ -18,7 +18,7 @@ const chunk = <T,>(array: T[], size: number) => {
   return chunked;
 };
 
-type CalendarQueryResult = Calendar & {
+export type CalendarQueryResult = Calendar & {
   users: User[];
 };
 

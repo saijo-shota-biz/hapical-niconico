@@ -17,7 +17,7 @@ export const SignupPage: VFC = () => {
 
   const { signUp } = useAuth();
   const { push } = useRouter();
-  const { create: createUser } = useUserCommand();
+  const { createUser } = useUserCommand();
 
   const [loading, setLoading] = useState(false);
 

@@ -9,11 +9,11 @@ import { CalendarReport } from '@/types/Calendar';
 
 type Props = {
   baseDate: Date;
-  onClickCalendarDate?: (date: Date) => void;
+  onClickDate: (date: Date) => void;
 };
 
-export const Calendar: VFC<Props> = ({ baseDate, onClickCalendarDate = () => {} }) => {
-  const { parseDateFromYmd, formatYmd, formatMd, isToday, isSameYmd, isSameYm } = useDate();
+export const Calendar: VFC<Props> = ({ baseDate, onClickDate }) => {
+  const { parseDateFromYmd, formatYmd, formatMd, isToday, isAfterToday, isSameYmd, isSameYm } = useDate();
   const { getEmotionText } = useEmotion();
   const { calendar } = useCalendarQuery();
   const [dateList, setDateList] = useState<Date[]>([]);
@@ -108,9 +108,17 @@ export const Calendar: VFC<Props> = ({ baseDate, onClickCalendarDate = () => {} 
                 height: 'calc(100% / 6)',
                 width: 'calc(100% / 7)',
                 backgroundColor: 'common.white',
-                cursor: 'pointer',
+                ...(isAfterToday(date)
+                  ? {}
+                  : {
+                      cursor: 'pointer',
+                      ':hover': {
+                        borderColor: 'primary.main',
+                        transform: 'scale(1.1)',
+                      },
+                    }),
               }}
-              onClick={() => onClickCalendarDate(date)}
+              onClick={() => isAfterToday(date) || onClickDate(date)}
             >
               <Box
                 sx={{

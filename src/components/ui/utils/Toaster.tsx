@@ -9,7 +9,7 @@ export const Toaster: VFC = () => {
       open={open}
       autoHideDuration={6000}
       onClose={closeToast}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     >
       <Alert severity={status}>{message}</Alert>
     </Snackbar>
