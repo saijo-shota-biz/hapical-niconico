@@ -3,21 +3,20 @@ import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { Box, FormControl, FormControlLabel, Modal, Radio, RadioGroup, SelectChangeEvent } from '@mui/material';
+import { Box, FormControl, FormControlLabel, Modal, Radio, RadioGroup } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { RefCard } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
-import { InputSelect } from '@ui/input/InputSelect';
 import { InputText } from '@ui/input/InputText';
 import { ChangeEvent, useEffect, useState, VFC } from 'react';
 
 import { Emotion, NORMAL } from '@/types/Calendar';
 
 export const ReportAddModal: VFC = () => {
-  const { formatYmd, beforeDate } = useDate();
+  const { formatYmd } = useDate();
   const { calendar } = useCalendarQuery();
   const { loginUser } = useLoginUser();
   const { isSameYmd, parseDateFromYmd } = useDate();
@@ -26,9 +25,6 @@ export const ReportAddModal: VFC = () => {
   const { emotions, isEmotionStr, getEmotionText } = useEmotion();
 
   const [date, setDate] = useState(formatYmd(selectDate));
-  const dateOptions = [...Array(7)]
-    .map((_, i) => beforeDate(selectDate, i))
-    .map((e) => ({ value: formatYmd(e), label: formatYmd(e) }));
   const [emotion, setEmotion] = useState<Emotion>(NORMAL);
   const [comment, setComment] = useState('');
   const [reportId, setReportId] = useState('');
@@ -65,11 +61,6 @@ export const ReportAddModal: VFC = () => {
     setComment('');
   };
 
-  const onChangeDate = (event: SelectChangeEvent) => {
-    const value = event.target.value;
-    setDate(value);
-  };
-
   const onChangeComment = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
     setComment(value);
@@ -94,11 +85,10 @@ export const ReportAddModal: VFC = () => {
       }}
     >
       <RefCard sx={{ width: '60%' }}>
-        <CardHeader onClose={onClickCancelButton}>レポートを作成する</CardHeader>
+        <CardHeader onClose={onClickCancelButton}>{date}のレポートを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Box>
-            <InputSelect label={'日付'} value={date} onChange={onChangeDate} options={dateOptions} />
-            <FormControl sx={{ marginTop: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <FormControl>
               <RadioGroup row value={emotion} onChange={onChangeEmotion}>
                 {emotions.map((e) => (
                   <FormControlLabel key={e} value={e} control={<Radio />} label={getEmotionText(e)} />

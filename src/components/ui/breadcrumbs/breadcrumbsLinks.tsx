@@ -1,4 +1,4 @@
-import { CalendarToday, Home, List, Settings } from '@mui/icons-material';
+import { CalendarToday, Home, List, ManageAccounts, Settings } from '@mui/icons-material';
 import { BreadcrumbsType } from '@ui/breadcrumbs/BreadcrumbsType';
 
 export const HomeBreadcrumbs = (): BreadcrumbsType => ({
@@ -26,4 +26,10 @@ export const CalendarSettingsBreadcrumbs = (calendarId: string) => ({
   label: '設定',
   Icon: Settings,
   link: `/calendars/${calendarId}/settings`,
+});
+
+export const AccountBreadcrumbs = () => ({
+  label: 'アカウント設定',
+  Icon: ManageAccounts,
+  link: '/account',
 });
