@@ -1,4 +1,22 @@
 export const useDate = () => {
+  const getRangeMonth = (year: number, month: number) => {
+    const start = parseDateFromYmd(year, month, 1);
+    const end = parseDateFromYmd(year, month + 1, 0);
+    return { start, end };
+  };
+
+  const getRangeYear = (year: number) => {
+    const start = parseDateFromYmd(year, 0, 1);
+    const end = parseDateFromYmd(year, 12, 0);
+    return { start, end };
+  };
+
+  const getRangeWeek = (year: number, month: number, date: number) => {
+    const start = parseDateFromYmd(year, month, date - 6);
+    const end = parseDateFromYmd(year, month, date);
+    return { start, end };
+  };
+
   const parseDateFromString = (dateString: string) => {
     return new Date(dateString);
   };
@@ -69,6 +87,9 @@ export const useDate = () => {
   };
 
   return {
+    getRangeMonth,
+    getRangeYear,
+    getRangeWeek,
     parseDateFromString,
     parseDateFromYmd,
     formatYmd,

@@ -19,9 +19,7 @@ export type CalendarReport = {
   uid: string;
   calendarId: string;
   userId: string;
-  year: number;
-  month: number;
-  date: number;
+  date: Date;
   emotion: Emotion;
   comment: string;
 };

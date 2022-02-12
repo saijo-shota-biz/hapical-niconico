@@ -34,7 +34,7 @@ export const CalendarPage: VFC = () => {
   }, [calendarId]);
 
   useEffect(() => {
-    setQueryMonth(baseDate.getFullYear(), baseDate.getMonth());
+    setQueryMonth(baseDate);
   }, [baseDate]);
 
   const breadcrumbs = [HomeBreadcrumbs(), CalendarsBreadcrumbs(), CalendarBreadcrumbs(calendar?.name, calendarId)];
@@ -48,9 +48,7 @@ export const CalendarPage: VFC = () => {
         {
           calendarId: calendar?.uid || '',
           userId: loginUser?.uid || '',
-          year: date.getFullYear(),
-          month: date.getMonth(),
-          date: date.getDate(),
+          date,
           emotion: result.emotion,
           comment: result.comment,
         },

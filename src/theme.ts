@@ -117,3 +117,8 @@ declare module '@mui/material/Button' {
     neutral: true;
   }
 }
+declare module '@mui/material/ButtonGroup' {
+  interface ButtonGroupPropsColorOverrides {
+    neutral: true;
+  }
+}

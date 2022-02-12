@@ -1,4 +1,5 @@
 import { CalendarQueryResult, CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
+import { useDate } from '@hooks/util/useDate';
 import { LoginUserState } from '@hooks/util/useLoginUser';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -9,20 +10,22 @@ import { CalendarReport, CalendarSettings } from '@/types/Calendar';
 export const CalendarReportsQuery = selector<CalendarReport[]>({
   key: 'QueryCalendarReports',
   get: async ({ get }) => {
-    const { calendarId, year, month, date } = get(CalendarQueryState);
-    if (!calendarId || !year || !month) {
+    const { calendarId, start, end } = get(CalendarQueryState);
+    if (!calendarId || !start || !end) {
       return [];
     }
 
     const calendarReportsCollectionRef = collection(firestore, 'calendar-reports');
     const wheres = [];
-    year && wheres.push(where('year', '==', year));
-    month && wheres.push(where('month', '==', month));
-    date && wheres.push(where('date', '==', date));
+    wheres.push(where('date', '>=', start));
+    wheres.push(where('date', '<=', end));
     const q = query(calendarReportsCollectionRef, where('calendarId', '==', calendarId), ...wheres);
     const calendarReportsDocs = await getDocs(q);
     const reports: CalendarReport[] = [];
-    calendarReportsDocs.forEach((report) => reports.push({ uid: report.id, ...report.data() } as CalendarReport));
+    calendarReportsDocs.forEach((report) =>
+      reports.push({ uid: report.id, ...report.data(), date: report.get('date').toDate() } as CalendarReport)
+    );
+    console.log(reports);
     return reports;
   },
 });
@@ -68,18 +71,16 @@ export const CalendarQuery = selector<CalendarState | null>({
 
 type CalendarQueryStateType = {
   calendarId: string;
-  year: number | null;
-  month: number | null;
-  date: number | null;
+  start: Date | null;
+  end: Date | null;
 };
 
 const CalendarQueryState = atom<CalendarQueryStateType>({
   key: 'StateCalendarQueryState',
   default: {
     calendarId: '',
-    year: null,
-    month: null,
-    date: null,
+    start: null,
+    end: null,
   },
 });
 
@@ -87,19 +88,31 @@ export const useCalendarQuery = () => {
   const calendar = useRecoilValue(CalendarQuery);
   const setQuery = useSetRecoilState(CalendarQueryState);
 
+  const { getRangeYear, getRangeMonth, getRangeWeek } = useDate();
+
   const setQueryCalendarId = (calendarId: string) => {
     const today = new Date();
     setQuery({
       calendarId,
-      year: today.getFullYear(),
-      month: today.getMonth(),
-      date: null,
+      ...getRangeMonth(today.getFullYear(), today.getMonth()),
     });
   };
 
-  const setQueryMonth = (year: number, month: number) => {
-    setQuery((prev) => ({ ...prev, year, month }));
+  const setQueryYear = (baseDate: Date) => {
+    setQuery((prev) => ({ ...prev, ...getRangeYear(baseDate.getFullYear()) }));
   };
 
-  return { calendar, setQueryCalendarId, setQueryMonth };
+  const setQueryMonth = (baseDate: Date) => {
+    setQuery((prev) => ({ ...prev, ...getRangeMonth(baseDate.getFullYear(), baseDate.getMonth()) }));
+  };
+
+  const setQueryWeek = (baseDate: Date) => {
+    setQuery((prev) => ({ ...prev, ...getRangeWeek(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate()) }));
+  };
+
+  const setQueryDateRange = (start: Date, end: Date) => {
+    setQuery((prev) => ({ ...prev, start, end }));
+  };
+
+  return { calendar, setQueryCalendarId, setQueryYear, setQueryMonth, setQueryWeek, setQueryDateRange };
 };

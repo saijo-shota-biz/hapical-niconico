@@ -19,7 +19,7 @@ export const ReportAddModal: VFC = () => {
   const { formatYmd } = useDate();
   const { calendar } = useCalendarQuery();
   const { loginUser } = useLoginUser();
-  const { isSameYmd, parseDateFromYmd } = useDate();
+  const { isSameYmd } = useDate();
 
   const { open, onClickOk, onClickCancel, date: selectDate } = useReportAddModal();
   const { emotions, isEmotionStr, getEmotionText } = useEmotion();
@@ -31,9 +31,7 @@ export const ReportAddModal: VFC = () => {
 
   useEffect(() => {
     setDate(formatYmd(selectDate));
-    const report = calendar?.reports.find(
-      (e) => e.userId === loginUser?.uid && isSameYmd(parseDateFromYmd(e.year, e.month, e.date), selectDate)
-    );
+    const report = calendar?.reports.find((e) => e.userId === loginUser?.uid && isSameYmd(e.date, selectDate));
     if (report) {
       setReportId(report.uid);
       setEmotion(report.emotion);

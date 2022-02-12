@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const Calendar: VFC<Props> = ({ baseDate, onClickDate }) => {
-  const { parseDateFromYmd, formatYmd, formatMd, isToday, isAfterToday, isSameYmd, isSameYm } = useDate();
+  const { formatYmd, formatMd, isToday, isAfterToday, isSameYmd, isSameYm } = useDate();
   const { getEmotionText } = useEmotion();
   const { calendar } = useCalendarQuery();
   const [dateList, setDateList] = useState<Date[]>([]);
@@ -53,7 +53,7 @@ export const Calendar: VFC<Props> = ({ baseDate, onClickDate }) => {
   };
 
   const getReports = (date: Date): CalendarReport[] => {
-    return calendar?.reports.filter((e) => isSameYmd(parseDateFromYmd(e.year, e.month, e.date), date)) || [];
+    return calendar?.reports.filter((e) => isSameYmd(e.date, date)) || [];
   };
 
   return (
