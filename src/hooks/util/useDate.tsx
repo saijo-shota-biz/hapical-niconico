@@ -26,7 +26,9 @@ export const useDate = () => {
   };
 
   const formatYmd = (date: Date) => {
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+    const monthString = `${date.getMonth() + 1}`.padStart(2, '0');
+    const dateString = `${date.getDate()}`.padStart(2, '0');
+    return `${date.getFullYear()}/${monthString}/${dateString}`;
   };
 
   const formatYm = (date: Date) => {

@@ -22,7 +22,7 @@ export const UserAvatarList: VFC<Props> = ({ users }) => {
       }}
     >
       {users.map((e) => (
-        <Tooltip key={e.uid} title={e.name} placement={'top-start'}>
+        <Tooltip key={e.uid} title={e.name} placement={'top'} arrow>
           <Avatar alt={e.name} src={e.picture} sx={{ width: 24, height: 24 }} />
         </Tooltip>
       ))}

@@ -11,7 +11,7 @@ export const SettingsPageIconButton: VFC<Props> = ({ calendarId }) => {
   const { push } = useRouter();
 
   return (
-    <Tooltip title={'カレンダー設定ページに移動'} placement={'top-start'}>
+    <Tooltip title={'カレンダー設定ページに移動'} placement={'top'} arrow>
       <IconButton onClick={() => push(`/calendars/${calendarId}/settings`)}>
         <Settings />
       </IconButton>

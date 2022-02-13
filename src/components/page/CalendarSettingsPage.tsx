@@ -81,6 +81,7 @@ export const CalendarSettingsPage: VFC = () => {
                 value={calendarName}
                 onChange={(e) => setCalendarName(e.currentTarget.value)}
                 sx={{ marginTop: 2 }}
+                autoComplete={'off'}
               />
               <PrimaryButton onClick={onClickChangeCalendarNameButton} sx={{ marginTop: 2 }}>
                 変更する
@@ -102,7 +103,7 @@ export const CalendarSettingsPage: VFC = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 2 }}>
                     <Link />
                     <Label size={'sm'}>{`${window.location.origin}/invites/${inviteId}`}</Label>
-                    <Tooltip title={'コピーする'} placement={'top-start'}>
+                    <Tooltip title={'コピーする'} placement={'top'}>
                       <IconButton>
                         <ContentCopy />
                       </IconButton>

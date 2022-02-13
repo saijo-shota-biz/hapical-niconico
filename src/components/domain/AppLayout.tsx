@@ -28,7 +28,7 @@ export const AppLayout = () => {
         <Spacer />
         {loginUser && (
           <>
-            <Tooltip title="設定を開く">
+            <Tooltip title="設定を開く" placement={'top'} arrow>
               <IconButton size={'small'} onClick={(e) => openMenu(e.currentTarget)} sx={{ p: 0 }}>
                 <Avatar alt={loginUser.name} src={loginUser.picture} sx={{ width: '32px', height: '32px' }} />
               </IconButton>

@@ -1,9 +1,10 @@
+import { EmotionIcon } from '@domain/EmotionIcon';
 import { useReportAddModal } from '@hooks/components/useReportAddModal';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { Box, FormControl, FormControlLabel, Modal, Radio, RadioGroup } from '@mui/material';
+import { Box, Modal } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { RefCard } from '@ui/card/Card';
@@ -21,8 +22,9 @@ export const ReportAddModal: VFC = () => {
   const { loginUser } = useLoginUser();
   const { isSameYmd } = useDate();
 
+  const { emotions } = useEmotion();
+
   const { open, onClickOk, onClickCancel, date: selectDate } = useReportAddModal();
-  const { emotions, isEmotionStr, getEmotionText } = useEmotion();
 
   const [date, setDate] = useState(formatYmd(selectDate));
   const [emotion, setEmotion] = useState<Emotion>(NORMAL);
@@ -64,13 +66,6 @@ export const ReportAddModal: VFC = () => {
     setComment(value);
   };
 
-  const onChangeEmotion = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.currentTarget.value;
-    if (isEmotionStr(value)) {
-      setEmotion(value);
-    }
-  };
-
   return (
     <Modal
       open={open}
@@ -86,13 +81,16 @@ export const ReportAddModal: VFC = () => {
         <CardHeader onClose={onClickCancelButton}>{date}のレポートを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <FormControl>
-              <RadioGroup row value={emotion} onChange={onChangeEmotion}>
-                {emotions.map((e) => (
-                  <FormControlLabel key={e} value={e} control={<Radio />} label={getEmotionText(e)} />
-                ))}
-              </RadioGroup>
-            </FormControl>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              {emotions.map((e) => (
+                <EmotionIcon
+                  emotion={e}
+                  onClick={setEmotion}
+                  sx={{ cursor: 'pointer', width: '56px', height: '56px' }}
+                  selected={emotion === e}
+                />
+              ))}
+            </Box>
             <InputText
               label={'コメント'}
               value={comment}

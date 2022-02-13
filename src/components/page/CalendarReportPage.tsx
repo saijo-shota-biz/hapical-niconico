@@ -1,7 +1,8 @@
+import { EmotionIcon } from '@domain/EmotionIcon';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useRouter } from '@hooks/util/useRouter';
-import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, ListSubheader } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import {
   CalendarBreadcrumbs,
@@ -11,25 +12,22 @@ import {
 } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { Card } from '@ui/card/Card';
 import { CardContent } from '@ui/card/CardContent';
+import { DatePicker } from '@ui/date-picker/DatePicker';
 import { useEffect, useState, VFC } from 'react';
 
 export const CalendarReportPage: VFC = () => {
   const {
     params: { calendarId = '' },
   } = useRouter();
-
   const { calendar, setQueryCalendarId, setQueryDateRange } = useCalendarQuery();
   useEffect(() => {
     setQueryCalendarId(calendarId);
   }, [calendarId]);
 
-  const { getRangeWeek } = useDate();
+  const { getRangeWeek, formatYmd } = useDate();
   const today = new Date();
-  const [displayType, setDisplayType] = useState<'yearly' | 'monthly' | 'weekly'>('weekly');
   const { start, end } = getRangeWeek(today.getFullYear(), today.getMonth(), today.getDate());
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [startDate, setStartDate] = useState(start);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [endDate, setEndDate] = useState(end);
 
   useEffect(() => {
@@ -43,26 +41,58 @@ export const CalendarReportPage: VFC = () => {
     CalendarReportBreadcrumbs(calendarId),
   ];
 
+  const getUser = (userId: string) => {
+    return calendar?.users.find((user) => user.uid === userId);
+  };
+
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <Card sx={{ margin: 2 }}>
-          <CardContent>
-            <Box>
-              <ToggleButtonGroup
-                color="primary"
-                value={displayType}
-                exclusive
-                onChange={(_, v) => v && setDisplayType(v)}
-              >
-                <ToggleButton value="yearly">今年</ToggleButton>
-                <ToggleButton value="monthly">今月</ToggleButton>
-                <ToggleButton value="weekly">今週</ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
-            <Box></Box>
-            <Box>{calendar && JSON.stringify(calendar.reports)}</Box>
+        <Card sx={{ margin: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <CardContent sx={{ display: 'flex', gap: 2 }}>
+            <DatePicker
+              startDate={startDate}
+              endDate={endDate}
+              onChangeStartDate={setStartDate}
+              onChangeEndDate={setEndDate}
+            />
+            <List
+              sx={{
+                width: '100%',
+                position: 'relative',
+                overflow: 'auto',
+                border: 'solid 1px',
+                borderColor: 'grey.200',
+                height: '458px',
+                padding: 2,
+                '& ul': { padding: 0 },
+              }}
+              subheader={<li />}
+            >
+              {Array.from(new Set(calendar?.reports.map((e) => e.date)))
+                .sort((a, b) => (a > b ? -1 : 1))
+                .map((date) => (
+                  <li key={date.toISOString()}>
+                    <ul>
+                      <ListSubheader>{`${formatYmd(date)}`}</ListSubheader>
+                      {calendar?.reports
+                        .filter((report) => report.date === date)
+                        .map((report) => (
+                          <ListItem key={`${report.uid}`} alignItems="flex-start">
+                            <ListItemAvatar>
+                              <Avatar alt={getUser(report.userId)?.name} src={getUser(report.userId)?.picture} />
+                            </ListItemAvatar>
+                            <ListItemAvatar>
+                              <EmotionIcon emotion={report.emotion} />
+                            </ListItemAvatar>
+                            <ListItemText primary={`${report.comment}`} />
+                          </ListItem>
+                        ))}
+                    </ul>
+                  </li>
+                ))}
+            </List>
           </CardContent>
         </Card>
       </Box>
