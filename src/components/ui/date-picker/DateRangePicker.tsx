@@ -15,7 +15,7 @@ type Props = {
   onChangeEndDate: (date: Date) => void;
 };
 
-export const DatePicker: VFC<Props> = ({ startDate, onChangeStartDate, endDate, onChangeEndDate }) => {
+export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endDate, onChangeEndDate }) => {
   const {
     formatYm,
     formatYmd,

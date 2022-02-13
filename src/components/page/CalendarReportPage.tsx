@@ -12,7 +12,7 @@ import {
 } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { Card } from '@ui/card/Card';
 import { CardContent } from '@ui/card/CardContent';
-import { DatePicker } from '@ui/date-picker/DatePicker';
+import { DateRangePicker } from '@ui/date-picker/DateRangePicker';
 import { useEffect, useState, VFC } from 'react';
 
 export const CalendarReportPage: VFC = () => {
@@ -51,7 +51,7 @@ export const CalendarReportPage: VFC = () => {
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <Card sx={{ margin: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
           <CardContent sx={{ display: 'flex', gap: 2 }}>
-            <DatePicker
+            <DateRangePicker
               startDate={startDate}
               endDate={endDate}
               onChangeStartDate={setStartDate}
