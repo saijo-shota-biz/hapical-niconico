@@ -17,6 +17,16 @@ export const useDate = () => {
     return { start, end };
   };
 
+  const getDateList = (startDate: Date, endDate: Date) => {
+    const timeDiff = endDate.getTime() - startDate.getTime();
+    const dateDiff = Math.abs(timeDiff) / (24 * 60 * 60 * 1000) + 1;
+    return [...Array(dateDiff)].map((_, i) => {
+      const date = new Date(startDate);
+      date.setDate(date.getDate() + i);
+      return date;
+    });
+  };
+
   const parseDateFromString = (dateString: string) => {
     return new Date(dateString);
   };
@@ -26,9 +36,7 @@ export const useDate = () => {
   };
 
   const formatYmd = (date: Date) => {
-    const monthString = `${date.getMonth() + 1}`.padStart(2, '0');
-    const dateString = `${date.getDate()}`.padStart(2, '0');
-    return `${date.getFullYear()}/${monthString}/${dateString}`;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
   };
 
   const formatYm = (date: Date) => {
@@ -92,6 +100,7 @@ export const useDate = () => {
     getRangeMonth,
     getRangeYear,
     getRangeWeek,
+    getDateList,
     parseDateFromString,
     parseDateFromYmd,
     formatYmd,

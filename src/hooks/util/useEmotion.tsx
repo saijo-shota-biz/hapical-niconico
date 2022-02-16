@@ -7,7 +7,7 @@ import { SuperHappyIconColor } from '@ui/emotion/SuperHappyIcon';
 import { BLUE, Emotion, HAPPY, NORMAL, SUPER_BLUE, SUPER_HAPPY } from '@/types/Calendar';
 
 export const useEmotion = () => {
-  const emotions: Emotion[] = [SUPER_HAPPY, HAPPY, NORMAL, BLUE, SUPER_BLUE];
+  const emotions: Emotion[] = [SUPER_BLUE, BLUE, NORMAL, HAPPY, SUPER_HAPPY];
 
   const isEmotionStr = (str: string): str is Emotion => {
     return str === SUPER_HAPPY || str === HAPPY || str === NORMAL || str === BLUE || str === SUPER_BLUE;
@@ -15,10 +15,10 @@ export const useEmotion = () => {
 
   const getEmotionText = (emotion: Emotion) => {
     if (emotion === SUPER_HAPPY) {
-      return '超幸せ';
+      return '超ハッピー';
     }
     if (emotion === HAPPY) {
-      return '幸せ';
+      return 'ハッピー';
     }
     if (emotion === NORMAL) {
       return '普通';
@@ -51,5 +51,24 @@ export const useEmotion = () => {
     throw new Error(`引数に対応するカラーは存在しません。 引数: ${emotion}`);
   };
 
-  return { isEmotionStr, emotions, getEmotionText, getEmotionIconColor };
+  const getEmotionPoint = (emotion: Emotion) => {
+    if (emotion === SUPER_HAPPY) {
+      return 4;
+    }
+    if (emotion === HAPPY) {
+      return 3;
+    }
+    if (emotion === NORMAL) {
+      return 2;
+    }
+    if (emotion === BLUE) {
+      return 1;
+    }
+    if (emotion === SUPER_BLUE) {
+      return 0;
+    }
+    throw new Error(`引数に対応するポイントは存在しません。 引数: ${emotion}`);
+  };
+
+  return { isEmotionStr, emotions, getEmotionText, getEmotionIconColor, getEmotionPoint };
 };

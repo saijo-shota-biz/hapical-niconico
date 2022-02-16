@@ -14,11 +14,11 @@ export const SinginPage: VFC = () => {
   const password = useInputText();
 
   const { signInWithEmail } = useAuth();
-  const { push } = useRouter();
+  const { pushOrRedirectUrl, push } = useRouter();
 
   const onClickSigninButton = async () => {
     await signInWithEmail(email.value, password.value);
-    push('/');
+    pushOrRedirectUrl('/');
   };
 
   return (

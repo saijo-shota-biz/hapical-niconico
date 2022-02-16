@@ -4,7 +4,7 @@ import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { Box, Modal } from '@mui/material';
+import { Box, Modal, Tooltip } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { RefCard } from '@ui/card/Card';
@@ -22,11 +22,11 @@ export const ReportAddModal: VFC = () => {
   const { loginUser } = useLoginUser();
   const { isSameYmd } = useDate();
 
-  const { emotions } = useEmotion();
+  const { emotions, getEmotionText } = useEmotion();
 
   const { open, onClickOk, onClickCancel, date: selectDate } = useReportAddModal();
 
-  const [date, setDate] = useState(formatYmd(selectDate));
+  const [date, setDate] = useState('');
   const [emotion, setEmotion] = useState<Emotion>(NORMAL);
   const [comment, setComment] = useState('');
   const [reportId, setReportId] = useState('');
@@ -82,13 +82,15 @@ export const ReportAddModal: VFC = () => {
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', gap: 2 }}>
-              {emotions.map((e) => (
-                <EmotionIcon
-                  emotion={e}
-                  onClick={setEmotion}
-                  sx={{ cursor: 'pointer', width: '56px', height: '56px' }}
-                  selected={emotion === e}
-                />
+              {emotions.reverse().map((e) => (
+                <Tooltip key={e} title={getEmotionText(e)} arrow placement={'top'}>
+                  <EmotionIcon
+                    emotion={e}
+                    onClick={setEmotion}
+                    sx={{ cursor: 'pointer', width: '56px', height: '56px' }}
+                    selected={emotion === e}
+                  />
+                </Tooltip>
               ))}
             </Box>
             <InputText

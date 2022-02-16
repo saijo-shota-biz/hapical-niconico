@@ -24,6 +24,7 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
     nextMonth,
     isToday,
     isThisMonth,
+    isSameYmd,
     getRangeWeek,
     getRangeYear,
     getRangeMonth,
@@ -52,10 +53,10 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
   }, [startDate, endDate]);
 
   const dateElemBackgroundColor = (date: Date) => {
-    if (formatYmd(date) === formatYmd(startDate) || formatYmd(date) === formatYmd(endDate)) {
+    if (isSameYmd(startDate, date) || isSameYmd(endDate, date)) {
       return 'primary.200';
     }
-    if (formatYmd(startDate) < formatYmd(date) && formatYmd(date) < formatYmd(endDate)) {
+    if (startDate < date && date < endDate) {
       return 'primary.50';
     }
     return 'common.white';

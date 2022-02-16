@@ -1,11 +1,23 @@
 import { useToaster } from '@hooks/components/useToaster';
 import { CalendarReportsQuery, CalendarState } from '@hooks/domain/query/useCalendarQuery';
 import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
-import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { useRecoilRefresher_UNSTABLE } from 'recoil';
 
 import { firestore } from '@/firebase';
-import { Calendar, CalendarReport, CalendarSettings } from '@/types/Calendar';
+import { Calendar, CalendarReport } from '@/types/Calendar';
 import { User } from '@/types/User';
 
 export const useCalendarCommand = () => {
@@ -15,13 +27,10 @@ export const useCalendarCommand = () => {
   const { showToast } = useToaster();
 
   const createCalendar = async (user: User, name?: string) => {
-    const settingsData: Omit<CalendarSettings, 'uid'> = {};
-    const settingsDocRef = await addDoc(collection(firestore, 'calendar-settings'), settingsData);
-
     const calendarData: Omit<Calendar, 'uid'> = {
       name: name || `${user.name}のカレンダー`,
       userIds: [user.uid],
-      settings: settingsDocRef.path,
+      entries: [],
     };
     const calendarDocRef = await addDoc(collection(firestore, 'calendars'), calendarData);
     refreshCalendars();
@@ -45,8 +54,6 @@ export const useCalendarCommand = () => {
   const deleteCalendar = async (calendar: CalendarState) => {
     const calendarDocRef = doc(firestore, 'calendars', calendar.uid);
     await deleteDoc(calendarDocRef);
-    const settingsDocRef = doc(firestore, 'calendar-settings', calendar.settings.uid);
-    deleteDoc(settingsDocRef);
     const reportCollectionRef = collection(firestore, 'calendar-reports');
     const q = query(reportCollectionRef, where('calendarId', '==', calendar.uid));
     getDocs(q).then((reportDocs) => {
@@ -73,5 +80,30 @@ export const useCalendarCommand = () => {
     }
   };
 
-  return { createCalendar, editCalendar, deleteCalendar, addReport };
+  const entry = async (calendarId: string, userId: string) => {
+    const docRef = await doc(firestore, 'calendars', calendarId);
+    await updateDoc(docRef, { entries: arrayUnion(userId) });
+  };
+
+  const entryAccept = async (calendarId: string, userId: string) => {
+    const docRef = await doc(firestore, 'calendars', calendarId);
+    await updateDoc(docRef, { userIds: arrayUnion(userId), entries: arrayRemove(userId) });
+    refreshCalendars();
+    showToast({
+      status: 'success',
+      message: `参加リクエストを承認しました。`,
+    });
+  };
+
+  const entryReject = async (calendarId: string, userId: string) => {
+    const docRef = await doc(firestore, 'calendars', calendarId);
+    await updateDoc(docRef, { entries: arrayRemove(userId) });
+    refreshCalendars();
+    showToast({
+      status: 'success',
+      message: `参加リクエストを拒否しました。`,
+    });
+  };
+
+  return { createCalendar, editCalendar, deleteCalendar, addReport, entry, entryAccept, entryReject };
 };

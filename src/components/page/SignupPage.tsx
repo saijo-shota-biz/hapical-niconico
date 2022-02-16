@@ -16,7 +16,7 @@ export const SignupPage: VFC = () => {
   const passwordConfirm = useInputText();
 
   const { signUp } = useAuth();
-  const { push } = useRouter();
+  const { pushOrRedirectUrl, push } = useRouter();
   const { createUser } = useUserCommand();
 
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export const SignupPage: VFC = () => {
     const user = await signUp(email.value, password.value);
     await createUser(user);
     setLoading(false);
-    push('/');
+    pushOrRedirectUrl('/');
   };
 
   return (

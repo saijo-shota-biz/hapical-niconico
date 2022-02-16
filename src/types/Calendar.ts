@@ -2,11 +2,7 @@ export type Calendar = {
   uid: string;
   name: string;
   userIds: string[];
-  settings: string;
-};
-
-export type CalendarSettings = {
-  uid: string;
+  entries: string[];
 };
 
 export const SUPER_HAPPY = 'SUPER_HAPPY';

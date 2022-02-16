@@ -6,6 +6,7 @@ import { CalendarPage } from '@page/CalendarPage';
 import { CalendarReportPage } from '@page/CalendarReportPage';
 import { CalendarSettingsPage } from '@page/CalendarSettingsPage';
 import { CalendarsPage } from '@page/CalendarsPage';
+import { EntryPage } from '@page/EntryPage';
 import { HomePage } from '@page/HomePage';
 import { PasswordResetPage } from '@page/PasswordResetPage';
 import { SignupPage } from '@page/SignupPage';
@@ -23,6 +24,7 @@ export const RoutesProvider: VFC = () => {
           <Route path={'/calendars/:calendarId'} element={<CalendarPage />} />
           <Route path={'/calendars/:calendarId/settings'} element={<CalendarSettingsPage />} />
           <Route path={'/calendars/:calendarId/report'} element={<CalendarReportPage />} />
+          <Route path={'/calendars/:calendarId/entry'} element={<EntryPage />} />
           <Route path={'/account'} element={<AccountPage />} />
         </Route>
       </Route>

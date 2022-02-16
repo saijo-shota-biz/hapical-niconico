@@ -1,4 +1,5 @@
-import { Avatar, AvatarGroup, Tooltip } from '@mui/material';
+import { UserAvatar } from '@domain/UserAvatar';
+import { AvatarGroup } from '@mui/material';
 import { VFC } from 'react';
 
 import { User } from '@/types/User';
@@ -22,9 +23,7 @@ export const UserAvatarList: VFC<Props> = ({ users }) => {
       }}
     >
       {users.map((e) => (
-        <Tooltip key={e.uid} title={e.name} placement={'top'} arrow>
-          <Avatar alt={e.name} src={e.picture} sx={{ width: 24, height: 24 }} />
-        </Tooltip>
+        <UserAvatar key={e.uid} user={e} title={e.name} sx={{ width: '24px', height: '24px' }} />
       ))}
     </AvatarGroup>
   );

@@ -9,10 +9,11 @@ import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
-import { Add, ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
-import { Box, Fab, IconButton } from '@mui/material';
+import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import { CalendarBreadcrumbs, CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { FloatingButton } from '@ui/button/FloatingButton';
 import { Label } from '@ui/typography/Label';
 import { Spacer } from '@ui/utils/Spacer';
 import { useEffect, useState, VFC } from 'react';
@@ -63,35 +64,26 @@ export const CalendarPage: VFC = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <Box sx={{ padding: 2, flexGrow: 1, flexBasis: 0, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ paddingY: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
-            <IconButton onClick={() => setBaseDate((prev) => prevMonth(prev))}>
-              <ArrowBackIosNewOutlined />
-            </IconButton>
-            <Label size={'lg'}>{formatYm(baseDate)}</Label>
-            <IconButton disabled={isThisMonth(baseDate)} onClick={() => setBaseDate((prev) => nextMonth(prev))}>
-              <ArrowForwardIosOutlined />
-            </IconButton>
-            <Spacer />
-            <UserAvatarList users={calendar?.users || []} />
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ReportPageIconButton calendarId={calendarId} />
-              <SettingsPageIconButton calendarId={calendarId} />
-            </Box>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+      <Box sx={{ padding: 2, flexGrow: 1, flexBasis: 0, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ paddingY: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+          <IconButton onClick={() => setBaseDate((prev) => prevMonth(prev))}>
+            <ArrowBackIosNewOutlined />
+          </IconButton>
+          <Label size={'lg'}>{formatYm(baseDate)}</Label>
+          <IconButton disabled={isThisMonth(baseDate)} onClick={() => setBaseDate((prev) => nextMonth(prev))}>
+            <ArrowForwardIosOutlined />
+          </IconButton>
+          <Spacer />
+          <UserAvatarList users={calendar?.users || []} />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ReportPageIconButton calendarId={calendarId} />
+            <SettingsPageIconButton calendarId={calendarId} />
           </Box>
-          <Calendar baseDate={baseDate} onClickDate={(date) => onClickAddButton(date)} />
         </Box>
+        <Calendar baseDate={baseDate} onClickDate={(date) => onClickAddButton(date)} />
       </Box>
-      <Fab
-        color="primary"
-        size={'medium'}
-        sx={{ position: 'absolute', bottom: '32px', right: '32px' }}
-        onClick={() => onClickAddButton()}
-      >
-        <Add />
-      </Fab>
+      <FloatingButton onClick={() => onClickAddButton()} />
       <ReportAddModal />
     </>
   );

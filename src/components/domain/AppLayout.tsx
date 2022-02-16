@@ -2,7 +2,7 @@ import { useMenu } from '@hooks/components/useMenu';
 import { useAuth } from '@hooks/util/useAuth';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
-import { Avatar, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { Layout } from '@ui/Layout';
 import { Label } from '@ui/typography/Label';
 import { Loading } from '@ui/utils/Loading';
@@ -24,7 +24,7 @@ export const AppLayout = () => {
   return (
     <Layout>
       <Fragment key={'header'}>
-        <Label size={'lg'}>ハピカレ</Label>
+        <Label size={'lg'}>ハッピーカレンダー</Label>
         <Spacer />
         {loginUser && (
           <>
@@ -42,7 +42,9 @@ export const AppLayout = () => {
       </Fragment>
       <Fragment key={'main'}>
         <Suspense fallback={<Loading />}>
-          <Outlet />
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <Outlet />
+          </Box>
         </Suspense>
       </Fragment>
     </Layout>

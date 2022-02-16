@@ -1,5 +1,5 @@
 import { Avatar, AvatarProps } from '@mui/material';
-import { VFC } from 'react';
+import { forwardRef, VFC } from 'react';
 
 import icon from './images/normal.png';
 import selectedIcon from './images/normal_selected.png';
@@ -13,6 +13,10 @@ type Props = Omit<AvatarProps, 'onClick'> & {
   selected?: boolean;
 };
 
-export const NormalIcon: VFC<Props> = ({ onClick = () => {}, selected = false, ...rest }) => {
-  return <Avatar alt={'普通'} src={selected ? selectedIcon : icon} onClick={() => onClick(NORMAL)} {...rest} />;
-};
+export const NormalIcon: VFC<Props> = forwardRef<HTMLDivElement, Props>(
+  ({ onClick = () => {}, selected = false, ...rest }, ref) => {
+    return (
+      <Avatar alt={'普通'} src={selected ? selectedIcon : icon} onClick={() => onClick(NORMAL)} {...rest} ref={ref} />
+    );
+  }
+);

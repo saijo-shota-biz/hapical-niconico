@@ -117,6 +117,7 @@ export const Calendar: VFC<Props> = ({ baseDate, onClickDate }) => {
               <Box sx={{ display: 'flex', flexWrap: 'wrap', paddingLeft: '8px' }}>
                 {getReports(date)?.map((e) => (
                   <Tooltip
+                    key={e.uid}
                     title={
                       <Box
                         sx={{

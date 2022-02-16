@@ -20,6 +20,7 @@ const chunk = <T,>(array: T[], size: number) => {
 
 export type CalendarQueryResult = Calendar & {
   users: User[];
+  entryUsers: User[];
 };
 
 export const CalendarsQuery = selector<CalendarQueryResult[]>({
@@ -43,9 +44,19 @@ export const CalendarsQuery = selector<CalendarQueryResult[]>({
             return qs.docs.map((d) => ({ uid: d.id, ...d.data() } as User));
           });
         const users = await Promise.all(userQueryList);
+
+        const entryQueryList = chunk(calendar.entries, 10)
+          .map((userIds) => query(userCollectionRef, where(documentId(), 'in', userIds)))
+          .map(async (q) => {
+            const qs = await getDocs(q);
+            return qs.docs.map((d) => ({ uid: d.id, ...d.data() } as User));
+          });
+        const entryUsers = await Promise.all(entryQueryList);
+
         return {
           ...calendar,
           users: users.flatMap((e) => e),
+          entryUsers: entryUsers.flatMap((e) => e),
         };
       });
 

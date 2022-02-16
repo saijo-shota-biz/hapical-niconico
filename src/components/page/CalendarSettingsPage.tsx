@@ -1,3 +1,4 @@
+import { UserAvatar } from '@domain/UserAvatar';
 import { useDeleteConfirmModal } from '@hooks/components/useDeleteConfirmModal';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
@@ -18,7 +19,10 @@ import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
 import { Description } from '@ui/typography/Description';
 import { Label } from '@ui/typography/Label';
+import { Spacer } from '@ui/utils/Spacer';
 import { useEffect, useState, VFC } from 'react';
+
+import { User } from '@/types/User';
 
 export const CalendarSettingsPage: VFC = () => {
   const {
@@ -38,7 +42,7 @@ export const CalendarSettingsPage: VFC = () => {
     CalendarSettingsBreadcrumbs(calendarId),
   ];
 
-  const { editCalendar, deleteCalendar } = useCalendarCommand();
+  const { editCalendar, deleteCalendar, entryAccept, entryReject } = useCalendarCommand();
 
   const [calendarName, setCalendarName] = useState('');
   useEffect(() => {
@@ -48,11 +52,6 @@ export const CalendarSettingsPage: VFC = () => {
   }, [calendar]);
   const onClickChangeCalendarNameButton = async () => {
     await editCalendar(calendarId, calendarName);
-  };
-
-  const [inviteIds, setInviteIds] = useState<string[]>([]);
-  const onClickIssueInviteUrl = () => {
-    setInviteIds((prev) => [...prev, `test${prev.length + 1}`]);
   };
 
   const { confirm } = useDeleteConfirmModal();
@@ -67,61 +66,82 @@ export const CalendarSettingsPage: VFC = () => {
     }
   };
 
+  const entryUrl = `${window.location.origin}/calendars/${calendarId}/entry`;
+  const copyEntryUrl = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(entryUrl);
+    }
+  };
+  const onClickEntryAccept = async (user: User) => {
+    await entryAccept(calendarId, user.uid);
+  };
+  const onClickEntryReject = async (user: User) => {
+    await entryReject(calendarId, user.uid);
+  };
+
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <Card sx={{ margin: 2 }}>
-          <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <Box sx={{ padding: 2 }}>
-              <Label>カレンダー名変更</Label>
-              <Divider sx={{ marginY: 1 }} />
-              <InputText
-                label={'新しいカレンダー名'}
-                value={calendarName}
-                onChange={(e) => setCalendarName(e.currentTarget.value)}
-                sx={{ marginTop: 2 }}
-                autoComplete={'off'}
-              />
-              <PrimaryButton onClick={onClickChangeCalendarNameButton} sx={{ marginTop: 2 }}>
-                変更する
-              </PrimaryButton>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+      <Card sx={{ margin: 2 }}>
+        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ padding: 2 }}>
+            <Label>カレンダー名変更</Label>
+            <Divider sx={{ marginY: 1 }} />
+            <InputText
+              label={'新しいカレンダー名'}
+              value={calendarName}
+              onChange={(e) => setCalendarName(e.currentTarget.value)}
+              sx={{ marginTop: 2 }}
+              autoComplete={'off'}
+            />
+            <PrimaryButton onClick={onClickChangeCalendarNameButton} sx={{ marginTop: 2 }}>
+              変更する
+            </PrimaryButton>
+          </Box>
+          <Box sx={{ padding: 2 }}>
+            <Label>カレンダー共有</Label>
+            <Divider sx={{ marginY: 1 }} />
+            <Alert
+              severity="warning"
+              sx={{ '> .MuiAlert-message': { display: 'flex', flexDirection: 'column' }, marginTop: 2 }}
+            >
+              <Description size={'sm'}>招待したいユーザーに以下URLを共有してください。</Description>
+              <Description size={'sm'}>以下URLにアクセスすると参加リクエストが送られます。</Description>
+            </Alert>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 2 }}>
+              <Link />
+              <Label size={'sm'}>{entryUrl}</Label>
+              <Tooltip title={'コピーする'} placement={'top'}>
+                <IconButton onClick={copyEntryUrl}>
+                  <ContentCopy />
+                </IconButton>
+              </Tooltip>
             </Box>
-            <Box sx={{ padding: 2 }}>
-              <Label>カレンダー共有</Label>
-              <Divider sx={{ marginY: 1 }} />
-              <Alert severity="warning" sx={{ marginTop: 2 }}>
-                <Description size={'sm'}>
-                  発行されたURLの有効期限は24時間です。また、1URLにつき1ユーザーの招待が可能です。
-                </Description>
-              </Alert>
-              <PrimaryButton onClick={onClickIssueInviteUrl} sx={{ marginTop: 2 }}>
-                共有URLを発行する
-              </PrimaryButton>
-              {inviteIds.map((inviteId) => (
-                <>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 2 }}>
-                    <Link />
-                    <Label size={'sm'}>{`${window.location.origin}/invites/${inviteId}`}</Label>
-                    <Tooltip title={'コピーする'} placement={'top'}>
-                      <IconButton>
-                        <ContentCopy />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </>
+          </Box>
+          <Box sx={{ padding: 2 }}>
+            <Label>参加リクエスト</Label>
+            <Divider sx={{ marginY: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginTop: 2 }}>
+              {calendar?.entryUsers.map((e) => (
+                <Box key={e.uid} sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 2, width: '60%' }}>
+                  <UserAvatar user={e} />
+                  <Label>{e.name}</Label>
+                  <Spacer />
+                  <PrimaryButton onClick={() => onClickEntryAccept(e)}>承認</PrimaryButton>
+                  <ErrorButton onClick={() => onClickEntryReject(e)}>拒否</ErrorButton>
+                </Box>
               ))}
             </Box>
-            <Box sx={{ border: 'solid 2px', borderColor: 'error.main', borderRadius: '8px', padding: 2 }}>
-              <Label>カレンダー削除</Label>
-              <Divider sx={{ marginY: 1 }} />
-              <ErrorButton sx={{ marginTop: 2 }} onClick={onClickDeleteButton}>
-                カレンダーを削除する
-              </ErrorButton>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
+          </Box>
+          <Box sx={{ border: 'solid 2px', borderColor: 'error.main', borderRadius: '8px', padding: 2 }}>
+            <Label>カレンダー削除</Label>
+            <Divider sx={{ marginY: 1 }} />
+            <ErrorButton sx={{ marginTop: 2 }} onClick={onClickDeleteButton}>
+              カレンダーを削除する
+            </ErrorButton>
+          </Box>
+        </CardContent>
+      </Card>
     </>
   );
 };

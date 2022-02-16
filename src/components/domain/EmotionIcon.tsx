@@ -4,7 +4,7 @@ import { HappyIcon } from '@ui/emotion/HappyIcon';
 import { NormalIcon } from '@ui/emotion/NormalIcon';
 import { SuperBlueIcon } from '@ui/emotion/SuperBlueIcon';
 import { SuperHappyIcon } from '@ui/emotion/SuperHappyIcon';
-import { VFC } from 'react';
+import { forwardRef, VFC } from 'react';
 
 import { BLUE, Emotion, HAPPY, NORMAL, SUPER_BLUE, SUPER_HAPPY } from '@/types/Calendar';
 
@@ -14,21 +14,23 @@ type Props = Omit<AvatarProps, 'onClick'> & {
   selected?: boolean;
 };
 
-export const EmotionIcon: VFC<Props> = ({ emotion, onClick = () => {}, selected = false, ...rest }) => {
-  if (emotion === SUPER_HAPPY) {
-    return <SuperHappyIcon onClick={onClick} selected={selected} {...rest} />;
+export const EmotionIcon: VFC<Props> = forwardRef<HTMLDivElement, Props>(
+  ({ emotion, onClick = () => {}, selected = false, ...rest }, ref) => {
+    if (emotion === SUPER_HAPPY) {
+      return <SuperHappyIcon onClick={onClick} selected={selected} {...rest} ref={ref} />;
+    }
+    if (emotion === HAPPY) {
+      return <HappyIcon onClick={onClick} selected={selected} {...rest} ref={ref} />;
+    }
+    if (emotion === NORMAL) {
+      return <NormalIcon onClick={onClick} selected={selected} {...rest} ref={ref} />;
+    }
+    if (emotion === BLUE) {
+      return <BlueIcon onClick={onClick} selected={selected} {...rest} ref={ref} />;
+    }
+    if (emotion === SUPER_BLUE) {
+      return <SuperBlueIcon onClick={onClick} selected={selected} {...rest} ref={ref} />;
+    }
+    return null;
   }
-  if (emotion === HAPPY) {
-    return <HappyIcon onClick={onClick} selected={selected} {...rest} />;
-  }
-  if (emotion === NORMAL) {
-    return <NormalIcon onClick={onClick} selected={selected} {...rest} />;
-  }
-  if (emotion === BLUE) {
-    return <BlueIcon onClick={onClick} selected={selected} {...rest} />;
-  }
-  if (emotion === SUPER_BLUE) {
-    return <SuperBlueIcon onClick={onClick} selected={selected} {...rest} />;
-  }
-  return null;
-};
+);

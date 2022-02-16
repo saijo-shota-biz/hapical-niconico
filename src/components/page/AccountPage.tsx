@@ -46,7 +46,7 @@ export const AccountPage: VFC = () => {
   const { editUser } = useUserCommand();
   const onClickSaveButton = async () => {
     if (loginUser) {
-      const url = await upload(picture);
+      const url = picture ? await upload(picture) : '';
       const newUser = {
         uid: loginUser.uid,
         name: userName,
@@ -59,65 +59,63 @@ export const AccountPage: VFC = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <Card sx={{ margin: 2 }}>
-          <CardContent sx={{ display: 'flex', gap: '32px' }}>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+      <Card sx={{ margin: 2 }}>
+        <CardContent sx={{ display: 'flex', gap: '32px' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              cursor: 'pointer',
+              ':hover': {
+                opacity: 0.8,
+              },
+            }}
+            onClick={onClickUserAvatar}
+          >
+            <Avatar alt={loginUser?.name} src={picture} sx={{ width: 96, height: 96 }} />
             <Box
               sx={{
-                position: 'relative',
-                cursor: 'pointer',
-                ':hover': {
-                  opacity: 0.8,
-                },
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '96px',
+                height: '96px',
+                borderRadius: '50%',
+                backgroundColor: 'primary.50',
+                opacity: 0.4,
               }}
-              onClick={onClickUserAvatar}
-            >
-              <Avatar alt={loginUser?.name} src={picture} sx={{ width: 96, height: 96 }} />
-              <Box
+            />
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 'calc(50% - 18px)',
+                left: 'calc(50% - 18px)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'primary.300',
+                opacity: 0.7,
+              }}
+            />
+            <Tooltip title={'画像を変更する'}>
+              <CameraAlt
                 sx={{
                   position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '96px',
-                  height: '96px',
-                  borderRadius: '50%',
-                  backgroundColor: 'primary.50',
-                  opacity: 0.4,
+                  top: 'calc(50% - 12px)',
+                  left: 'calc(50% - 12px)',
+                  fontSize: '24px',
+                  color: 'common.white',
                 }}
               />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 'calc(50% - 18px)',
-                  left: 'calc(50% - 18px)',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  backgroundColor: 'primary.300',
-                  opacity: 0.7,
-                }}
-              />
-              <Tooltip title={'画像を変更する'}>
-                <CameraAlt
-                  sx={{
-                    position: 'absolute',
-                    top: 'calc(50% - 12px)',
-                    left: 'calc(50% - 12px)',
-                    fontSize: '24px',
-                    color: 'common.white',
-                  }}
-                />
-              </Tooltip>
-            </Box>
-            <input type={'file'} onChange={onChangeUserPicture} ref={hiddenInputRef} hidden />
-            <InputText label={'ユーザー名'} value={userName} onChange={(e) => setUserName(e.currentTarget.value)} />
-          </CardContent>
-          <CardActions>
-            <PrimaryButton onClick={onClickSaveButton}>送信</PrimaryButton>
-          </CardActions>
-        </Card>
-      </Box>
+            </Tooltip>
+          </Box>
+          <input type={'file'} onChange={onChangeUserPicture} ref={hiddenInputRef} hidden />
+          <InputText label={'ユーザー名'} value={userName} onChange={(e) => setUserName(e.currentTarget.value)} />
+        </CardContent>
+        <CardActions>
+          <PrimaryButton onClick={onClickSaveButton}>送信</PrimaryButton>
+        </CardActions>
+      </Card>
     </>
   );
 };

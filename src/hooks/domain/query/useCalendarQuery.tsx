@@ -1,11 +1,11 @@
 import { CalendarQueryResult, CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useDate } from '@hooks/util/useDate';
 import { LoginUserState } from '@hooks/util/useLoginUser';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { firestore } from '@/firebase';
-import { CalendarReport, CalendarSettings } from '@/types/Calendar';
+import { CalendarReport } from '@/types/Calendar';
 
 export const CalendarReportsQuery = selector<CalendarReport[]>({
   key: 'QueryCalendarReports',
@@ -19,19 +19,23 @@ export const CalendarReportsQuery = selector<CalendarReport[]>({
     const wheres = [];
     wheres.push(where('date', '>=', start));
     wheres.push(where('date', '<=', end));
-    const q = query(calendarReportsCollectionRef, where('calendarId', '==', calendarId), ...wheres);
+    const q = query(
+      calendarReportsCollectionRef,
+      where('calendarId', '==', calendarId),
+      ...wheres,
+      orderBy('date'),
+      orderBy('userId')
+    );
     const calendarReportsDocs = await getDocs(q);
     const reports: CalendarReport[] = [];
     calendarReportsDocs.forEach((report) =>
       reports.push({ uid: report.id, ...report.data(), date: report.get('date').toDate() } as CalendarReport)
     );
-    console.log(reports);
     return reports;
   },
 });
 
-export type CalendarState = Omit<CalendarQueryResult, 'settings'> & {
-  settings: CalendarSettings;
+export type CalendarState = CalendarQueryResult & {
   reports: CalendarReport[];
 };
 
@@ -53,18 +57,11 @@ export const CalendarQuery = selector<CalendarState | null>({
       return null;
     }
 
-    const calendarSettingsDocRef = doc(firestore, calendar.settings);
-    const calendarSettingsDoc = await getDoc(calendarSettingsDocRef);
-
     const reports = get(CalendarReportsQuery);
 
     return {
       ...calendar,
       reports,
-      settings: {
-        uid: calendarSettingsDoc.id,
-        ...calendarSettingsDoc.data(),
-      },
     };
   },
 });
@@ -76,7 +73,7 @@ type CalendarQueryStateType = {
 };
 
 const CalendarQueryState = atom<CalendarQueryStateType>({
-  key: 'StateCalendarQueryState',
+  key: 'StateCalendarQuery',
   default: {
     calendarId: '',
     start: null,

@@ -5,11 +5,12 @@ import { Outlet } from 'react-router-dom';
 
 export const SecurityPage: FC = () => {
   const { loginUser } = useLoginUser();
-  const { push } = useRouter();
+  const { push, setRedirectUrl } = useRouter();
 
   useEffect(() => {
     if (!loginUser) {
-      push('/signin');
+      setRedirectUrl(window.location.pathname);
+      push(`/signin`);
     }
   }, [loginUser]);
 
