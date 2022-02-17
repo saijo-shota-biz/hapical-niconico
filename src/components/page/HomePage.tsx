@@ -11,7 +11,7 @@ import { HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardContent } from '@ui/card/CardContent';
-import { DateRangePicker } from '@ui/date-picker/DateRangePicker';
+import { DateRangePicker } from '@ui/input/InputDateRange';
 import { useEffect, VFC } from 'react';
 
 export const HomePage: VFC = () => {

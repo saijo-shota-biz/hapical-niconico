@@ -1,3 +1,4 @@
+import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useUserCommand } from '@hooks/domain/command/useUserCommand';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useStorage } from '@hooks/util/useStorage';
@@ -11,17 +12,26 @@ import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
 import { ChangeEvent, useEffect, useRef, useState, VFC } from 'react';
+import { object, string } from 'yup';
+
+type Form = {
+  userName: string;
+};
 
 export const AccountPage: VFC = () => {
   const breadcrumbs = [HomeBreadcrumbs(), AccountBreadcrumbs()];
-
   const { loginUser, setLoginUser } = useLoginUser();
 
-  const [userName, setUserName] = useState('');
+  const { register, handleSubmit, setValue } = useValidationForm<Form>(
+    object({
+      userName: string() //
+        .required('ユーザー名を入力してください。'),
+    })
+  );
   const [picture, setPicture] = useState('');
   useEffect(() => {
     if (loginUser) {
-      setUserName(loginUser.name);
+      setValue('userName', loginUser.name);
       setPicture(loginUser.picture);
     }
   }, [loginUser]);
@@ -44,7 +54,7 @@ export const AccountPage: VFC = () => {
 
   const { upload } = useStorage();
   const { editUser } = useUserCommand();
-  const onClickSaveButton = async () => {
+  const onClickSaveButton = async ({ userName }: Form) => {
     if (loginUser) {
       const url = picture ? await upload(picture) : '';
       const newUser = {
@@ -110,10 +120,10 @@ export const AccountPage: VFC = () => {
             </Tooltip>
           </Box>
           <input type={'file'} onChange={onChangeUserPicture} ref={hiddenInputRef} hidden />
-          <InputText label={'ユーザー名'} value={userName} onChange={(e) => setUserName(e.currentTarget.value)} />
+          <InputText label={'ユーザー名'} {...register('userName')} />
         </CardContent>
         <CardActions>
-          <PrimaryButton onClick={onClickSaveButton}>送信</PrimaryButton>
+          <PrimaryButton onClick={handleSubmit(onClickSaveButton)}>送信</PrimaryButton>
         </CardActions>
       </Card>
     </>

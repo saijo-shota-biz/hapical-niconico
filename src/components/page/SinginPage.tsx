@@ -1,4 +1,4 @@
-import { useInputText } from '@hooks/components/useInputText';
+import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useAuth } from '@hooks/util/useAuth';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
@@ -7,17 +7,32 @@ import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { VFC } from 'react';
+import { useState, VFC } from 'react';
+import { object, string } from 'yup';
+
+type Form = {
+  email: string;
+  password: string;
+};
 
 export const SinginPage: VFC = () => {
-  const email = useInputText();
-  const password = useInputText();
+  const { register, handleSubmit } = useValidationForm<Form>(
+    object({
+      email: string() //
+        .required('メールアドレスを入力してください'),
+      password: string() //
+        .required('パスワードを入力してください。'),
+    })
+  );
 
   const { signInWithEmail } = useAuth();
   const { pushOrRedirectUrl, push } = useRouter();
 
-  const onClickSigninButton = async () => {
-    await signInWithEmail(email.value, password.value);
+  const [loading, setLoading] = useState(false);
+  const onClickSigninButton = async ({ email, password }: Form) => {
+    setLoading(true);
+    await signInWithEmail(email, password);
+    setLoading(false);
     pushOrRedirectUrl('/');
   };
 
@@ -26,19 +41,12 @@ export const SinginPage: VFC = () => {
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         <Card sx={{ width: '40%' }}>
           <CardContent>
-            <InputText
-              label={'メールアドレス'}
-              type={'email'}
-              {...email}
-              fullWidth
-              placeholder={'メールアドレスを入力してください'}
-            />
+            <InputText label={'メールアドレス'} type={'email'} {...register('email')} fullWidth />
             <InputText
               label={'パスワード'}
               type={'password'}
-              {...password}
+              {...register('password')}
               fullWidth
-              placeholder={'パスワードを入力してください'}
               sx={{ marginTop: 2 }}
             />
 
@@ -59,7 +67,9 @@ export const SinginPage: VFC = () => {
             </Link>
           </CardContent>
           <CardActions>
-            <PrimaryButton onClick={onClickSigninButton}>ログインする</PrimaryButton>
+            <PrimaryButton onClick={handleSubmit(onClickSigninButton)} loading={loading}>
+              ログインする
+            </PrimaryButton>
           </CardActions>
         </Card>
       </Box>

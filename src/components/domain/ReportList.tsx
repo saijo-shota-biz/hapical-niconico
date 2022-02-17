@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const ReportList: VFC<Props> = ({ reports, users }) => {
-  const { formatYmd, isSameYmd } = useDate();
+  const { formatYmdw, isSameYmd } = useDate();
 
   const getUser = (userId: string) => {
     return users.find((user) => user.uid === userId);
@@ -41,7 +41,7 @@ export const ReportList: VFC<Props> = ({ reports, users }) => {
           <li key={date.toISOString()}>
             <ul>
               <ListSubheader sx={{ borderBottom: 'solid 1px', borderBottomColor: 'grey.200' }}>
-                {`${formatYmd(date)}`}
+                {`${formatYmdw(date)}`}
               </ListSubheader>
               {reports
                 .filter((report) => isSameYmd(report.date, date))

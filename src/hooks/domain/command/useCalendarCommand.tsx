@@ -105,5 +105,15 @@ export const useCalendarCommand = () => {
     });
   };
 
-  return { createCalendar, editCalendar, deleteCalendar, addReport, entry, entryAccept, entryReject };
+  const deleteUser = async (calendarId: string, user: User) => {
+    const docRef = await doc(firestore, 'calendars', calendarId);
+    await updateDoc(docRef, { userIds: arrayRemove(user.uid) });
+    refreshCalendars();
+    showToast({
+      status: 'success',
+      message: `${user.name}をカレンダーから削除しました。`,
+    });
+  };
+
+  return { createCalendar, editCalendar, deleteCalendar, addReport, entry, entryAccept, entryReject, deleteUser };
 };

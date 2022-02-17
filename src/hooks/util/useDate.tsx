@@ -47,6 +47,11 @@ export const useDate = () => {
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
+  const formatYmdw = (date: Date) => {
+    const dayOfWeeks = ['日', '月', '火', '水', '木', '金', '土'];
+    return `${formatYmd(date)}  (${dayOfWeeks[date.getDay()]})`;
+  };
+
   const nextMonth = (date: Date) => {
     const newDate = new Date(date);
     newDate.setMonth(date.getMonth() + 1);
@@ -106,6 +111,7 @@ export const useDate = () => {
     formatYmd,
     formatYm,
     formatMd,
+    formatYmdw,
     nextMonth,
     prevMonth,
     beforeDate,

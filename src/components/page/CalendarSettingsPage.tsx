@@ -1,7 +1,9 @@
 import { UserAvatar } from '@domain/UserAvatar';
 import { useDeleteConfirmModal } from '@hooks/components/useDeleteConfirmModal';
+import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
+import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { ContentCopy, Link } from '@mui/icons-material';
 import { Alert, Box, Divider, IconButton, Tooltip } from '@mui/material';
@@ -20,15 +22,21 @@ import { InputText } from '@ui/input/InputText';
 import { Description } from '@ui/typography/Description';
 import { Label } from '@ui/typography/Label';
 import { Spacer } from '@ui/utils/Spacer';
-import { useEffect, useState, VFC } from 'react';
+import { useEffect, VFC } from 'react';
+import { object, string } from 'yup';
 
 import { User } from '@/types/User';
+
+type CalendarNameForm = {
+  calendarName: string;
+};
 
 export const CalendarSettingsPage: VFC = () => {
   const {
     params: { calendarId = '' },
     push,
   } = useRouter();
+  const { loginUser } = useLoginUser();
 
   const { calendar, setQueryCalendarId } = useCalendarQuery();
   useEffect(() => {
@@ -42,15 +50,20 @@ export const CalendarSettingsPage: VFC = () => {
     CalendarSettingsBreadcrumbs(calendarId),
   ];
 
-  const { editCalendar, deleteCalendar, entryAccept, entryReject } = useCalendarCommand();
+  const { editCalendar, deleteCalendar, entryAccept, entryReject, deleteUser } = useCalendarCommand();
 
-  const [calendarName, setCalendarName] = useState('');
+  const { register, handleSubmit, setValue } = useValidationForm<CalendarNameForm>(
+    object({
+      calendarName: string() //
+        .required('カレンダー名を入力してください。'),
+    })
+  );
   useEffect(() => {
     if (calendar) {
-      setCalendarName(calendar.name);
+      setValue('calendarName', calendar.name);
     }
   }, [calendar]);
-  const onClickChangeCalendarNameButton = async () => {
+  const onClickChangeCalendarNameButton = async ({ calendarName }: CalendarNameForm) => {
     await editCalendar(calendarId, calendarName);
   };
 
@@ -79,6 +92,13 @@ export const CalendarSettingsPage: VFC = () => {
     await entryReject(calendarId, user.uid);
   };
 
+  const onClickDeleteUserButton = async (user: User) => {
+    const result = await confirm(user.name);
+    if (result) {
+      await deleteUser(calendarId, user);
+    }
+  };
+
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -87,16 +107,27 @@ export const CalendarSettingsPage: VFC = () => {
           <Box sx={{ padding: 2 }}>
             <Label>カレンダー名変更</Label>
             <Divider sx={{ marginY: 1 }} />
-            <InputText
-              label={'新しいカレンダー名'}
-              value={calendarName}
-              onChange={(e) => setCalendarName(e.currentTarget.value)}
-              sx={{ marginTop: 2 }}
-              autoComplete={'off'}
-            />
-            <PrimaryButton onClick={onClickChangeCalendarNameButton} sx={{ marginTop: 2 }}>
+            <InputText label={'新しいカレンダー名'} {...register('calendarName')} sx={{ marginTop: 2 }} />
+            <PrimaryButton onClick={handleSubmit(onClickChangeCalendarNameButton)} sx={{ marginTop: 2 }}>
               変更する
             </PrimaryButton>
+          </Box>
+          <Box sx={{ padding: 2 }}>
+            <Label>参加メンバー</Label>
+            <Divider sx={{ marginY: 1 }} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 2, marginTop: 2 }}>
+              {calendar &&
+                [...calendar.users, ...calendar.entryUsers].map((e) => (
+                  <Box key={e.uid} sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 2, width: '60%' }}>
+                    <UserAvatar user={e} />
+                    <Label>{e.name}</Label>
+                    <Spacer />
+                    {e.uid !== loginUser?.uid && (
+                      <ErrorButton onClick={() => onClickDeleteUserButton(e)}>削除する</ErrorButton>
+                    )}
+                  </Box>
+                ))}
+            </Box>
           </Box>
           <Box sx={{ padding: 2 }}>
             <Label>カレンダー共有</Label>
@@ -118,21 +149,23 @@ export const CalendarSettingsPage: VFC = () => {
               </Tooltip>
             </Box>
           </Box>
-          <Box sx={{ padding: 2 }}>
-            <Label>参加リクエスト</Label>
-            <Divider sx={{ marginY: 1 }} />
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginTop: 2 }}>
-              {calendar?.entryUsers.map((e) => (
-                <Box key={e.uid} sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 2, width: '60%' }}>
-                  <UserAvatar user={e} />
-                  <Label>{e.name}</Label>
-                  <Spacer />
-                  <PrimaryButton onClick={() => onClickEntryAccept(e)}>承認</PrimaryButton>
-                  <ErrorButton onClick={() => onClickEntryReject(e)}>拒否</ErrorButton>
-                </Box>
-              ))}
+          {calendar && calendar.entryUsers.length > 0 && (
+            <Box sx={{ padding: 2 }}>
+              <Label>参加リクエスト</Label>
+              <Divider sx={{ marginY: 1 }} />
+              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 2, marginTop: 2 }}>
+                {calendar?.entryUsers.map((e) => (
+                  <Box key={e.uid} sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 2, width: '60%' }}>
+                    <UserAvatar user={e} />
+                    <Label>{e.name}</Label>
+                    <Spacer />
+                    <PrimaryButton onClick={() => onClickEntryAccept(e)}>承認</PrimaryButton>
+                    <ErrorButton onClick={() => onClickEntryReject(e)}>拒否</ErrorButton>
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>
+          )}
           <Box sx={{ border: 'solid 2px', borderColor: 'error.main', borderRadius: '8px', padding: 2 }}>
             <Label>カレンダー削除</Label>
             <Divider sx={{ marginY: 1 }} />
