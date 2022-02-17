@@ -1,7 +1,7 @@
 import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useUserCommand } from '@hooks/domain/command/useUserCommand';
+import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { useStorage } from '@hooks/util/useStorage';
 import { CameraAlt } from '@mui/icons-material';
 import { Avatar, Box, Tooltip } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
@@ -19,8 +19,8 @@ type Form = {
 };
 
 export const AccountPage: VFC = () => {
-  const breadcrumbs = [HomeBreadcrumbs(), AccountBreadcrumbs()];
   const { loginUser, setLoginUser } = useLoginUser();
+  const breadcrumbs = [HomeBreadcrumbs(), AccountBreadcrumbs('current')];
 
   const { register, handleSubmit, setValue } = useValidationForm<Form>(
     object({
@@ -28,6 +28,9 @@ export const AccountPage: VFC = () => {
         .required('ユーザー名を入力してください。'),
     })
   );
+
+  const { handleAsyncEvent } = useHandler();
+
   const [picture, setPicture] = useState('');
   useEffect(() => {
     if (loginUser) {
@@ -52,20 +55,18 @@ export const AccountPage: VFC = () => {
     }
   };
 
-  const { upload } = useStorage();
   const { editUser } = useUserCommand();
-  const onClickSaveButton = async ({ userName }: Form) => {
+  const onClickSaveButton = handleAsyncEvent(async ({ userName }: Form) => {
     if (loginUser) {
-      const url = picture ? await upload(picture) : '';
       const newUser = {
         uid: loginUser.uid,
         name: userName,
-        picture: url,
+        picture: picture,
       };
       await editUser(newUser);
       await setLoginUser(newUser);
     }
-  };
+  });
 
   return (
     <>

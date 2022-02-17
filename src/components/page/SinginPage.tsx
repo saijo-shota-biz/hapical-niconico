@@ -1,5 +1,6 @@
 import { useValidationForm } from '@hooks/components/useValidationForm';
-import { useAuth } from '@hooks/util/useAuth';
+import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
+import { useHandler } from '@hooks/util/useHandler';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
@@ -7,7 +8,7 @@ import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { useState, VFC } from 'react';
+import { VFC } from 'react';
 import { object, string } from 'yup';
 
 type Form = {
@@ -16,6 +17,8 @@ type Form = {
 };
 
 export const SinginPage: VFC = () => {
+  const { handleAsyncEvent } = useHandler();
+
   const { register, handleSubmit } = useValidationForm<Form>(
     object({
       email: string() //
@@ -25,16 +28,13 @@ export const SinginPage: VFC = () => {
     })
   );
 
-  const { signInWithEmail } = useAuth();
+  const { signInWithEmail } = useAuthCommand();
   const { pushOrRedirectUrl, push } = useRouter();
 
-  const [loading, setLoading] = useState(false);
-  const onClickSigninButton = async ({ email, password }: Form) => {
-    setLoading(true);
+  const onClickSigninButton = handleAsyncEvent(async ({ email, password }: Form) => {
     await signInWithEmail(email, password);
-    setLoading(false);
     pushOrRedirectUrl('/');
-  };
+  });
 
   return (
     <>
@@ -67,9 +67,7 @@ export const SinginPage: VFC = () => {
             </Link>
           </CardContent>
           <CardActions>
-            <PrimaryButton onClick={handleSubmit(onClickSigninButton)} loading={loading}>
-              ログインする
-            </PrimaryButton>
+            <PrimaryButton onClick={handleSubmit(onClickSigninButton)}>ログインする</PrimaryButton>
           </CardActions>
         </Card>
       </Box>

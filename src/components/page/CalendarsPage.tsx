@@ -6,6 +6,7 @@ import { UserAvatarList } from '@domain/UserAvatarList';
 import { useCalendarAddModal } from '@hooks/components/useCalendarAddModal';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
+import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { CalendarToday } from '@mui/icons-material';
 import { Box } from '@mui/material';
@@ -19,20 +20,22 @@ import { Spacer } from '@ui/utils/Spacer';
 import { useEffect, VFC } from 'react';
 
 export const CalendarsPage: VFC = () => {
-  const breadcrumbs = [HomeBreadcrumbs(), CalendarsBreadcrumbs()];
+  const { loginUser } = useLoginUser();
+  const breadcrumbs = [HomeBreadcrumbs(), CalendarsBreadcrumbs('current')];
+
+  const { handleAsyncEvent } = useHandler();
 
   const { calendars } = useCalendarsQuery();
+
   const { showCalendarAddModal, closeCalendarAddModal } = useCalendarAddModal();
   const { createCalendar } = useCalendarCommand();
-  const { loginUser } = useLoginUser();
-
-  const onClickAddButton = async () => {
+  const onClickAddButton = handleAsyncEvent(async () => {
     const result = await showCalendarAddModal();
     if (result && loginUser) {
       await createCalendar(loginUser, result.name);
       closeCalendarAddModal();
     }
-  };
+  });
 
   useEffect(() => {
     return () => closeCalendarAddModal();

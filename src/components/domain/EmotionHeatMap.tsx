@@ -39,6 +39,7 @@ export const EmotionHeatMap: VFC<Props> = ({ children, sx = {}, dateList }) => {
               width: '40px',
               border: '1px solid',
               borderColor: 'grey.200',
+              borderCollapse: 'collapse',
               flexShrink: 0,
               writingMode: 'vertical-lr',
             }}

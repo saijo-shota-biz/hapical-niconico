@@ -4,7 +4,7 @@ import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
 import { useLoginUser } from '@hooks/util/useLoginUser';
-import { Box, Modal, Tooltip } from '@mui/material';
+import { Box, Modal, Tooltip, useMediaQuery } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { RefCard } from '@ui/card/Card';
@@ -12,7 +12,8 @@ import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
 import { InputText } from '@ui/input/InputText';
-import { ChangeEvent, useEffect, useState, VFC } from 'react';
+import { Label } from '@ui/typography/Label';
+import { useEffect, useState, VFC } from 'react';
 
 import { Emotion, NORMAL } from '@/types/Calendar';
 
@@ -61,11 +62,7 @@ export const ReportAddModal: VFC = () => {
     setComment('');
   };
 
-  const onChangeComment = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.currentTarget.value;
-    setComment(value);
-  };
-
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <Modal
       open={open}
@@ -77,17 +74,24 @@ export const ReportAddModal: VFC = () => {
         alignItems: 'center',
       }}
     >
-      <RefCard sx={{ width: '60%' }}>
+      <RefCard sx={{ width: smartPhone ? '90%' : '60%' }}>
         <CardHeader onClose={onClickCancelButton}>{date}のレポートを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Label size={'sm'} sx={{ display: 'inline-block', marginBottom: 1, color: 'grey.500' }}>
+              今日の気分はいかがですか？
+            </Label>
             <Box sx={{ display: 'flex', gap: 2 }}>
               {emotions.reverse().map((e) => (
                 <Tooltip key={e} title={getEmotionText(e)} arrow placement={'top'}>
                   <EmotionIcon
                     emotion={e}
                     onClick={setEmotion}
-                    sx={{ cursor: 'pointer', width: '56px', height: '56px' }}
+                    sx={{
+                      cursor: 'pointer',
+                      width: smartPhone ? '40px' : '56px',
+                      height: smartPhone ? '40px' : '56px',
+                    }}
                     selected={emotion === e}
                   />
                 </Tooltip>
@@ -96,7 +100,8 @@ export const ReportAddModal: VFC = () => {
             <InputText
               label={'コメント'}
               value={comment}
-              onChange={onChangeComment}
+              onChange={(e) => setComment(e.currentTarget.value)}
+              placeholder={'短くてもいいので今の気持ちを記録しましょう'}
               multiline
               rows={5}
               sx={{ marginTop: 2 }}

@@ -1,12 +1,13 @@
 import { UserAvatar } from '@domain/UserAvatar';
 import { useDeleteConfirmModal } from '@hooks/components/useDeleteConfirmModal';
+import { useToaster } from '@hooks/components/useToaster';
 import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
+import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
-import { ContentCopy, Link } from '@mui/icons-material';
-import { Alert, Box, Divider, IconButton, Tooltip } from '@mui/material';
+import { Alert, Box, Divider } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import {
   CalendarBreadcrumbs,
@@ -46,9 +47,11 @@ export const CalendarSettingsPage: VFC = () => {
   const breadcrumbs = [
     HomeBreadcrumbs(),
     CalendarsBreadcrumbs(),
-    CalendarBreadcrumbs(calendar?.name, calendarId),
-    CalendarSettingsBreadcrumbs(calendarId),
+    CalendarBreadcrumbs(calendarId, calendar?.name),
+    CalendarSettingsBreadcrumbs(calendarId, 'current'),
   ];
+
+  const { handleAsyncEvent } = useHandler();
 
   const { editCalendar, deleteCalendar, entryAccept, entryReject, deleteUser } = useCalendarCommand();
 
@@ -63,12 +66,12 @@ export const CalendarSettingsPage: VFC = () => {
       setValue('calendarName', calendar.name);
     }
   }, [calendar]);
-  const onClickChangeCalendarNameButton = async ({ calendarName }: CalendarNameForm) => {
+  const onClickChangeCalendarNameButton = handleAsyncEvent(async ({ calendarName }: CalendarNameForm) => {
     await editCalendar(calendarId, calendarName);
-  };
+  });
 
   const { confirm } = useDeleteConfirmModal();
-  const onClickDeleteButton = async () => {
+  const onClickDeleteButton = handleAsyncEvent(async () => {
     if (!calendar) {
       return;
     }
@@ -77,27 +80,29 @@ export const CalendarSettingsPage: VFC = () => {
       await deleteCalendar(calendar);
       push('/calendars');
     }
-  };
+  });
 
   const entryUrl = `${window.location.origin}/calendars/${calendarId}/entry`;
+  const { showSuccessToast } = useToaster();
   const copyEntryUrl = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(entryUrl);
+      showSuccessToast('共有URLをコピーしました。');
     }
   };
-  const onClickEntryAccept = async (user: User) => {
+  const onClickEntryAccept = handleAsyncEvent(async (user: User) => {
     await entryAccept(calendarId, user.uid);
-  };
-  const onClickEntryReject = async (user: User) => {
+  });
+  const onClickEntryReject = handleAsyncEvent(async (user: User) => {
     await entryReject(calendarId, user.uid);
-  };
+  });
 
-  const onClickDeleteUserButton = async (user: User) => {
+  const onClickDeleteUserButton = handleAsyncEvent(async (user: User) => {
     const result = await confirm(user.name);
     if (result) {
       await deleteUser(calendarId, user);
     }
-  };
+  });
 
   return (
     <>
@@ -140,13 +145,7 @@ export const CalendarSettingsPage: VFC = () => {
               <Description size={'sm'}>以下URLにアクセスすると参加リクエストが送られます。</Description>
             </Alert>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 2 }}>
-              <Link />
-              <Label size={'sm'}>{entryUrl}</Label>
-              <Tooltip title={'コピーする'} placement={'top'}>
-                <IconButton onClick={copyEntryUrl}>
-                  <ContentCopy />
-                </IconButton>
-              </Tooltip>
+              <PrimaryButton onClick={copyEntryUrl}>共有URLをコピーする</PrimaryButton>
             </Box>
           </Box>
           {calendar && calendar.entryUsers.length > 0 && (

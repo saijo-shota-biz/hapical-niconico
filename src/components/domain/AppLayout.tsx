@@ -1,8 +1,10 @@
 import { useMenu } from '@hooks/components/useMenu';
-import { useAuth } from '@hooks/util/useAuth';
+import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { SuperBlueIcon } from '@ui/emotion/SuperBlueIcon';
+import { SuperHappyIcon } from '@ui/emotion/SuperHappyIcon';
 import { Layout } from '@ui/Layout';
 import { Label } from '@ui/typography/Label';
 import { Loading } from '@ui/utils/Loading';
@@ -12,7 +14,7 @@ import { Outlet } from 'react-router-dom';
 
 export const AppLayout = () => {
   const { loginUser } = useLoginUser();
-  const { signOut } = useAuth();
+  const { signOut } = useAuthCommand();
   const { anchorEl, open, openMenu, closeMenu } = useMenu();
   const { push } = useRouter();
 
@@ -24,7 +26,11 @@ export const AppLayout = () => {
   return (
     <Layout>
       <Fragment key={'header'}>
-        <Label size={'lg'}>ハッピーカレンダー</Label>
+        <Box onClick={() => push('/')} sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}>
+          <SuperHappyIcon sx={{ width: '32px', height: '32px' }} />
+          <Label size={'lg'}>ハッピーカレンダー</Label>
+          <SuperBlueIcon sx={{ width: '32px', height: '32px' }} />
+        </Box>
         <Spacer />
         {loginUser && (
           <>

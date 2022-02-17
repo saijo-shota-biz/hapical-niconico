@@ -29,6 +29,18 @@ export const useToaster = () => {
       message,
     });
   };
+  const showSuccessToast = (message: string) => {
+    showToast({
+      status: 'success',
+      message,
+    });
+  };
+  const showErrorToast = (message: string) => {
+    showToast({
+      status: 'error',
+      message,
+    });
+  };
   const closeToast = () => {
     setState({
       open: false,
@@ -37,5 +49,5 @@ export const useToaster = () => {
     });
   };
 
-  return { open, message, status, showToast, closeToast };
+  return { open, message, status, showToast, showSuccessToast, showErrorToast, closeToast };
 };

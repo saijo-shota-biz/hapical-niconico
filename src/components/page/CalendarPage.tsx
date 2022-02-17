@@ -7,12 +7,18 @@ import { useReportAddModal } from '@hooks/components/useReportAddModal';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
+import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import { CalendarBreadcrumbs, CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import {
+  CalendarBreadcrumbs,
+  CalendarReportBreadcrumbs,
+  CalendarsBreadcrumbs,
+  HomeBreadcrumbs,
+} from '@ui/breadcrumbs/breadcrumbsLinks';
 import { FloatingButton } from '@ui/button/FloatingButton';
 import { Label } from '@ui/typography/Label';
 import { Spacer } from '@ui/utils/Spacer';
@@ -24,11 +30,20 @@ export const CalendarPage: VFC = () => {
   } = useRouter();
   const { loginUser } = useLoginUser();
 
-  const [baseDate, setBaseDate] = useState(new Date());
-  const { parseDateFromString, formatYm, nextMonth, prevMonth, isThisMonth } = useDate();
-
   const { calendar, setQueryCalendarId, setQueryMonth } = useCalendarQuery();
   const { addReport } = useCalendarCommand();
+
+  const breadcrumbs = [
+    HomeBreadcrumbs(),
+    CalendarsBreadcrumbs(),
+    CalendarBreadcrumbs(calendarId, calendar?.name, 'current'),
+    CalendarReportBreadcrumbs(calendarId, 'next'),
+  ];
+
+  const { handleAsyncEvent } = useHandler();
+
+  const [baseDate, setBaseDate] = useState(new Date());
+  const { parseDateFromString, formatYm, nextMonth, prevMonth, isThisMonth } = useDate();
 
   useEffect(() => {
     setQueryCalendarId(calendarId);
@@ -38,10 +53,8 @@ export const CalendarPage: VFC = () => {
     setQueryMonth(baseDate);
   }, [baseDate]);
 
-  const breadcrumbs = [HomeBreadcrumbs(), CalendarsBreadcrumbs(), CalendarBreadcrumbs(calendar?.name, calendarId)];
-
   const { showReportAddModal, closeReportAddModal } = useReportAddModal();
-  const onClickAddButton = async (date: Date = new Date()) => {
+  const onClickAddButton = handleAsyncEvent(async (date: Date = new Date()) => {
     const result = await showReportAddModal(date);
     if (result) {
       const date = parseDateFromString(result.date);
@@ -57,7 +70,7 @@ export const CalendarPage: VFC = () => {
       );
       closeReportAddModal();
     }
-  };
+  });
   useEffect(() => {
     return () => closeReportAddModal();
   }, []);

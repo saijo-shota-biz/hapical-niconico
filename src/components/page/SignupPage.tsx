@@ -1,6 +1,7 @@
 import { useValidationForm } from '@hooks/components/useValidationForm';
+import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
 import { useUserCommand } from '@hooks/domain/command/useUserCommand';
-import { useAuth } from '@hooks/util/useAuth';
+import { useHandler } from '@hooks/util/useHandler';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
@@ -8,7 +9,7 @@ import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { useState, VFC } from 'react';
+import { VFC } from 'react';
 import { object, ref, string } from 'yup';
 
 type Form = {
@@ -18,6 +19,10 @@ type Form = {
 };
 
 export const SignupPage: VFC = () => {
+  const { pushOrRedirectUrl, push } = useRouter();
+
+  const { handleAsyncEvent } = useHandler();
+
   const { register, handleSubmit } = useValidationForm<Form>(
     object({
       email: string() //
@@ -32,19 +37,14 @@ export const SignupPage: VFC = () => {
     })
   );
 
-  const { signUp } = useAuth();
-  const { pushOrRedirectUrl, push } = useRouter();
+  const { signUp } = useAuthCommand();
   const { createUser } = useUserCommand();
 
-  const [loading, setLoading] = useState(false);
-
-  const onClickSignupButton = async ({ email, password }: Form) => {
-    setLoading(true);
+  const onClickSignupButton = handleAsyncEvent(async ({ email, password }: Form) => {
     const user = await signUp(email, password);
     await createUser(user);
-    setLoading(false);
     pushOrRedirectUrl('/');
-  };
+  });
 
   return (
     <>
@@ -83,9 +83,7 @@ export const SignupPage: VFC = () => {
             </Link>
           </CardContent>
           <CardActions>
-            <PrimaryButton onClick={handleSubmit(onClickSignupButton)} loading={loading}>
-              登録する
-            </PrimaryButton>
+            <PrimaryButton onClick={handleSubmit(onClickSignupButton)}>登録する</PrimaryButton>
           </CardActions>
         </Card>
       </Box>

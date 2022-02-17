@@ -48,6 +48,7 @@ export const EmotionHeatMapOfCalendar: VFC<Props> = ({ startDate, endDate, repor
                   height: '40px',
                   border: '1px solid',
                   borderColor: 'grey.200',
+                  borderCollapse: 'collapse',
                   flexShrink: 0,
                   ...(report ? { backgroundColor: getEmotionIconColor(report.emotion) } : {}),
                 }}

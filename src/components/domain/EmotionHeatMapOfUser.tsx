@@ -40,6 +40,7 @@ export const EmotionHeatMapOfUser: VFC<Props> = ({ startDate, endDate, reports, 
                   height: '40px',
                   border: '1px solid',
                   borderColor: 'grey.200',
+                  borderCollapse: 'collapse',
                   flexShrink: 0,
                   ...(report ? { backgroundColor: getEmotionIconColor(report.emotion) } : {}),
                 }}

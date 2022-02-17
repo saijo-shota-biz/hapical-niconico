@@ -3,7 +3,7 @@ import { ReportList } from '@domain/ReportList';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
 import { useRouter } from '@hooks/util/useRouter';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import {
   CalendarBreadcrumbs,
@@ -25,6 +25,13 @@ export const CalendarReportPage: VFC = () => {
     setQueryCalendarId(calendarId);
   }, [calendarId]);
 
+  const breadcrumbs = [
+    HomeBreadcrumbs(),
+    CalendarsBreadcrumbs(),
+    CalendarBreadcrumbs(calendarId, calendar?.name),
+    CalendarReportBreadcrumbs(calendarId, 'current'),
+  ];
+
   const { getRangeWeek } = useDate();
   const today = new Date();
   const { start, end } = getRangeWeek(today.getFullYear(), today.getMonth(), today.getDate());
@@ -35,19 +42,13 @@ export const CalendarReportPage: VFC = () => {
     setQueryDateRange(startDate, endDate);
   }, [startDate, endDate]);
 
-  const breadcrumbs = [
-    HomeBreadcrumbs(),
-    CalendarsBreadcrumbs(),
-    CalendarBreadcrumbs(calendar?.name, calendarId),
-    CalendarReportBreadcrumbs(calendarId),
-  ];
-
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Card sx={{ margin: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: smartPhone ? 'column' : 'row', gap: 2 }}>
             <DateRangePicker
               startDate={startDate}
               endDate={endDate}
