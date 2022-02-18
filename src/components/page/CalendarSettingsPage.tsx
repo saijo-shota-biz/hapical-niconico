@@ -84,9 +84,9 @@ export const CalendarSettingsPage: VFC = () => {
 
   const entryUrl = `${window.location.origin}/calendars/${calendarId}/entry`;
   const { showSuccessToast } = useToaster();
-  const copyEntryUrl = () => {
+  const copyEntryUrl = async () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(entryUrl);
+      await navigator.clipboard.writeText(entryUrl);
       showSuccessToast('共有URLをコピーしました。');
     }
   };
@@ -156,7 +156,12 @@ export const CalendarSettingsPage: VFC = () => {
                 {calendar?.entryUsers.map((e) => (
                   <Box key={e.uid} sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 2, width: '60%' }}>
                     <UserAvatar user={e} />
-                    <Label>{e.name}</Label>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <Label>{e.name}</Label>
+                      <Label size={'sm'} color={'grey.700'}>
+                        {e.email}
+                      </Label>
+                    </Box>
                     <Spacer />
                     <PrimaryButton onClick={() => onClickEntryAccept(e)}>承認</PrimaryButton>
                     <ErrorButton onClick={() => onClickEntryReject(e)}>拒否</ErrorButton>

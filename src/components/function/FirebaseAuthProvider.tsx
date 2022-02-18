@@ -13,6 +13,7 @@ export const FirebaseAuthProvider: VFC = () => {
         setLoginUser({
           uid: user.uid,
           name: user.displayName || user.email || '',
+          email: user.email || '',
           picture: user.photoURL || '',
         });
       } else {

@@ -61,6 +61,7 @@ export const AccountPage: VFC = () => {
       const newUser = {
         uid: loginUser.uid,
         name: userName,
+        email: loginUser.email,
         picture: picture,
       };
       await editUser(newUser);
