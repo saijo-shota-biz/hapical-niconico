@@ -19,7 +19,7 @@ type Form = {
 };
 
 export const SignupPage: VFC = () => {
-  const { pushOrRedirectUrl, push } = useRouter();
+  const { push } = useRouter();
 
   const { handleAsyncEvent } = useHandler();
 
@@ -43,7 +43,6 @@ export const SignupPage: VFC = () => {
   const onClickSignupButton = handleAsyncEvent(async ({ email, password }: Form) => {
     const user = await signUp(email, password);
     await createUser(user);
-    pushOrRedirectUrl('/');
   });
 
   return (
