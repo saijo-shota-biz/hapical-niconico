@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 
 export const PublicPage: VFC = () => {
   const { loginUser } = useLoginUser();
-  const { pushOrRedirectUrl, setRedirectUrl } = useRouter();
+  const { pushOrRedirectUrl } = useRouter();
 
   useEffect(() => {
     if (loginUser) {
