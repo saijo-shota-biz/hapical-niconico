@@ -53,7 +53,7 @@ export const ReportList: VFC<Props> = ({ reports, users }) => {
                     <ListItemAvatar>
                       <EmotionIcon emotion={report.emotion} />
                     </ListItemAvatar>
-                    <ListItemText primary={`${report.comment}`} />
+                    <ListItemText sx={{ whiteSpace: 'pre-wrap' }}>{report.comment}</ListItemText>
                   </ListItem>
                 ))}
             </ul>
