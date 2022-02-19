@@ -3,12 +3,13 @@ import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
 import { useHandler } from '@hooks/util/useHandler';
 import { useRouter } from '@hooks/util/useRouter';
 import { Box, Link } from '@mui/material';
+import { PasswordVisibilityIconButton } from '@ui/button/PasswordVisibilityIconButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { VFC } from 'react';
+import { MouseEvent, useState, VFC } from 'react';
 import { object, string } from 'yup';
 
 type Form = {
@@ -35,6 +36,14 @@ export const SinginPage: VFC = () => {
     await signInWithEmail(email, password);
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const onClickShowPassword = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+  const onMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -43,10 +52,19 @@ export const SinginPage: VFC = () => {
             <InputText label={'メールアドレス'} type={'email'} {...register('email')} fullWidth />
             <InputText
               label={'パスワード'}
-              type={'password'}
+              type={showPassword ? 'text' : 'password'}
               {...register('password')}
               fullWidth
               sx={{ marginTop: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <PasswordVisibilityIconButton
+                    showPassword={showPassword}
+                    onClickShowPassword={onClickShowPassword}
+                    onMouseDownPassword={onMouseDownPassword}
+                  />
+                ),
+              }}
             />
 
             <Link
