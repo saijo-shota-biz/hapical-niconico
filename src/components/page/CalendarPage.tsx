@@ -11,7 +11,7 @@ import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
-import { Box, IconButton } from '@mui/material';
+import { Badge, Box, IconButton } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import {
   CalendarBreadcrumbs,
@@ -91,7 +91,16 @@ export const CalendarPage: VFC = () => {
           <UserAvatarList users={calendar?.users || []} />
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <ReportPageIconButton calendarId={calendarId} />
-            <SettingsPageIconButton calendarId={calendarId} />
+            {calendar && (
+              <Badge
+                color="secondary"
+                variant="dot"
+                invisible={calendar.entries.length === 0}
+                sx={{ ' .MuiBadge-badge': { top: '5px', right: '5px' } }}
+              >
+                <SettingsPageIconButton calendarId={calendarId} />
+              </Badge>
+            )}
           </Box>
         </Box>
         <Calendar baseDate={baseDate} onClickDate={(date) => onClickAddButton(date)} />

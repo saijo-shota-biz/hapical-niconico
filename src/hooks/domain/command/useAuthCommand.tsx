@@ -17,6 +17,7 @@ export const useAuthCommand = () => {
       return createUserWithEmailAndPassword(auth, email, password).then((credential) => ({
         uid: credential.user.uid,
         name: credential.user.displayName || credential.user.email || '',
+        email: credential.user.email || '',
         picture: credential.user.photoURL || '',
       }));
     },
@@ -29,6 +30,7 @@ export const useAuthCommand = () => {
       return signInWithEmailAndPassword(auth, email, password).then((credential) => ({
         uid: credential.user.uid,
         name: credential.user.displayName || credential.user.email || '',
+        email: credential.user.email || '',
         picture: credential.user.photoURL || '',
       }));
     },
