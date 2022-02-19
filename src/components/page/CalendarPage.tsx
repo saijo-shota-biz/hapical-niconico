@@ -30,7 +30,7 @@ export const CalendarPage: VFC = () => {
   } = useRouter();
   const { loginUser } = useLoginUser();
 
-  const { calendar, setQueryCalendarId, setQueryMonth } = useCalendarQuery();
+  const { calendar, setQueryMonth } = useCalendarQuery();
   const { addReport } = useCalendarCommand();
 
   const breadcrumbs = [
@@ -44,10 +44,6 @@ export const CalendarPage: VFC = () => {
 
   const [baseDate, setBaseDate] = useState(new Date());
   const { parseDateFromString, formatYm, nextMonth, prevMonth, isThisMonth } = useDate();
-
-  useEffect(() => {
-    setQueryCalendarId(calendarId);
-  }, [calendarId]);
 
   useEffect(() => {
     setQueryMonth(baseDate);

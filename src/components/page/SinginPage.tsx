@@ -29,11 +29,10 @@ export const SinginPage: VFC = () => {
   );
 
   const { signInWithEmail } = useAuthCommand();
-  const { pushOrRedirectUrl, push } = useRouter();
+  const { push } = useRouter();
 
   const onClickSigninButton = handleAsyncEvent(async ({ email, password }: Form) => {
     await signInWithEmail(email, password);
-    pushOrRedirectUrl('/');
   });
 
   return (

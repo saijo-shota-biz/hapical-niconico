@@ -39,10 +39,7 @@ export const CalendarSettingsPage: VFC = () => {
   } = useRouter();
   const { loginUser } = useLoginUser();
 
-  const { calendar, setQueryCalendarId } = useCalendarQuery();
-  useEffect(() => {
-    setQueryCalendarId(calendarId);
-  }, [calendarId]);
+  const { calendar } = useCalendarQuery();
 
   const breadcrumbs = [
     HomeBreadcrumbs(),

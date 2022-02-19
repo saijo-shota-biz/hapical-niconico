@@ -20,10 +20,7 @@ export const CalendarReportPage: VFC = () => {
   const {
     params: { calendarId = '' },
   } = useRouter();
-  const { calendar, setQueryCalendarId, setQueryDateRange } = useCalendarQuery();
-  useEffect(() => {
-    setQueryCalendarId(calendarId);
-  }, [calendarId]);
+  const { calendar, setQueryDateRange } = useCalendarQuery();
 
   const breadcrumbs = [
     HomeBreadcrumbs(),
