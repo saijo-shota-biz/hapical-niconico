@@ -45,6 +45,7 @@ export const CalendarsPage: VFC = () => {
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Box sx={{ padding: 2, flexGrow: 1, flexBasis: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {calendars.length === 0 && <Box>カレンダーがありません。作成してください。</Box>}
         {calendars.map((calendar) => (
           <Card key={calendar.uid}>
             <CardContent sx={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>

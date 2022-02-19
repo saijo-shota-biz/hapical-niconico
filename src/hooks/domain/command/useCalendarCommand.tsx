@@ -1,5 +1,6 @@
 import { CalendarReportsQuery, CalendarState } from '@hooks/domain/query/useCalendarQuery';
 import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
+import { MyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
 import { useHandler } from '@hooks/util/useHandler';
 import {
   addDoc,
@@ -21,6 +22,7 @@ import { Calendar, CalendarReport } from '@/types/Calendar';
 import { User } from '@/types/User';
 
 export const useCalendarCommand = () => {
+  const refreshMyReports = useRecoilRefresher_UNSTABLE(MyReportsQuery);
   const refreshReports = useRecoilRefresher_UNSTABLE(CalendarReportsQuery);
   const refreshCalendars = useRecoilRefresher_UNSTABLE(CalendarsQuery);
 
@@ -73,15 +75,17 @@ export const useCalendarCommand = () => {
         const docRef = await doc(firestore, 'calendar-reports', uid);
         await setDoc(docRef, report, { merge: true });
         refreshReports();
+        refreshMyReports();
         return uid;
       } else {
         const docRef = await addDoc(collection(firestore, 'calendar-reports'), report);
         refreshReports();
+        refreshMyReports();
         return docRef.id;
       }
     },
-    'レポートを追加しました。',
-    'レポートの追加に失敗しました。'
+    '記録を追加しました。',
+    '記録の追加に失敗しました。'
   );
 
   const entry = handleCommand(async (calendarId: string, userId: string) => {

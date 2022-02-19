@@ -10,6 +10,7 @@ type ReportAddModalStateType = {
 
 type ReportState = {
   uid?: string;
+  calendarId: string;
   date: string;
   emotion: Emotion;
   comment: string;

@@ -1,4 +1,3 @@
-import { EmotionHeatMap } from '@domain/EmotionHeatMap';
 import { UserAvatar } from '@domain/UserAvatar';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
@@ -24,7 +23,7 @@ export const EmotionHeatMapOfUser: VFC<Props> = ({ startDate, endDate, reports, 
   const dateList = getDateList(startDate, endDate);
 
   return (
-    <EmotionHeatMap dateList={dateList} sx={sx}>
+    <>
       {users.map((user) => (
         <Box key={user.uid} sx={{ display: 'flex' }}>
           <Box sx={{ position: 'sticky', left: 0, backgroundColor: 'common.white' }}>
@@ -49,6 +48,6 @@ export const EmotionHeatMapOfUser: VFC<Props> = ({ startDate, endDate, reports, 
           })}
         </Box>
       ))}
-    </EmotionHeatMap>
+    </>
   );
 };

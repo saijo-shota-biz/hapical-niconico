@@ -1,4 +1,5 @@
 import { EmotionIcon } from '@domain/EmotionIcon';
+import { ReportListEmpty } from '@domain/ReportListEmpty';
 import { UserAvatar } from '@domain/UserAvatar';
 import { useDate } from '@hooks/util/useDate';
 import { List, ListItem, ListItemAvatar, ListItemText, ListSubheader } from '@mui/material';
@@ -18,6 +19,10 @@ export const ReportList: VFC<Props> = ({ reports, users }) => {
   const getUser = (userId: string) => {
     return users.find((user) => user.uid === userId);
   };
+
+  if (reports.length === 0) {
+    return <ReportListEmpty />;
+  }
 
   return (
     <List
