@@ -10,7 +10,7 @@ type Props = {
 export const ReportPageIconButton: VFC<Props> = ({ calendarId }) => {
   const { push } = useRouter();
   return (
-    <Tooltip title={'レポートページに移動'} placement={'top'} arrow>
+    <Tooltip title={'記録ページに移動'} placement={'top'} arrow>
       <IconButton onClick={() => push(`/calendars/${calendarId}/report`)}>
         <EventNote />
       </IconButton>
