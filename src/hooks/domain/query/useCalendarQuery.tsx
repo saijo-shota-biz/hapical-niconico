@@ -2,7 +2,7 @@ import { CalendarQueryResult, CalendarsQuery } from '@hooks/domain/query/useCale
 import { useDate } from '@hooks/util/useDate';
 import { LoginUserState } from '@hooks/util/useLoginUser';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
-import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
+import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 
 import { firestore } from '@/firebase';
 import { CalendarReport } from '@/types/Calendar';
@@ -83,11 +83,14 @@ const CalendarQueryState = atom<CalendarQueryStateType>({
 
 export const useCalendarQuery = () => {
   const calendar = useRecoilValue(CalendarQuery);
-  const setQuery = useSetRecoilState(CalendarQueryState);
+  const [query, setQuery] = useRecoilState(CalendarQueryState);
 
   const { getRangeYear, getRangeMonth, getRangeWeek } = useDate();
 
   const setQueryCalendarId = (calendarId: string) => {
+    if (query.calendarId === calendarId) {
+      return;
+    }
     const today = new Date();
     setQuery({
       calendarId,

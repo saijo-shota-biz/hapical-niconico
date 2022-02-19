@@ -56,7 +56,7 @@ export const CalendarPage: VFC = () => {
       const date = parseDateFromString(result.date);
       await addReport(
         {
-          calendarId: calendar?.uid || '',
+          calendarId: result.calendarId,
           userId: loginUser?.uid || '',
           date,
           emotion: result.emotion,

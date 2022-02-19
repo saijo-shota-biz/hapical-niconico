@@ -1,4 +1,3 @@
-import { EmotionHeatMap } from '@domain/EmotionHeatMap';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
 import { useRouter } from '@hooks/util/useRouter';
@@ -25,7 +24,7 @@ export const EmotionHeatMapOfCalendar: VFC<Props> = ({ startDate, endDate, repor
   const dateList = getDateList(startDate, endDate);
 
   return (
-    <EmotionHeatMap dateList={dateList} sx={sx}>
+    <>
       {calendars.map((calendar) => (
         <Box key={calendar.uid} sx={{ display: 'flex' }}>
           <Box sx={{ position: 'sticky', left: 0, backgroundColor: 'common.white' }}>
@@ -57,6 +56,6 @@ export const EmotionHeatMapOfCalendar: VFC<Props> = ({ startDate, endDate, repor
           })}
         </Box>
       ))}
-    </EmotionHeatMap>
+    </>
   );
 };

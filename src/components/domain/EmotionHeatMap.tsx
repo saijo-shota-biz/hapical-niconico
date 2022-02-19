@@ -1,20 +1,41 @@
+import { EmotionHeatMapEmpty } from '@domain/EmotionHeatMapEmpty';
+import { EmotionHeatMapOfCalendar } from '@domain/EmotionHeatMapOfCalendar';
+import { EmotionHeatMapOfUser } from '@domain/EmotionHeatMapOfUser';
 import { useDate } from '@hooks/util/useDate';
 import { Box, SxProps } from '@mui/material';
 import { Label } from '@ui/typography/Label';
-import { ReactNode, VFC } from 'react';
+import { VFC } from 'react';
+
+import { Calendar, CalendarReport } from '@/types/Calendar';
+import { User } from '@/types/User';
 
 type Props = {
-  children: ReactNode;
+  startDate: Date;
+  endDate: Date;
+  reports: CalendarReport[];
+  calendars?: Calendar[];
+  users?: User[];
   sx?: SxProps;
-  dateList: Date[];
 };
 
-export const EmotionHeatMap: VFC<Props> = ({ children, sx = {}, dateList }) => {
+export const EmotionHeatMap: VFC<Props> = ({ startDate, endDate, reports, calendars, users, sx = {} }) => {
   const { formatYmd, formatMd } = useDate();
+  const { getDateList } = useDate();
+
+  if (reports.length === 0) {
+    return (
+      <Box sx={sx}>
+        <EmotionHeatMapEmpty />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ position: 'relative', overflowX: 'auto', ...sx }}>
-      {children}
+      {calendars && (
+        <EmotionHeatMapOfCalendar startDate={startDate} endDate={endDate} reports={reports} calendars={calendars} />
+      )}
+      {users && <EmotionHeatMapOfUser startDate={startDate} endDate={endDate} reports={reports} users={users} />}
       <Box sx={{ display: 'flex' }}>
         <Box
           sx={{
@@ -32,7 +53,7 @@ export const EmotionHeatMap: VFC<Props> = ({ children, sx = {}, dateList }) => {
             }}
           />
         </Box>
-        {dateList.map((date, i) => (
+        {getDateList(startDate, endDate).map((date, i) => (
           <Box
             key={date.toISOString()}
             sx={{

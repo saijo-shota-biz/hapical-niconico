@@ -1,4 +1,4 @@
-import { EmotionHeatMapOfUser } from '@domain/EmotionHeatMapOfUser';
+import { EmotionHeatMap } from '@domain/EmotionHeatMap';
 import { ReportList } from '@domain/ReportList';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useDate } from '@hooks/util/useDate';
@@ -56,7 +56,7 @@ export const CalendarReportPage: VFC = () => {
           </Box>
           <Box>
             {calendar && (
-              <EmotionHeatMapOfUser
+              <EmotionHeatMap
                 startDate={startDate}
                 endDate={endDate}
                 reports={calendar.reports}

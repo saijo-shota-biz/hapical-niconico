@@ -30,7 +30,7 @@ export const CalendarReportBreadcrumbs = (
   calendarId: string,
   position: BreadcrumbsPosition = 'prev'
 ): BreadcrumbsType => ({
-  label: 'レポート',
+  label: '記録',
   Icon: EventNote,
   link: `/calendars/${calendarId}/report`,
   position,

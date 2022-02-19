@@ -1,12 +1,18 @@
-import { EmotionHeatMapOfCalendar } from '@domain/EmotionHeatMapOfCalendar';
+import { EmotionHeatMap } from '@domain/EmotionHeatMap';
+import { ReportAddModal } from '@domain/ReportAddModal';
 import { ReportList } from '@domain/ReportList';
 import { useDateRangePicker } from '@hooks/components/useDateRangePicker';
+import { useReportAddModal } from '@hooks/components/useReportAddModal';
+import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useMyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
+import { useDate } from '@hooks/util/useDate';
+import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { Box, useMediaQuery } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import { CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { FloatingButton } from '@ui/button/FloatingButton';
 import { Card } from '@ui/card/Card';
 import { CardContent } from '@ui/card/CardContent';
 import { DateRangePicker } from '@ui/input/InputDateRange';
@@ -19,12 +25,36 @@ export const HomePage: VFC = () => {
 
   const { calendars } = useCalendarsQuery();
   const { reports, setQueryDateRange } = useMyReportsQuery();
+  const { parseDateFromString } = useDate();
 
   const { startDate, setStartDate, endDate, setEndDate } = useDateRangePicker();
-
   useEffect(() => {
     setQueryDateRange(startDate, endDate);
   }, [startDate, endDate]);
+
+  const { showReportAddModal, closeReportAddModal } = useReportAddModal();
+  const { handleAsyncEvent } = useHandler();
+  const { addReport } = useCalendarCommand();
+  const onClickReportAddModalButton = handleAsyncEvent(async () => {
+    const result = await showReportAddModal();
+    if (result) {
+      const date = parseDateFromString(result.date);
+      await addReport(
+        {
+          calendarId: result.calendarId,
+          userId: loginUser?.uid || '',
+          date,
+          emotion: result.emotion,
+          comment: result.comment,
+        },
+        result.uid
+      );
+      closeReportAddModal();
+    }
+  });
+  useEffect(() => {
+    return () => closeReportAddModal();
+  }, []);
 
   const smartPhone = useMediaQuery('(max-width:600px)');
   return (
@@ -42,7 +72,7 @@ export const HomePage: VFC = () => {
             {loginUser && <ReportList reports={reports} users={[loginUser]} />}
           </Box>
           {calendars && (
-            <EmotionHeatMapOfCalendar
+            <EmotionHeatMap
               startDate={startDate}
               endDate={endDate}
               reports={reports}
@@ -52,6 +82,8 @@ export const HomePage: VFC = () => {
           )}
         </CardContent>
       </Card>
+      <FloatingButton onClick={onClickReportAddModalButton} />
+      <ReportAddModal calendarSelectable />
     </>
   );
 };
