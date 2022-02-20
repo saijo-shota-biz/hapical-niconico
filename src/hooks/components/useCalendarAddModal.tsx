@@ -10,8 +10,8 @@ type CalendarState = {
   name: string;
 };
 
-const ReportAddModalState = atom<CalendarAddModalStateType>({
-  key: 'StateReportAddModal',
+const CalendarAddModalState = atom<CalendarAddModalStateType>({
+  key: 'StateCalendarAddModal',
   default: {
     open: false,
     onClickOk: () => {},
@@ -20,7 +20,7 @@ const ReportAddModalState = atom<CalendarAddModalStateType>({
 });
 
 export const useCalendarAddModal = () => {
-  const [state, setState] = useRecoilState(ReportAddModalState);
+  const [state, setState] = useRecoilState(CalendarAddModalState);
 
   const showCalendarAddModal = (): Promise<CalendarState | null> => {
     return new Promise((resolve) => {

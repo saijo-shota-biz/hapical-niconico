@@ -11,7 +11,7 @@ import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { Box, useMediaQuery } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import { CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { CalendarBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { FloatingButton } from '@ui/button/FloatingButton';
 import { Card } from '@ui/card/Card';
 import { CardContent } from '@ui/card/CardContent';
@@ -20,10 +20,9 @@ import { useEffect, VFC } from 'react';
 
 export const HomePage: VFC = () => {
   const { loginUser } = useLoginUser();
-
-  const breadcrumbs = [HomeBreadcrumbs('current'), CalendarsBreadcrumbs('next')];
-
   const { calendars } = useCalendarsQuery();
+  const breadcrumbs = [HomeBreadcrumbs('current'), CalendarBreadcrumbs(calendars[0].uid, calendars[0].name, 'next')];
+
   const { reports, setQueryDateRange } = useMyReportsQuery();
   const { parseDateFromString } = useDate();
 

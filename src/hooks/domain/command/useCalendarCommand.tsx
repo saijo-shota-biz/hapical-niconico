@@ -1,4 +1,8 @@
-import { CalendarReportsQuery, CalendarState } from '@hooks/domain/query/useCalendarQuery';
+import {
+  CalendarQueryCalendarIdState,
+  CalendarReportsQuery,
+  CalendarState,
+} from '@hooks/domain/query/useCalendarQuery';
 import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { MyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
 import { useHandler } from '@hooks/util/useHandler';
@@ -15,7 +19,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { useRecoilRefresher_UNSTABLE } from 'recoil';
+import { useRecoilRefresher_UNSTABLE, useSetRecoilState } from 'recoil';
 
 import { firestore } from '@/firebase';
 import { Calendar, CalendarReport } from '@/types/Calendar';
@@ -25,6 +29,7 @@ export const useCalendarCommand = () => {
   const refreshMyReports = useRecoilRefresher_UNSTABLE(MyReportsQuery);
   const refreshReports = useRecoilRefresher_UNSTABLE(CalendarReportsQuery);
   const refreshCalendars = useRecoilRefresher_UNSTABLE(CalendarsQuery);
+  const setQueryCalendarId = useSetRecoilState(CalendarQueryCalendarIdState);
 
   const { handleCommand } = useHandler();
 
@@ -124,6 +129,7 @@ export const useCalendarCommand = () => {
         reportDocRefs.forEach((e) => deleteDoc(e));
       });
       refreshCalendars();
+      setQueryCalendarId('');
     },
     'ユーザーをカレンダーから削除しました。',
     'ユーザーをカレンダーからの削除に失敗しました。'

@@ -10,8 +10,10 @@ import { CalendarReport } from '@/types/Calendar';
 export const CalendarReportsQuery = selector<CalendarReport[]>({
   key: 'QueryCalendarReports',
   get: async ({ get }) => {
-    const { calendarId, start, end } = get(CalendarQueryState);
+    const calendarId = get(CalendarQueryCalendarIdState);
+    const { start, end } = get(CalendarQueryDateState);
     if (!calendarId || !start || !end) {
+      console.log('QueryCalendarReports', []);
       return [];
     }
 
@@ -31,6 +33,7 @@ export const CalendarReportsQuery = selector<CalendarReport[]>({
     calendarReportsDocs.forEach((report) =>
       reports.push({ uid: report.id, ...report.data(), date: report.get('date').toDate() } as CalendarReport)
     );
+    console.log('QueryCalendarReports', reports);
     return reports;
   },
 });
@@ -44,38 +47,44 @@ export const CalendarQuery = selector<CalendarState | null>({
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
     if (!loginUser) {
+      console.log('QueryCalendar', null);
       return null;
     }
 
-    const { calendarId } = get(CalendarQueryState);
+    const calendarId = get(CalendarQueryCalendarIdState);
     if (!calendarId) {
+      console.log('QueryCalendar', null);
       return null;
     }
 
     const calendar = get(CalendarsQuery).find((c) => c.uid === calendarId);
     if (!calendar) {
+      console.log('QueryCalendar', null);
       return null;
     }
 
-    const reports = get(CalendarReportsQuery);
-
-    return {
+    const { start, end } = get(CalendarQueryDateState);
+    let reports: CalendarReport[] = [];
+    if (start && end) {
+      reports = get(CalendarReportsQuery);
+    }
+    const result = {
       ...calendar,
       reports,
     };
+    console.log('QueryCalendar', result);
+    return result;
   },
 });
 
-type CalendarQueryStateType = {
-  calendarId: string;
-  start: Date | null;
-  end: Date | null;
-};
+export const CalendarQueryCalendarIdState = atom<string>({
+  key: 'StateCalendarQueryCalendarId',
+  default: '',
+});
 
-const CalendarQueryState = atom<CalendarQueryStateType>({
-  key: 'StateCalendarQuery',
+export const CalendarQueryDateState = atom<{ start: Date | null; end: Date | null }>({
+  key: 'StateCalendarQueryDate',
   default: {
-    calendarId: '',
     start: null,
     end: null,
   },
@@ -83,35 +92,47 @@ const CalendarQueryState = atom<CalendarQueryStateType>({
 
 export const useCalendarQuery = () => {
   const calendar = useRecoilValue(CalendarQuery);
-  const [query, setQuery] = useRecoilState(CalendarQueryState);
+  const [calendarIdQuery, setCalendarIdQuery] = useRecoilState(CalendarQueryCalendarIdState);
+  const [dateQuery, setDateQuery] = useRecoilState(CalendarQueryDateState);
 
-  const { getRangeYear, getRangeMonth, getRangeWeek } = useDate();
+  const { getRangeYear, getRangeMonth, getRangeWeek, isSameYmd } = useDate();
 
   const setQueryCalendarId = (calendarId: string) => {
-    if (query.calendarId === calendarId) {
+    if (calendarIdQuery && calendarIdQuery === calendarId) {
       return;
     }
-    const today = new Date();
-    setQuery({
-      calendarId,
-      ...getRangeMonth(today.getFullYear(), today.getMonth()),
-    });
+    setCalendarIdQuery(calendarId);
   };
 
   const setQueryYear = (baseDate: Date) => {
-    setQuery((prev) => ({ ...prev, ...getRangeYear(baseDate.getFullYear()) }));
+    const { start, end } = getRangeYear(baseDate.getFullYear());
+    if (dateQuery.start && dateQuery.end && isSameYmd(start, dateQuery.start) && isSameYmd(end, dateQuery.end)) {
+      return;
+    }
+    setDateQuery({ start, end });
   };
 
   const setQueryMonth = (baseDate: Date) => {
-    setQuery((prev) => ({ ...prev, ...getRangeMonth(baseDate.getFullYear(), baseDate.getMonth()) }));
+    const { start, end } = getRangeMonth(baseDate.getFullYear(), baseDate.getMonth());
+    if (dateQuery.start && dateQuery.end && isSameYmd(start, dateQuery.start) && isSameYmd(end, dateQuery.end)) {
+      return;
+    }
+    setDateQuery({ start, end });
   };
 
   const setQueryWeek = (baseDate: Date) => {
-    setQuery((prev) => ({ ...prev, ...getRangeWeek(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate()) }));
+    const { start, end } = getRangeWeek(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+    if (dateQuery.start && dateQuery.end && isSameYmd(start, dateQuery.start) && isSameYmd(end, dateQuery.end)) {
+      return;
+    }
+    setDateQuery({ start, end });
   };
 
   const setQueryDateRange = (start: Date, end: Date) => {
-    setQuery((prev) => ({ ...prev, start, end }));
+    if (dateQuery.start && dateQuery.end && isSameYmd(start, dateQuery.start) && isSameYmd(end, dateQuery.end)) {
+      return;
+    }
+    setDateQuery({ start, end });
   };
 
   return { calendar, setQueryCalendarId, setQueryYear, setQueryMonth, setQueryWeek, setQueryDateRange };

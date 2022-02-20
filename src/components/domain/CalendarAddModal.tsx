@@ -27,11 +27,11 @@ export const CalendarAddModal: VFC = () => {
 
   const onClickOkButton = ({ calendarName }: Form) => {
     onClickOk({ name: calendarName });
-    reset();
+    reset({ calendarName: '' });
   };
   const onClickCancelButton = () => {
     onClickCancel();
-    reset();
+    reset({ calendarName: '' });
   };
 
   const smartPhone = useMediaQuery('(max-width:600px)');
