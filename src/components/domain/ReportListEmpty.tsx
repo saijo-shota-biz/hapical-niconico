@@ -15,6 +15,7 @@ export const ReportListEmpty: VFC = () => {
         borderColor: 'grey.200',
         height: '458px',
         padding: 2,
+        backgroundColor: 'common.white',
       }}
     >
       <Description align={'center'} color={'grey.700'}>

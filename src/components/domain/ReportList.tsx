@@ -35,6 +35,7 @@ export const ReportList: VFC<Props> = ({ reports, users }) => {
         height: '458px',
         padding: 2,
         '& ul': { padding: 0 },
+        backgroundColor: 'common.white',
       }}
       subheader={<li />}
     >

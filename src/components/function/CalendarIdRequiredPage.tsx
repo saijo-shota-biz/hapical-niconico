@@ -1,4 +1,3 @@
-import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useRouter } from '@hooks/util/useRouter';
 import { useEffect, VFC } from 'react';
@@ -11,7 +10,6 @@ export const CalendarIdRequiredPage: VFC = () => {
   } = useRouter();
 
   const { calendars } = useCalendarsQuery();
-  const { setQueryCalendarId } = useCalendarQuery();
 
   useEffect(() => {
     if (!calendarId) {
@@ -19,9 +17,7 @@ export const CalendarIdRequiredPage: VFC = () => {
       return;
     }
     const calendar = calendars.find((e) => e.uid === calendarId);
-    if (calendar) {
-      setQueryCalendarId(calendarId);
-    } else {
+    if (!calendar) {
       pushOrRedirectUrl('/calendars');
     }
   }, [calendarId]);

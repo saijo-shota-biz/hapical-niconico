@@ -84,7 +84,16 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
   };
 
   return (
-    <Box sx={{ width: '314px', height: '458px', border: 'solid 1px', borderColor: 'grey.200', padding: 2 }}>
+    <Box
+      sx={{
+        width: '314px',
+        height: '458px',
+        border: 'solid 1px',
+        borderColor: 'grey.200',
+        padding: 2,
+        backgroundColor: 'common.white',
+      }}
+    >
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
         <PrimaryButton size={'small'} onClick={onClickYearButton}>
           今年

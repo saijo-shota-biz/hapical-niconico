@@ -24,11 +24,13 @@ export const MyReportsQuery = selector<CalendarReport[]>({
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
     if (!loginUser) {
+      console.log('QueryMyReports', []);
       return [];
     }
 
     const { start, end } = get(MyReportsQueryState);
     if (!start || !end) {
+      console.log('QueryMyReports', []);
       return [];
     }
 
@@ -43,6 +45,7 @@ export const MyReportsQuery = selector<CalendarReport[]>({
     calendarReportsDocs.forEach((report) =>
       reports.push({ uid: report.id, ...report.data(), date: report.get('date').toDate() } as CalendarReport)
     );
+    console.log('QueryMyReports', reports);
     return reports;
   },
 });

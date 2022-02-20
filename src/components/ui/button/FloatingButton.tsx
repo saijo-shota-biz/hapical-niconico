@@ -8,7 +8,12 @@ type Props = {
 
 export const FloatingButton: VFC<Props> = ({ onClick }) => {
   return (
-    <Fab color="primary" size={'medium'} sx={{ position: 'absolute', bottom: '32px', right: '32px' }} onClick={onClick}>
+    <Fab
+      color="primary"
+      size={'medium'}
+      sx={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 9 }}
+      onClick={onClick}
+    >
       <Add />
     </Fab>
   );

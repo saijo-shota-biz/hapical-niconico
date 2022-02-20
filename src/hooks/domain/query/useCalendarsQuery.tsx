@@ -28,6 +28,7 @@ export const CalendarsQuery = selector<CalendarQueryResult[]>({
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
     if (!loginUser) {
+      console.log('QueryCalendars', []);
       return [];
     }
     const collectionRef = collection(firestore, 'calendars');
@@ -60,7 +61,9 @@ export const CalendarsQuery = selector<CalendarQueryResult[]>({
         };
       });
 
-    return await Promise.all(calendarQueryResultPromiseList);
+    const result = await Promise.all(calendarQueryResultPromiseList);
+    console.log('QueryCalendars', result);
+    return result;
   },
 });
 
