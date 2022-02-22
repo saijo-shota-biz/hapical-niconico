@@ -1,7 +1,7 @@
 import { useCalendar } from '@hooks/components/useCalendar';
 import { useDate } from '@hooks/util/useDate';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
-import { Badge, Box, IconButton } from '@mui/material';
+import { Badge, Box, IconButton, useMediaQuery } from '@mui/material';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { InputText } from '@ui/input/InputText';
 import { Label } from '@ui/typography/Label';
@@ -83,10 +83,17 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
     onChangeEndDate(end);
   };
 
+  const onClickTodayButton = () => {
+    const today = new Date();
+    onChangeStartDate(today);
+    onChangeEndDate(today);
+  };
+
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <Box
       sx={{
-        width: '314px',
+        width: smartPhone ? '100%' : '314px',
         height: '458px',
         border: 'solid 1px',
         borderColor: 'grey.200',
@@ -103,6 +110,9 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
         </PrimaryButton>
         <PrimaryButton size={'small'} onClick={onClickWeekButton}>
           今週
+        </PrimaryButton>
+        <PrimaryButton size={'small'} onClick={onClickTodayButton}>
+          今日
         </PrimaryButton>
       </Box>
       <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
@@ -140,7 +150,7 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
             key={e}
             sx={{
               height: '40px',
-              width: '40px',
+              width: smartPhone ? 'calc(100% / 7)' : '40px',
               padding: 1,
             }}
           >
@@ -164,7 +174,7 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
             sx={{
               padding: 1,
               height: '40px',
-              width: '40px',
+              width: smartPhone ? 'calc(100% / 7)' : '40px',
               backgroundColor: dateElemBackgroundColor(date),
               cursor: 'pointer',
               ':hover': {

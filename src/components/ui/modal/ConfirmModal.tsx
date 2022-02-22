@@ -1,16 +1,16 @@
 import { useConfirmModal } from '@hooks/components/useConfirmModal';
-import { Modal } from '@mui/material';
 import { AppButton } from '@ui/button/AppButton';
-import { RefCard } from '@ui/card/Card';
+import { ModalCard } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
+import { BaseModal } from '@ui/modal/BaseModal';
 import { VFC } from 'react';
 
 export const ConfirmModal: VFC = () => {
   const { open, close, header, content, action, onClickOk, onClickCancel } = useConfirmModal();
   return (
-    <Modal
+    <BaseModal
       open={open}
       onClose={close}
       sx={{
@@ -20,7 +20,7 @@ export const ConfirmModal: VFC = () => {
         alignItems: 'center',
       }}
     >
-      <RefCard sx={{ width: '60%' }}>
+      <ModalCard>
         {header && <CardHeader onClose={close}>{header}</CardHeader>}
         {content && <CardContent>{content}</CardContent>}
         {action && (
@@ -37,7 +37,7 @@ export const ConfirmModal: VFC = () => {
             )}
           </CardActions>
         )}
-      </RefCard>
-    </Modal>
+      </ModalCard>
+    </BaseModal>
   );
 };

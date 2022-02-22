@@ -10,22 +10,22 @@ import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-mat
 import { Box, IconButton } from '@mui/material';
 import { Label } from '@ui/typography/Label';
 import { Spacer } from '@ui/utils/Spacer';
-import { useEffect, useState, VFC } from 'react';
+import { Dispatch, SetStateAction, useEffect, VFC } from 'react';
 
-export const CalendarPageCalendarTab: VFC = () => {
+type Props = {
+  baseDate: Date;
+  setBaseDate: Dispatch<SetStateAction<Date>>;
+};
+
+export const CalendarPageCalendarTab: VFC<Props> = ({ baseDate, setBaseDate }) => {
   const { loginUser } = useLoginUser();
 
-  const { calendar, setQueryMonth } = useCalendarQuery();
+  const { calendar } = useCalendarQuery();
   const { addReport } = useCalendarCommand();
 
   const { handleAsyncEvent } = useHandler();
 
-  const [baseDate, setBaseDate] = useState(new Date());
   const { parseDateFromString, formatYm, nextMonth, prevMonth, isThisMonth } = useDate();
-
-  useEffect(() => {
-    setQueryMonth(baseDate);
-  }, [baseDate]);
 
   const { showReportAddModal, closeReportAddModal } = useReportAddModal();
   const onClickAddButton = handleAsyncEvent(async (date: Date) => {
