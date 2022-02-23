@@ -1,13 +1,14 @@
 import { useCalendarAddModal } from '@hooks/components/useCalendarAddModal';
 import { useValidationForm } from '@hooks/components/useValidationForm';
-import { Box, Modal, useMediaQuery } from '@mui/material';
+import { Box } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
-import { RefCard } from '@ui/card/Card';
+import { ModalCard } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
 import { InputText } from '@ui/input/InputText';
+import { BaseModal } from '@ui/modal/BaseModal';
 import { VFC } from 'react';
 import { object, string } from 'yup';
 
@@ -34,9 +35,8 @@ export const CalendarAddModal: VFC = () => {
     reset({ calendarName: '' });
   };
 
-  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
-    <Modal
+    <BaseModal
       open={open}
       onClose={onClickCancel}
       sx={{
@@ -46,7 +46,7 @@ export const CalendarAddModal: VFC = () => {
         alignItems: 'center',
       }}
     >
-      <RefCard sx={{ width: smartPhone ? '90%' : '60%' }}>
+      <ModalCard>
         <CardHeader onClose={onClickCancel}>新しいカレンダーを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box>
@@ -61,7 +61,7 @@ export const CalendarAddModal: VFC = () => {
           <NeutralButton onClick={onClickCancelButton}>キャンセル</NeutralButton>
           <PrimaryButton onClick={handleSubmit(onClickOkButton)}>送信</PrimaryButton>
         </CardActions>
-      </RefCard>
-    </Modal>
+      </ModalCard>
+    </BaseModal>
   );
 };

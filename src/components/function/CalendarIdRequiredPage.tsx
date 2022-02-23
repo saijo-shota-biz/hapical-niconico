@@ -13,12 +13,12 @@ export const CalendarIdRequiredPage: VFC = () => {
 
   useEffect(() => {
     if (!calendarId) {
-      pushOrRedirectUrl('/calendars');
+      pushOrRedirectUrl('/');
       return;
     }
     const calendar = calendars.find((e) => e.uid === calendarId);
     if (!calendar) {
-      pushOrRedirectUrl('/calendars');
+      pushOrRedirectUrl('/');
     }
   }, [calendarId]);
 

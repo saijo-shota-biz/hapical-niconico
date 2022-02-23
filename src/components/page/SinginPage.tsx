@@ -2,7 +2,7 @@ import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
 import { useHandler } from '@hooks/util/useHandler';
 import { useRouter } from '@hooks/util/useRouter';
-import { Box, Link } from '@mui/material';
+import { Box, Link, useMediaQuery } from '@mui/material';
 import { PasswordVisibilityIconButton } from '@ui/button/PasswordVisibilityIconButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
@@ -44,10 +44,11 @@ export const SinginPage: VFC = () => {
     event.preventDefault();
   };
 
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <Card sx={{ width: '40%' }}>
+        <Card sx={{ width: smartPhone ? '90%' : '40%' }}>
           <CardContent>
             <InputText label={'メールアドレス'} type={'email'} {...register('email')} fullWidth />
             <InputText

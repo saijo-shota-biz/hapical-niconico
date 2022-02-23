@@ -27,24 +27,39 @@ export const CalendarPage: VFC = () => {
 
   const { calendars } = useCalendarsQuery();
 
-  const { calendar, setQueryMonth, setQueryCalendarId } = useCalendarQuery();
+  const { calendar, setQueryCalendarId, setQueryDateRange, setQueryMonth } = useCalendarQuery();
+
   const breadcrumbs = [
     HomeBreadcrumbs(),
     CalendarBreadcrumbs(calendarId, calendar?.name, 'current'),
     CalendarSettingsBreadcrumbs(calendarId, 'next'),
   ];
 
-  useEffect(() => {
-    if (calendarId) {
-      setQueryCalendarId(calendarId);
-      setQueryMonth(new Date());
-    }
-  }, [calendarId]);
+  const today = new Date();
+  const [baseDate, setBaseDate] = useState(today);
+
+  const { getRangeMonth } = useDate();
+  const { start, end } = getRangeMonth(today.getFullYear(), today.getMonth());
+  const [startDate, setStartDate] = useState(start);
+  const [endDate, setEndDate] = useState(end);
 
   const [value, setValue] = useState(0);
-  const handleChange = (event: SyntheticEvent, newValue: any) => {
+  const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    console.log({ calendarId, startDate, endDate, value });
+    if (calendarId) {
+      setQueryCalendarId(calendarId);
+    }
+    if (value === 0) {
+      setQueryMonth(baseDate);
+    }
+    if (value === 1) {
+      setQueryDateRange(startDate, endDate);
+    }
+  }, [calendarId, baseDate, startDate, endDate, value]);
 
   const { handleAsyncEvent } = useHandler();
   const { addReport } = useCalendarCommand();
@@ -116,8 +131,15 @@ export const CalendarPage: VFC = () => {
         <Tab label="カレンダー" />
         <Tab label="記録サマリー" />
       </Tabs>
-      {value === 0 && <CalendarPageCalendarTab />}
-      {value === 1 && <CalendarPageReportTab />}
+      {value === 0 && <CalendarPageCalendarTab baseDate={baseDate} setBaseDate={setBaseDate} />}
+      {value === 1 && (
+        <CalendarPageReportTab
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
+      )}
       <FloatingButton onClick={() => onClickAddButton()} />
       <ReportAddModal />
       <CalendarAddModal />
