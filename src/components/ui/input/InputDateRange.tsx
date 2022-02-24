@@ -1,7 +1,7 @@
 import { useCalendar } from '@hooks/components/useCalendar';
 import { useDate } from '@hooks/util/useDate';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
-import { Badge, Box, IconButton } from '@mui/material';
+import { Badge, Box, IconButton, useMediaQuery } from '@mui/material';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { InputText } from '@ui/input/InputText';
 import { Label } from '@ui/typography/Label';
@@ -13,16 +13,25 @@ type Props = {
   onChangeStartDate: (date: Date) => void;
   endDate: Date;
   onChangeEndDate: (date: Date) => void;
+  batches?: {
+    date: Date;
+    color: string;
+  }[];
 };
 
-export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endDate, onChangeEndDate }) => {
+export const DateRangePicker: VFC<Props> = ({
+  startDate,
+  onChangeStartDate,
+  endDate,
+  onChangeEndDate,
+  batches = [],
+}) => {
   const {
     formatYm,
     formatYmd,
     formatMd,
     prevMonth,
     nextMonth,
-    isToday,
     isThisMonth,
     isSameYmd,
     getRangeWeek,
@@ -83,8 +92,24 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
     onChangeEndDate(end);
   };
 
+  const onClickTodayButton = () => {
+    const today = new Date();
+    onChangeStartDate(today);
+    onChangeEndDate(today);
+  };
+
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
-    <Box sx={{ width: '314px', height: '458px', border: 'solid 1px', borderColor: 'grey.200', padding: 2 }}>
+    <Box
+      sx={{
+        width: smartPhone ? '100%' : '314px',
+        height: '458px',
+        border: 'solid 1px',
+        borderColor: 'grey.200',
+        padding: 2,
+        backgroundColor: 'common.white',
+      }}
+    >
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
         <PrimaryButton size={'small'} onClick={onClickYearButton}>
           今年
@@ -94,6 +119,9 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
         </PrimaryButton>
         <PrimaryButton size={'small'} onClick={onClickWeekButton}>
           今週
+        </PrimaryButton>
+        <PrimaryButton size={'small'} onClick={onClickTodayButton}>
+          今日
         </PrimaryButton>
       </Box>
       <Box sx={{ display: 'flex', gap: 1, marginY: 2 }}>
@@ -131,7 +159,7 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
             key={e}
             sx={{
               height: '40px',
-              width: '40px',
+              width: smartPhone ? 'calc(100% / 7)' : '40px',
               padding: 1,
             }}
           >
@@ -155,7 +183,7 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
             sx={{
               padding: 1,
               height: '40px',
-              width: '40px',
+              width: smartPhone ? 'calc(100% / 7)' : '40px',
               backgroundColor: dateElemBackgroundColor(date),
               cursor: 'pointer',
               ':hover': {
@@ -170,13 +198,16 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
             <Badge
               color="primary"
               variant="dot"
-              invisible={!isToday(date)}
+              invisible={!batches.find((batch) => isSameYmd(batch.date, date))}
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 width: '24px',
                 height: '24px',
+                ' .MuiBadge-badge': {
+                  backgroundColor: batches.find((batch) => isSameYmd(batch.date, date))?.color,
+                },
               }}
             >
               <Label

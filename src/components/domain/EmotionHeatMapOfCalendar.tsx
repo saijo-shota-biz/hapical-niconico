@@ -1,9 +1,10 @@
-import { EmotionHeatMap } from '@domain/EmotionHeatMap';
+import { EmotionHeatMapCell, EmotionHeatMapIcon } from '@domain/EmotionHeatMap';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
 import { useRouter } from '@hooks/util/useRouter';
 import { CalendarToday } from '@mui/icons-material';
-import { Box, IconButton, SxProps, Tooltip } from '@mui/material';
+import { IconButton, SxProps, Tooltip } from '@mui/material';
+import { TableRow } from '@ui/table/TableRow';
 import { VFC } from 'react';
 
 import { Calendar, CalendarReport } from '@/types/Calendar';
@@ -25,38 +26,27 @@ export const EmotionHeatMapOfCalendar: VFC<Props> = ({ startDate, endDate, repor
   const dateList = getDateList(startDate, endDate);
 
   return (
-    <EmotionHeatMap dateList={dateList} sx={sx}>
+    <>
       {calendars.map((calendar) => (
-        <Box key={calendar.uid} sx={{ display: 'flex' }}>
-          <Box sx={{ position: 'sticky', left: 0, backgroundColor: 'common.white' }}>
+        <TableRow key={calendar.uid}>
+          <EmotionHeatMapIcon>
             <Tooltip title={calendar.name} placement={'top'} arrow>
-              <IconButton
-                onClick={() => push(`/calendars/${calendar.uid}`)}
-                sx={{ width: '40px', height: '40px', marginRight: 1 }}
-              >
+              <IconButton onClick={() => push(`/calendars/${calendar.uid}`)} sx={{ width: '40px', height: '40px' }}>
                 <CalendarToday />
               </IconButton>
             </Tooltip>
-          </Box>
+          </EmotionHeatMapIcon>
           {dateList.map((date) => {
             const report = reports.find((report) => report.calendarId === calendar.uid && isSameYmd(date, report.date));
             return (
-              <Box
+              <EmotionHeatMapCell
                 key={date.toISOString()}
-                sx={{
-                  width: '40px',
-                  height: '40px',
-                  border: '1px solid',
-                  borderColor: 'grey.200',
-                  borderCollapse: 'collapse',
-                  flexShrink: 0,
-                  ...(report ? { backgroundColor: getEmotionIconColor(report.emotion) } : {}),
-                }}
+                backgroundColor={(report && getEmotionIconColor(report.emotion)) || ''}
               />
             );
           })}
-        </Box>
+        </TableRow>
       ))}
-    </EmotionHeatMap>
+    </>
   );
 };

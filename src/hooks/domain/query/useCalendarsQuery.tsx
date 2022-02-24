@@ -1,5 +1,5 @@
 import { LoginUserState } from '@hooks/util/useLoginUser';
-import { collection, getDocs, query, where, documentId } from 'firebase/firestore';
+import { collection, documentId, getDocs, query, where } from 'firebase/firestore';
 import { selector, useRecoilValue } from 'recoil';
 
 import { firestore } from '@/firebase';

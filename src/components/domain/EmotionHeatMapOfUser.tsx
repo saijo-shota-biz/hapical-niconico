@@ -1,8 +1,9 @@
-import { EmotionHeatMap } from '@domain/EmotionHeatMap';
+import { EmotionHeatMapCell, EmotionHeatMapIcon } from '@domain/EmotionHeatMap';
 import { UserAvatar } from '@domain/UserAvatar';
 import { useDate } from '@hooks/util/useDate';
 import { useEmotion } from '@hooks/util/useEmotion';
-import { Box, SxProps } from '@mui/material';
+import { SxProps } from '@mui/material';
+import { TableRow } from '@ui/table/TableRow';
 import { VFC } from 'react';
 
 import { CalendarReport } from '@/types/Calendar';
@@ -24,31 +25,23 @@ export const EmotionHeatMapOfUser: VFC<Props> = ({ startDate, endDate, reports, 
   const dateList = getDateList(startDate, endDate);
 
   return (
-    <EmotionHeatMap dateList={dateList} sx={sx}>
+    <>
       {users.map((user) => (
-        <Box key={user.uid} sx={{ display: 'flex' }}>
-          <Box sx={{ position: 'sticky', left: 0, backgroundColor: 'common.white' }}>
-            <UserAvatar title={user.name} user={user} sx={{ marginRight: 1 }} />
-          </Box>
+        <TableRow key={user.uid}>
+          <EmotionHeatMapIcon>
+            <UserAvatar title={user.name} user={user} />
+          </EmotionHeatMapIcon>
           {dateList.map((date) => {
             const report = reports.find((report) => report.userId === user.uid && isSameYmd(date, report.date));
             return (
-              <Box
+              <EmotionHeatMapCell
                 key={date.toISOString()}
-                sx={{
-                  width: '40px',
-                  height: '40px',
-                  border: '1px solid',
-                  borderColor: 'grey.200',
-                  borderCollapse: 'collapse',
-                  flexShrink: 0,
-                  ...(report ? { backgroundColor: getEmotionIconColor(report.emotion) } : {}),
-                }}
+                backgroundColor={(report && getEmotionIconColor(report.emotion)) || ''}
               />
             );
           })}
-        </Box>
+        </TableRow>
       ))}
-    </EmotionHeatMap>
+    </>
   );
 };

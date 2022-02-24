@@ -19,7 +19,7 @@ export const useDate = () => {
 
   const getDateList = (startDate: Date, endDate: Date) => {
     const timeDiff = endDate.getTime() - startDate.getTime();
-    const dateDiff = Math.abs(timeDiff) / (24 * 60 * 60 * 1000) + 1;
+    const dateDiff = Math.abs(Math.floor(timeDiff / (1000 * 60 * 60 * 24))) + 1;
     return [...Array(dateDiff)].map((_, i) => {
       const date = new Date(startDate);
       date.setDate(date.getDate() + i);

@@ -3,13 +3,14 @@ import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
 import { useUserCommand } from '@hooks/domain/command/useUserCommand';
 import { useHandler } from '@hooks/util/useHandler';
 import { useRouter } from '@hooks/util/useRouter';
-import { Box, Link } from '@mui/material';
+import { Box, Link, useMediaQuery } from '@mui/material';
+import { PasswordVisibilityIconButton } from '@ui/button/PasswordVisibilityIconButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { InputText } from '@ui/input/InputText';
-import { VFC } from 'react';
+import { MouseEvent, useState, VFC } from 'react';
 import { object, ref, string } from 'yup';
 
 type Form = {
@@ -19,7 +20,7 @@ type Form = {
 };
 
 export const SignupPage: VFC = () => {
-  const { pushOrRedirectUrl, push } = useRouter();
+  const { push } = useRouter();
 
   const { handleAsyncEvent } = useHandler();
 
@@ -43,13 +44,25 @@ export const SignupPage: VFC = () => {
   const onClickSignupButton = handleAsyncEvent(async ({ email, password }: Form) => {
     const user = await signUp(email, password);
     await createUser(user);
-    pushOrRedirectUrl('/');
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const onClickShowPassword = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+  const onMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+  const onClickShowPasswordConfirm = () => {
+    setShowPasswordConfirm((prevState) => !prevState);
+  };
+
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <Card sx={{ width: '40%' }}>
+        <Card sx={{ width: smartPhone ? '90%' : '40%' }}>
           <CardContent>
             <InputText
               label={'メールアドレス'}
@@ -60,18 +73,36 @@ export const SignupPage: VFC = () => {
             />
             <InputText
               label={'パスワード'}
-              type={'password'}
+              type={showPassword ? 'text' : 'password'}
               {...register('password')}
               fullWidth
               placeholder={'パスワードを入力してください'}
               sx={{ marginTop: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <PasswordVisibilityIconButton
+                    showPassword={showPassword}
+                    onClickShowPassword={onClickShowPassword}
+                    onMouseDownPassword={onMouseDownPassword}
+                  />
+                ),
+              }}
             />
             <InputText
               label={'パスワード確認'}
-              type={'password'}
+              type={showPasswordConfirm ? 'text' : 'password'}
               {...register('passwordConfirm')}
               fullWidth
               sx={{ marginTop: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <PasswordVisibilityIconButton
+                    showPassword={showPasswordConfirm}
+                    onClickShowPassword={onClickShowPasswordConfirm}
+                    onMouseDownPassword={onMouseDownPassword}
+                  />
+                ),
+              }}
             />
 
             <Link

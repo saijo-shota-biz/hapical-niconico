@@ -1,12 +1,19 @@
-import { EmotionHeatMapOfCalendar } from '@domain/EmotionHeatMapOfCalendar';
+import { EmotionHeatMap } from '@domain/EmotionHeatMap';
+import { ReportAddModal } from '@domain/ReportAddModal';
 import { ReportList } from '@domain/ReportList';
 import { useDateRangePicker } from '@hooks/components/useDateRangePicker';
+import { useReportAddModal } from '@hooks/components/useReportAddModal';
+import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useMyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
+import { useDate } from '@hooks/util/useDate';
+import { useEmotion } from '@hooks/util/useEmotion';
+import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { Box, useMediaQuery } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import { CalendarsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { CalendarBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { FloatingButton } from '@ui/button/FloatingButton';
 import { Card } from '@ui/card/Card';
 import { CardContent } from '@ui/card/CardContent';
 import { DateRangePicker } from '@ui/input/InputDateRange';
@@ -14,17 +21,39 @@ import { useEffect, VFC } from 'react';
 
 export const HomePage: VFC = () => {
   const { loginUser } = useLoginUser();
-
-  const breadcrumbs = [HomeBreadcrumbs('current'), CalendarsBreadcrumbs('next')];
-
   const { calendars } = useCalendarsQuery();
-  const { reports, setQueryDateRange } = useMyReportsQuery();
+  const breadcrumbs = [HomeBreadcrumbs('current'), CalendarBreadcrumbs(calendars[0].uid, calendars[0].name, 'next')];
+
+  const { reports } = useMyReportsQuery();
+  const { parseDateFromString } = useDate();
+
+  const { getEmotionIconColor } = useEmotion();
 
   const { startDate, setStartDate, endDate, setEndDate } = useDateRangePicker();
 
+  const { showReportAddModal, closeReportAddModal } = useReportAddModal();
+  const { handleAsyncEvent } = useHandler();
+  const { addReport } = useCalendarCommand();
+  const onClickReportAddModalButton = handleAsyncEvent(async () => {
+    const result = await showReportAddModal();
+    if (result) {
+      const date = parseDateFromString(result.date);
+      await addReport(
+        {
+          calendarId: result.calendarId,
+          userId: loginUser?.uid || '',
+          date,
+          emotion: result.emotion,
+          comment: result.comment,
+        },
+        result.uid
+      );
+      closeReportAddModal();
+    }
+  });
   useEffect(() => {
-    setQueryDateRange(startDate, endDate);
-  }, [startDate, endDate]);
+    return () => closeReportAddModal();
+  }, []);
 
   const smartPhone = useMediaQuery('(max-width:600px)');
   return (
@@ -38,20 +67,28 @@ export const HomePage: VFC = () => {
               endDate={endDate}
               onChangeStartDate={setStartDate}
               onChangeEndDate={setEndDate}
+              batches={reports.map((e) => ({ date: e.date, color: getEmotionIconColor(e.emotion) }))}
             />
-            {loginUser && <ReportList reports={reports} users={[loginUser]} />}
+            {loginUser && (
+              <ReportList
+                reports={reports.filter((report) => startDate <= report.date || report.date <= endDate)}
+                users={[loginUser]}
+              />
+            )}
           </Box>
           {calendars && (
-            <EmotionHeatMapOfCalendar
+            <EmotionHeatMap
               startDate={startDate}
               endDate={endDate}
-              reports={reports}
+              reports={reports.filter((report) => startDate <= report.date || report.date <= endDate)}
               calendars={calendars}
               sx={{ marginTop: 2 }}
             />
           )}
         </CardContent>
       </Card>
+      <FloatingButton onClick={onClickReportAddModalButton} />
+      <ReportAddModal calendarSelectable />
     </>
   );
 };

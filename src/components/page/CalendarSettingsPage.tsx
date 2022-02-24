@@ -4,17 +4,13 @@ import { useToaster } from '@hooks/components/useToaster';
 import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
+import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { Alert, Box, Divider } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import {
-  CalendarBreadcrumbs,
-  CalendarsBreadcrumbs,
-  CalendarSettingsBreadcrumbs,
-  HomeBreadcrumbs,
-} from '@ui/breadcrumbs/breadcrumbsLinks';
+import { CalendarBreadcrumbs, CalendarSettingsBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { ErrorButton } from '@ui/button/ErrorButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
@@ -39,17 +35,18 @@ export const CalendarSettingsPage: VFC = () => {
   } = useRouter();
   const { loginUser } = useLoginUser();
 
+  const { calendars } = useCalendarsQuery();
   const { calendar, setQueryCalendarId } = useCalendarQuery();
-  useEffect(() => {
-    setQueryCalendarId(calendarId);
-  }, [calendarId]);
 
   const breadcrumbs = [
     HomeBreadcrumbs(),
-    CalendarsBreadcrumbs(),
     CalendarBreadcrumbs(calendarId, calendar?.name),
     CalendarSettingsBreadcrumbs(calendarId, 'current'),
   ];
+
+  useEffect(() => {
+    setQueryCalendarId(calendarId);
+  }, [calendarId]);
 
   const { handleAsyncEvent } = useHandler();
 
@@ -78,15 +75,15 @@ export const CalendarSettingsPage: VFC = () => {
     const result = await confirm(calendar.name);
     if (result) {
       await deleteCalendar(calendar);
-      push('/calendars');
+      push('/');
     }
   });
 
   const entryUrl = `${window.location.origin}/calendars/${calendarId}/entry`;
   const { showSuccessToast } = useToaster();
-  const copyEntryUrl = () => {
+  const copyEntryUrl = async () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(entryUrl);
+      await navigator.clipboard.writeText(entryUrl);
       showSuccessToast('共有URLをコピーしました。');
     }
   };
@@ -156,7 +153,12 @@ export const CalendarSettingsPage: VFC = () => {
                 {calendar?.entryUsers.map((e) => (
                   <Box key={e.uid} sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 2, width: '60%' }}>
                     <UserAvatar user={e} />
-                    <Label>{e.name}</Label>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <Label>{e.name}</Label>
+                      <Label size={'sm'} color={'grey.700'}>
+                        {e.email}
+                      </Label>
+                    </Box>
                     <Spacer />
                     <PrimaryButton onClick={() => onClickEntryAccept(e)}>承認</PrimaryButton>
                     <ErrorButton onClick={() => onClickEntryReject(e)}>拒否</ErrorButton>
@@ -168,7 +170,16 @@ export const CalendarSettingsPage: VFC = () => {
           <Box sx={{ border: 'solid 2px', borderColor: 'error.main', borderRadius: '8px', padding: 2 }}>
             <Label>カレンダー削除</Label>
             <Divider sx={{ marginY: 1 }} />
-            <ErrorButton sx={{ marginTop: 2 }} onClick={onClickDeleteButton}>
+            {calendars.length === 1 && (
+              <Alert
+                severity="error"
+                sx={{ '> .MuiAlert-message': { display: 'flex', flexDirection: 'column' }, marginTop: 2 }}
+              >
+                <Description size={'sm'}>カレンダーが1つしかないため削除できません。</Description>
+                <Description size={'sm'}>新しいカレンダーを作成した後で削除してください。</Description>
+              </Alert>
+            )}
+            <ErrorButton sx={{ marginTop: 2 }} onClick={onClickDeleteButton} disabled={calendars.length === 1}>
               カレンダーを削除する
             </ErrorButton>
           </Box>

@@ -3,6 +3,7 @@ import { Breadcrumbs as MuiBreadcrumbs, Link, LinkProps } from '@mui/material';
 import { BreadcrumbsType } from '@ui/breadcrumbs/BreadcrumbsType';
 import { Label } from '@ui/typography/Label';
 import { VFC } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 type Props = {
   breadcrumbs: BreadcrumbsType[];
@@ -43,7 +44,7 @@ export const Breadcrumbs: VFC<Props> = ({ breadcrumbs }) => {
       sx={{ padding: 2, backgroundColor: 'grey.100', border: 'solid 1px', borderColor: 'grey.200' }}
     >
       {breadcrumbs.map((e, i) => (
-        <Link key={i} {...getProps(e)} href={e.link}>
+        <Link component={RouterLink} key={i} {...getProps(e)} to={e.link}>
           <e.Icon fontSize="inherit" />
           <Label size={'sm'} sx={{ marginLeft: 1 }}>
             {e.label}
