@@ -3,7 +3,7 @@ import { useUserCommand } from '@hooks/domain/command/useUserCommand';
 import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { CameraAlt } from '@mui/icons-material';
-import { Avatar, Box, Tooltip } from '@mui/material';
+import { Avatar, Box, Tooltip, useMediaQuery } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
 import { AccountBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
@@ -69,11 +69,12 @@ export const AccountPage: VFC = () => {
     }
   });
 
+  const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Card sx={{ margin: 2 }}>
-        <CardContent sx={{ display: 'flex', gap: '32px' }}>
+        <CardContent sx={{ display: 'flex', gap: '32px', ...(smartPhone ? { flexDirection: 'column' } : {}) }}>
           <Box
             sx={{
               position: 'relative',
@@ -84,12 +85,12 @@ export const AccountPage: VFC = () => {
             }}
             onClick={onClickUserAvatar}
           >
-            <Avatar alt={loginUser?.name} src={picture} sx={{ width: 96, height: 96 }} />
+            <Avatar alt={loginUser?.name} src={picture} sx={{ width: 96, height: 96, marginX: 'auto' }} />
             <Box
               sx={{
                 position: 'absolute',
                 top: 0,
-                left: 0,
+                left: 'calc(50% - 48px)',
                 width: '96px',
                 height: '96px',
                 borderRadius: '50%',

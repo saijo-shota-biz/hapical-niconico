@@ -52,7 +52,7 @@ export const CalendarPageCalendarTab: VFC<Props> = ({ baseDate, setBaseDate }) =
   return (
     <>
       <Box sx={{ padding: 2, flexGrow: 1, flexBasis: 0, display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ paddingY: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <IconButton onClick={() => setBaseDate((prev) => prevMonth(prev))}>
             <ArrowBackIosNewOutlined />
           </IconButton>
