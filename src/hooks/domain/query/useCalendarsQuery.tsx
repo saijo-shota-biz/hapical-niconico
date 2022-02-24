@@ -1,5 +1,5 @@
 import { LoginUserState } from '@hooks/util/useLoginUser';
-import { collection, getDocs, query, where, documentId } from 'firebase/firestore';
+import { collection, documentId, getDocs, query, where } from 'firebase/firestore';
 import { selector, useRecoilValue } from 'recoil';
 
 import { firestore } from '@/firebase';
@@ -28,7 +28,6 @@ export const CalendarsQuery = selector<CalendarQueryResult[]>({
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
     if (!loginUser) {
-      console.log('QueryCalendars', []);
       return [];
     }
     const collectionRef = collection(firestore, 'calendars');
@@ -61,9 +60,7 @@ export const CalendarsQuery = selector<CalendarQueryResult[]>({
         };
       });
 
-    const result = await Promise.all(calendarQueryResultPromiseList);
-    console.log('QueryCalendars', result);
-    return result;
+    return await Promise.all(calendarQueryResultPromiseList);
   },
 });
 

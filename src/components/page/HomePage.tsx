@@ -7,6 +7,7 @@ import { useCalendarCommand } from '@hooks/domain/command/useCalendarCommand';
 import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useMyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
 import { useDate } from '@hooks/util/useDate';
+import { useEmotion } from '@hooks/util/useEmotion';
 import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { Box, useMediaQuery } from '@mui/material';
@@ -23,13 +24,12 @@ export const HomePage: VFC = () => {
   const { calendars } = useCalendarsQuery();
   const breadcrumbs = [HomeBreadcrumbs('current'), CalendarBreadcrumbs(calendars[0].uid, calendars[0].name, 'next')];
 
-  const { reports, setQueryDateRange } = useMyReportsQuery();
+  const { reports } = useMyReportsQuery();
   const { parseDateFromString } = useDate();
 
+  const { getEmotionIconColor } = useEmotion();
+
   const { startDate, setStartDate, endDate, setEndDate } = useDateRangePicker();
-  useEffect(() => {
-    setQueryDateRange(startDate, endDate);
-  }, [startDate, endDate]);
 
   const { showReportAddModal, closeReportAddModal } = useReportAddModal();
   const { handleAsyncEvent } = useHandler();
@@ -67,14 +67,20 @@ export const HomePage: VFC = () => {
               endDate={endDate}
               onChangeStartDate={setStartDate}
               onChangeEndDate={setEndDate}
+              batches={reports.map((e) => ({ date: e.date, color: getEmotionIconColor(e.emotion) }))}
             />
-            {loginUser && <ReportList reports={reports} users={[loginUser]} />}
+            {loginUser && (
+              <ReportList
+                reports={reports.filter((report) => startDate <= report.date || report.date <= endDate)}
+                users={[loginUser]}
+              />
+            )}
           </Box>
           {calendars && (
             <EmotionHeatMap
               startDate={startDate}
               endDate={endDate}
-              reports={reports}
+              reports={reports.filter((report) => startDate <= report.date || report.date <= endDate)}
               calendars={calendars}
               sx={{ marginTop: 2 }}
             />

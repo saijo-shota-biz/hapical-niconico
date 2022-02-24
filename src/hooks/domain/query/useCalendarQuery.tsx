@@ -13,7 +13,6 @@ export const CalendarReportsQuery = selector<CalendarReport[]>({
     const calendarId = get(CalendarQueryCalendarIdState);
     const { start, end } = get(CalendarQueryDateState);
     if (!calendarId || !start || !end) {
-      console.log('QueryCalendarReports', []);
       return [];
     }
 
@@ -33,7 +32,6 @@ export const CalendarReportsQuery = selector<CalendarReport[]>({
     calendarReportsDocs.forEach((report) =>
       reports.push({ uid: report.id, ...report.data(), date: report.get('date').toDate() } as CalendarReport)
     );
-    console.log('QueryCalendarReports', reports);
     return reports;
   },
 });
@@ -47,19 +45,16 @@ export const CalendarQuery = selector<CalendarState | null>({
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
     if (!loginUser) {
-      console.log('QueryCalendar', null);
       return null;
     }
 
     const calendarId = get(CalendarQueryCalendarIdState);
     if (!calendarId) {
-      console.log('QueryCalendar', null);
       return null;
     }
 
     const calendar = get(CalendarsQuery).find((c) => c.uid === calendarId);
     if (!calendar) {
-      console.log('QueryCalendar', null);
       return null;
     }
 
@@ -68,12 +63,10 @@ export const CalendarQuery = selector<CalendarState | null>({
     if (start && end) {
       reports = get(CalendarReportsQuery);
     }
-    const result = {
+    return {
       ...calendar,
       reports,
     };
-    console.log('QueryCalendar', result);
-    return result;
   },
 });
 
