@@ -49,7 +49,6 @@ export const CalendarPage: VFC = () => {
   };
 
   useEffect(() => {
-    console.log({ calendarId, startDate, endDate, value });
     if (calendarId) {
       setQueryCalendarId(calendarId);
     }

@@ -13,16 +13,25 @@ type Props = {
   onChangeStartDate: (date: Date) => void;
   endDate: Date;
   onChangeEndDate: (date: Date) => void;
+  batches?: {
+    date: Date;
+    color: string;
+  }[];
 };
 
-export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endDate, onChangeEndDate }) => {
+export const DateRangePicker: VFC<Props> = ({
+  startDate,
+  onChangeStartDate,
+  endDate,
+  onChangeEndDate,
+  batches = [],
+}) => {
   const {
     formatYm,
     formatYmd,
     formatMd,
     prevMonth,
     nextMonth,
-    isToday,
     isThisMonth,
     isSameYmd,
     getRangeWeek,
@@ -189,13 +198,16 @@ export const DateRangePicker: VFC<Props> = ({ startDate, onChangeStartDate, endD
             <Badge
               color="primary"
               variant="dot"
-              invisible={!isToday(date)}
+              invisible={!batches.find((batch) => isSameYmd(batch.date, date))}
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 width: '24px',
                 height: '24px',
+                ' .MuiBadge-badge': {
+                  backgroundColor: batches.find((batch) => isSameYmd(batch.date, date))?.color,
+                },
               }}
             >
               <Label
