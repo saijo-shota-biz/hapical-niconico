@@ -71,7 +71,7 @@ export const HomePage: VFC = () => {
             />
             {loginUser && (
               <ReportList
-                reports={reports.filter((report) => startDate <= report.date || report.date <= endDate)}
+                reports={reports.filter((report) => startDate <= report.date && report.date <= endDate)}
                 users={[loginUser]}
               />
             )}
@@ -80,7 +80,7 @@ export const HomePage: VFC = () => {
             <EmotionHeatMap
               startDate={startDate}
               endDate={endDate}
-              reports={reports.filter((report) => startDate <= report.date || report.date <= endDate)}
+              reports={reports.filter((report) => startDate <= report.date && report.date <= endDate)}
               calendars={calendars}
               sx={{ marginTop: 2 }}
             />
