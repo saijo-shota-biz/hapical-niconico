@@ -108,17 +108,10 @@ export const CalendarPage: VFC = () => {
       <InputSelect
         inputSx={{
           borderRadius: 0,
-          ' .MuiOutlinedInput-notchedOutline': {
-            border: 'none',
-          },
+          ' .MuiOutlinedInput-notchedOutline': { border: 'none' },
+          ' .MuiSelect-select': { padding: '12px 16px' },
         }}
-        MenuProps={{
-          sx: {
-            ' .MuiPaper-root': {
-              left: '0 !important',
-            },
-          },
-        }}
+        MenuProps={{ sx: { ' .MuiPaper-root': { left: '0 !important' } } }}
         value={calendarId}
         options={[
           ...calendars.map((e) => ({ label: e.name, value: e.uid })),
@@ -126,7 +119,15 @@ export const CalendarPage: VFC = () => {
         ]}
         onChange={onChangeSelect}
       />
-      <Tabs value={value} onChange={handleChange}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        sx={{
+          ' .MuiTab-root': {
+            padding: '4px 24px',
+          },
+        }}
+      >
         <Tab label="カレンダー" />
         <Tab label="記録サマリー" />
       </Tabs>
