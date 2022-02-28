@@ -1,8 +1,8 @@
 {
-	"name":				"",
-	"short_name":		"",
+	"name":				"ハッピーカレンダー",
+	"short_name":		"ハピカレ",
 	"description":		"",
-	"start_url":		"/",
+	"start_url":		"/favicon",
 	"display":			"standalone",
 	"orientation":		"any",
 	"background_color":	"#fff",
