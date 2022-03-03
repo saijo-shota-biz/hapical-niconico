@@ -1,15 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import get from 'lodash.get';
-import { useForm } from 'react-hook-form';
+import { DefaultValues, useForm } from 'react-hook-form';
 import { FieldPath } from 'react-hook-form/dist/types/path';
-import { AnyObjectSchema } from 'yup';
+import { SchemaOf } from 'yup';
 
-export const useValidationForm = <T,>(validationSchema: AnyObjectSchema) => {
+export const useValidationForm = <T extends { [key in string]: any }>(validationSchema: SchemaOf<T>) => {
+  const defaultValues = validationSchema.cast({}) as DefaultValues<T>;
   const {
     formState: { errors },
     register: reactHookFormRegister,
     ...rest
   } = useForm<T>({
+    defaultValues,
     resolver: yupResolver(validationSchema),
   });
 

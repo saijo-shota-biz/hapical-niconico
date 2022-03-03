@@ -37,6 +37,7 @@ export const DateRangePicker: VFC<Props> = ({
     getRangeWeek,
     getRangeYear,
     getRangeMonth,
+    parseDateFromYmd,
   } = useDate();
   const [baseDate, setBaseDate] = useState(new Date());
   const { dateList, dayList, getDayColor, getThisMonthColor } = useCalendar(baseDate);
@@ -94,8 +95,8 @@ export const DateRangePicker: VFC<Props> = ({
 
   const onClickTodayButton = () => {
     const today = new Date();
-    onChangeStartDate(today);
-    onChangeEndDate(today);
+    onChangeStartDate(parseDateFromYmd(today.getFullYear(), today.getMonth(), today.getDate()));
+    onChangeEndDate(parseDateFromYmd(today.getFullYear(), today.getMonth(), today.getDate()));
   };
 
   const smartPhone = useMediaQuery('(max-width:600px)');

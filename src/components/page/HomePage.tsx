@@ -19,6 +19,8 @@ import { CardContent } from '@ui/card/CardContent';
 import { DateRangePicker } from '@ui/input/InputDateRange';
 import { useEffect, VFC } from 'react';
 
+import { CalendarReport } from '@/types/Calendar';
+
 export const HomePage: VFC = () => {
   const { loginUser } = useLoginUser();
   const { calendars } = useCalendarsQuery();
@@ -30,6 +32,15 @@ export const HomePage: VFC = () => {
   const { getEmotionIconColor } = useEmotion();
 
   const { startDate, setStartDate, endDate, setEndDate } = useDateRangePicker();
+
+  const reportFilter = (report: CalendarReport) => {
+    console.log({
+      date: report.date,
+      startDate,
+      endDate,
+    });
+    return startDate.getTime() <= report.date.getTime() && report.date.getTime() <= endDate.getTime();
+  };
 
   const { showReportAddModal, closeReportAddModal } = useReportAddModal();
   const { handleAsyncEvent } = useHandler();
@@ -69,18 +80,13 @@ export const HomePage: VFC = () => {
               onChangeEndDate={setEndDate}
               batches={reports.map((e) => ({ date: e.date, color: getEmotionIconColor(e.emotion) }))}
             />
-            {loginUser && (
-              <ReportList
-                reports={reports.filter((report) => startDate <= report.date && report.date <= endDate)}
-                users={[loginUser]}
-              />
-            )}
+            {loginUser && <ReportList reports={reports.filter(reportFilter)} users={[loginUser]} />}
           </Box>
           {calendars && (
             <EmotionHeatMap
               startDate={startDate}
               endDate={endDate}
-              reports={reports.filter((report) => startDate <= report.date && report.date <= endDate)}
+              reports={reports.filter(reportFilter)}
               calendars={calendars}
               sx={{ marginTop: 2 }}
             />
