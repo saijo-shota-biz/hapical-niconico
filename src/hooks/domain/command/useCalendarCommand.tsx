@@ -1,7 +1,7 @@
 import {
   CalendarQueryCalendarIdState,
   CalendarReportsQuery,
-  CalendarState,
+  CalendarQueryResult,
 } from '@hooks/domain/query/useCalendarQuery';
 import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { MyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
@@ -59,7 +59,7 @@ export const useCalendarCommand = () => {
   );
 
   const deleteCalendar = handleCommand(
-    async (calendar: CalendarState) => {
+    async (calendar: CalendarQueryResult) => {
       const calendarDocRef = doc(firestore, 'calendars', calendar.uid);
       await deleteDoc(calendarDocRef);
       const reportCollectionRef = collection(firestore, 'calendar-reports');
