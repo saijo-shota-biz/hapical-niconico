@@ -48,61 +48,63 @@ declare module '@mui/material/Typography' {
   }
 }
 
-export const theme = createTheme({
-  typography: {
-    fontFamily: ['Noto Sans JP', 'Roboto', 'sans-serif'].join(',') + ' !important',
-    'label-sm': {
-      fontSize: '14px',
-      lineHeight: '14px',
-      fontWeight: 'normal',
+export const theme = (mode: 'dark' | 'light') =>
+  createTheme({
+    typography: {
+      fontFamily: ['Noto Sans JP', 'Roboto', 'sans-serif'].join(',') + ' !important',
+      'label-sm': {
+        fontSize: '14px',
+        lineHeight: '14px',
+        fontWeight: 'normal',
+      },
+      'label-md': {
+        fontSize: '16px',
+        lineHeight: '16px',
+        fontWeight: 'normal',
+      },
+      'label-lg': {
+        fontSize: '18px',
+        lineHeight: '18px',
+        fontWeight: 'normal',
+      },
+      'description-sm': {
+        fontSize: '14px',
+        lineHeight: '21px',
+        fontWeight: 'normal',
+      },
+      'description-md': {
+        fontSize: '16px',
+        lineHeight: '24px',
+        fontWeight: 'normal',
+      },
+      'description-lg': {
+        fontSize: '18px',
+        lineHeight: '27px',
+        fontWeight: 'normal',
+      },
     },
-    'label-md': {
-      fontSize: '16px',
-      lineHeight: '16px',
-      fontWeight: 'normal',
+    palette: {
+      mode: 'light',
+      common: {
+        white,
+        black,
+      },
+      text: {
+        primary: black,
+        disabled: grey['300'],
+      },
+      neutral: blueGrey,
+      primary: {
+        ...lightBlue,
+        contrastText: white,
+      },
+      secondary: amber,
+      error: red,
+      background: {
+        default: grey['50'],
+      },
     },
-    'label-lg': {
-      fontSize: '18px',
-      lineHeight: '18px',
-      fontWeight: 'normal',
-    },
-    'description-sm': {
-      fontSize: '14px',
-      lineHeight: '21px',
-      fontWeight: 'normal',
-    },
-    'description-md': {
-      fontSize: '16px',
-      lineHeight: '24px',
-      fontWeight: 'normal',
-    },
-    'description-lg': {
-      fontSize: '18px',
-      lineHeight: '27px',
-      fontWeight: 'normal',
-    },
-  },
-  palette: {
-    common: {
-      white,
-      black,
-    },
-    text: {
-      primary: black,
-      disabled: grey['300'],
-    },
-    neutral: blueGrey,
-    primary: {
-      ...lightBlue,
-      contrastText: white,
-    },
-    secondary: amber,
-    error: red,
-    background: {
-      default: grey['50'],
-    },
-  },
-});
+  });
 
 declare module '@mui/material/styles' {
   interface Palette {

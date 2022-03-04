@@ -18,12 +18,12 @@ const chunk = <T,>(array: T[], size: number) => {
   return chunked;
 };
 
-export type CalendarQueryResult = Calendar & {
+export type CalendarsQueryResult = Calendar & {
   users: User[];
   entryUsers: User[];
 };
 
-export const CalendarsQuery = selector<CalendarQueryResult[]>({
+export const CalendarsQuery = selector<CalendarsQueryResult[]>({
   key: 'QueryCalendars',
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
