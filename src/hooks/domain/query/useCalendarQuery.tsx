@@ -1,4 +1,4 @@
-import { CalendarQueryResult, CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
+import { CalendarsQueryResult, CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useDate } from '@hooks/util/useDate';
 import { LoginUserState } from '@hooks/util/useLoginUser';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
@@ -36,11 +36,11 @@ export const CalendarReportsQuery = selector<CalendarReport[]>({
   },
 });
 
-export type CalendarState = CalendarQueryResult & {
+export type CalendarQueryResult = CalendarsQueryResult & {
   reports: CalendarReport[];
 };
 
-export const CalendarQuery = selector<CalendarState | null>({
+export const CalendarQuery = selector<CalendarQueryResult | null>({
   key: 'QueryCalendar',
   get: async ({ get }) => {
     const loginUser = get(LoginUserState);
