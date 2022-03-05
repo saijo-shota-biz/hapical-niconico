@@ -23,8 +23,12 @@ export const SinginPage: VFC = () => {
   const { register, handleSubmit } = useValidationForm<Form>(
     object({
       email: string() //
+        .defined()
+        .default('')
         .required('メールアドレスを入力してください'),
       password: string() //
+        .defined()
+        .default('')
         .required('パスワードを入力してください。'),
     })
   );
