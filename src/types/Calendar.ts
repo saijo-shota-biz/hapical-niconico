@@ -3,6 +3,7 @@ export type Calendar = {
   name: string;
   userIds: string[];
   entries: string[];
+  shared: boolean;
 };
 
 export const SUPER_HAPPY = 'SUPER_HAPPY';

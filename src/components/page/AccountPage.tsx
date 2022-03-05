@@ -2,10 +2,12 @@ import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useUserCommand } from '@hooks/domain/command/useUserCommand';
 import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
+import { useRouter } from '@hooks/util/useRouter';
 import { CameraAlt } from '@mui/icons-material';
 import { Avatar, Box, Tooltip, useMediaQuery } from '@mui/material';
 import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import { AccountBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { AccountBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
+import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
@@ -19,12 +21,15 @@ type Form = {
 };
 
 export const AccountPage: VFC = () => {
+  const { push } = useRouter();
   const { loginUser, setLoginUser } = useLoginUser();
-  const breadcrumbs = [HomeBreadcrumbs(), AccountBreadcrumbs('current')];
+  const breadcrumbs = [AccountBreadcrumbs('current')];
 
   const { register, handleSubmit, setValue } = useValidationForm<Form>(
     object({
       userName: string() //
+        .defined()
+        .default('')
         .required('ユーザー名を入力してください。'),
     })
   );
@@ -126,6 +131,7 @@ export const AccountPage: VFC = () => {
           <InputText label={'ユーザー名'} {...register('userName')} />
         </CardContent>
         <CardActions>
+          <NeutralButton onClick={() => push('/')}>キャンセル</NeutralButton>
           <PrimaryButton onClick={handleSubmit(onClickSaveButton)}>送信</PrimaryButton>
         </CardActions>
       </Card>

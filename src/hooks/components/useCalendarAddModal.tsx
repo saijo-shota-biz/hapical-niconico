@@ -8,6 +8,7 @@ type CalendarAddModalStateType = {
 
 type CalendarState = {
   name: string;
+  shared: boolean;
 };
 
 const CalendarAddModalState = atom<CalendarAddModalStateType>({

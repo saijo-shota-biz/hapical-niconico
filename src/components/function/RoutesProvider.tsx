@@ -18,7 +18,6 @@ export const RoutesProvider: VFC = () => {
     <Routes>
       <Route element={<SecurityPage />}>
         <Route element={<AppLayout />}>
-          <Route path={'/'} element={<HomePage />} />
           <Route element={<CalendarIdRequiredPage />}>
             <Route path={'/calendars/:calendarId'} element={<CalendarPage />} />
             <Route path={'/calendars/:calendarId/settings'} element={<CalendarSettingsPage />} />
@@ -29,6 +28,7 @@ export const RoutesProvider: VFC = () => {
       </Route>
 
       <Route element={<PublicPage />}>
+        <Route path={'/'} element={<HomePage />} />
         <Route path={'/signin'} element={<SinginPage />} />
         <Route path={'/signup'} element={<SignupPage />} />
         <Route path={'/password-reset'} element={<PasswordResetPage />} />
