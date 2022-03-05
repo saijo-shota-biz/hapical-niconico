@@ -5,13 +5,11 @@ import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { CameraAlt } from '@mui/icons-material';
 import { Avatar, Box, Tooltip, useMediaQuery } from '@mui/material';
-import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import { AccountBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
-import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
+import { CardHeader } from '@ui/card/CardHeader';
 import { InputText } from '@ui/input/InputText';
 import { ChangeEvent, useEffect, useRef, useState, VFC } from 'react';
 import { object, string } from 'yup';
@@ -23,7 +21,6 @@ type Form = {
 export const AccountPage: VFC = () => {
   const { push } = useRouter();
   const { loginUser, setLoginUser } = useLoginUser();
-  const breadcrumbs = [AccountBreadcrumbs('current')];
 
   const { register, handleSubmit, setValue } = useValidationForm<Form>(
     object({
@@ -77,8 +74,8 @@ export const AccountPage: VFC = () => {
   const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <>
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Card sx={{ margin: 2 }}>
+        <CardHeader onClose={() => push('/')}>アカウント設定</CardHeader>
         <CardContent sx={{ display: 'flex', gap: '32px', ...(smartPhone ? { flexDirection: 'column' } : {}) }}>
           <Box
             sx={{
@@ -131,7 +128,6 @@ export const AccountPage: VFC = () => {
           <InputText label={'ユーザー名'} {...register('userName')} />
         </CardContent>
         <CardActions>
-          <NeutralButton onClick={() => push('/')}>キャンセル</NeutralButton>
           <PrimaryButton onClick={handleSubmit(onClickSaveButton)}>送信</PrimaryButton>
         </CardActions>
       </Card>

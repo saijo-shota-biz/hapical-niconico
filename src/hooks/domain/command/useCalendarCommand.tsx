@@ -43,7 +43,7 @@ export const useCalendarCommand = () => {
     'カレンダーの作成に失敗しました。'
   );
 
-  const editCalendar = handleCommand(
+  const editCalendarName = handleCommand(
     async (calendarId: string, name: string) => {
       const calendarDocRef = doc(firestore, 'calendars', calendarId);
       await setDoc(calendarDocRef, { name }, { merge: true });
@@ -51,6 +51,16 @@ export const useCalendarCommand = () => {
     },
     'カレンダー名を変更しました。',
     'カレンダー名の変更に失敗しました。'
+  );
+
+  const editCalendarShared = handleCommand(
+    async (calendarId: string, shared: boolean) => {
+      const calendarDocRef = doc(firestore, 'calendars', calendarId);
+      await setDoc(calendarDocRef, { shared }, { merge: true });
+      refreshCalendars();
+    },
+    'カレンダーの共有設定を変更しました。',
+    'カレンダーの共有設定の変更に失敗しました。'
   );
 
   const deleteCalendar = handleCommand(
@@ -127,5 +137,15 @@ export const useCalendarCommand = () => {
     'ユーザーをカレンダーからの削除に失敗しました。'
   );
 
-  return { createCalendar, editCalendar, deleteCalendar, addReport, entry, entryAccept, entryReject, deleteUser };
+  return {
+    createCalendar,
+    editCalendarName,
+    editCalendarShared,
+    deleteCalendar,
+    addReport,
+    entry,
+    entryAccept,
+    entryReject,
+    deleteUser,
+  };
 };
