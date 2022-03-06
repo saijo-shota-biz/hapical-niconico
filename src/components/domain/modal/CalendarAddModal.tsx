@@ -62,7 +62,13 @@ export const CalendarAddModal: VFC = () => {
       <ModalCard>
         <CardHeader onClose={onClickCancelButton}>新しいカレンダーを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <InputRadioGroup row label={''} options={sharedOptions} {...register('shared')} />
+          <InputRadioGroup
+            row
+            label={''}
+            options={sharedOptions}
+            {...register('shared')}
+            defaultValue={sharedOptions[0].value}
+          />
           <InputText
             sx={{ marginTop: 2 }}
             label={'新しいカレンダー名'}

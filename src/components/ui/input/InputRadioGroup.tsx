@@ -8,35 +8,23 @@ import {
   RadioGroupProps,
 } from '@mui/material';
 import { FormInput } from '@ui/input/FormInput';
-import { ChangeEvent, VFC } from 'react';
+import { VFC } from 'react';
 
-type Props = Omit<RadioGroupProps, 'variant' | 'label' | 'value' | 'onChange'> & {
+type Props = RadioGroupProps & {
   label: string;
   options: { value: string; label: string }[];
 } & FormInput;
 
-export const InputRadioGroup: VFC<Props> = ({
-  value,
-  onChange: onChangeValue,
-  label,
-  options,
-  forwardRef,
-  ...rest
-}) => {
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (onChangeValue) {
-      onChangeValue(event.target.value);
-    }
-  };
+export const InputRadioGroup: VFC<Props> = ({ label, options, forwardRef, error, helperText, ...rest }) => {
   return (
-    <FormControl error={rest.error}>
+    <FormControl error={error}>
       {label && <FormLabel id={rest.id}>{label}</FormLabel>}
-      <RadioGroup row={rest.row} ref={forwardRef} value={value} onChange={onChange}>
+      <RadioGroup {...rest} ref={forwardRef}>
         {options.map((e) => (
           <FormControlLabel key={e.value} value={e.value} control={<Radio />} label={e.label} />
         ))}
       </RadioGroup>
-      <FormHelperText>{rest.helperText}</FormHelperText>
+      <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   );
 };

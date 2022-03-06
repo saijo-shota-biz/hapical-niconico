@@ -17,7 +17,7 @@ import { Label } from '@ui/typography/Label';
 import { useEffect, useState, VFC } from 'react';
 import { object, string } from 'yup';
 
-import { NORMAL } from '@/types/Calendar';
+import { Emotion, NORMAL } from '@/types/Calendar';
 
 type Form = {
   emotion: string;
@@ -33,7 +33,7 @@ export const ReportAddModal: VFC = () => {
   const { open, onClickOk, onClickCancel, reportId, date } = useReportAddModal();
 
   const [targetDate, setTargetDate] = useState<Date>();
-  const { register, handleSubmit, setValue, reset } = useValidationForm<Form>(
+  const { register, handleSubmit, setValue, reset, watch } = useValidationForm<Form>(
     object({
       emotion: string() //
         .defined()
@@ -44,7 +44,8 @@ export const ReportAddModal: VFC = () => {
     })
   );
 
-  const { value: emotion, onChange: onChangeEmotion } = register('emotion');
+  const emotion = watch('emotion');
+  const onChangeEmotion = (emotion: Emotion) => setValue('emotion', emotion);
 
   const { isEmotionStr } = useEmotion();
 
