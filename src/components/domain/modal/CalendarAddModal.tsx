@@ -29,8 +29,7 @@ export const CalendarAddModal: VFC = () => {
       shared: string() //
         .defined()
         .default('0')
-        .required('どちらかを選択してください。')
-        .oneOf(['0', '1'], 'ひとりで使う か みんなで使うのどちらかを選択してください。'),
+        .required('どちらかを選択してください。'),
     })
   );
   const sharedOptions = [
@@ -62,13 +61,7 @@ export const CalendarAddModal: VFC = () => {
       <ModalCard>
         <CardHeader onClose={onClickCancelButton}>新しいカレンダーを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <InputRadioGroup
-            row
-            label={''}
-            options={sharedOptions}
-            {...register('shared')}
-            defaultValue={sharedOptions[0].value}
-          />
+          <InputRadioGroup row label={''} options={sharedOptions} {...register('shared')} defaultValue={'0'} />
           <InputText
             sx={{ marginTop: 2 }}
             label={'新しいカレンダー名'}

@@ -19,9 +19,9 @@ export const InputRadioGroup: VFC<Props> = ({ label, options, forwardRef, error,
   return (
     <FormControl error={error}>
       {label && <FormLabel id={rest.id}>{label}</FormLabel>}
-      <RadioGroup {...rest} ref={forwardRef}>
+      <RadioGroup {...rest}>
         {options.map((e) => (
-          <FormControlLabel key={e.value} value={e.value} control={<Radio />} label={e.label} />
+          <FormControlLabel key={e.value} value={e.value} control={<Radio />} label={e.label} inputRef={forwardRef} />
         ))}
       </RadioGroup>
       <FormHelperText>{helperText}</FormHelperText>
