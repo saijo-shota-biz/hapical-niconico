@@ -2,14 +2,14 @@ import { useValidationForm } from '@hooks/components/useValidationForm';
 import { useUserCommand } from '@hooks/domain/command/useUserCommand';
 import { useHandler } from '@hooks/util/useHandler';
 import { useLoginUser } from '@hooks/util/useLoginUser';
+import { useRouter } from '@hooks/util/useRouter';
 import { CameraAlt } from '@mui/icons-material';
 import { Avatar, Box, Tooltip, useMediaQuery } from '@mui/material';
-import { Breadcrumbs } from '@ui/breadcrumbs/Breadcrumbs';
-import { AccountBreadcrumbs, HomeBreadcrumbs } from '@ui/breadcrumbs/breadcrumbsLinks';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { Card } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
+import { CardHeader } from '@ui/card/CardHeader';
 import { InputText } from '@ui/input/InputText';
 import { ChangeEvent, useEffect, useRef, useState, VFC } from 'react';
 import { object, string } from 'yup';
@@ -19,12 +19,14 @@ type Form = {
 };
 
 export const AccountPage: VFC = () => {
+  const { push } = useRouter();
   const { loginUser, setLoginUser } = useLoginUser();
-  const breadcrumbs = [HomeBreadcrumbs(), AccountBreadcrumbs('current')];
 
   const { register, handleSubmit, setValue } = useValidationForm<Form>(
     object({
       userName: string() //
+        .defined()
+        .default('')
         .required('ユーザー名を入力してください。'),
     })
   );
@@ -72,8 +74,8 @@ export const AccountPage: VFC = () => {
   const smartPhone = useMediaQuery('(max-width:600px)');
   return (
     <>
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Card sx={{ margin: 2 }}>
+        <CardHeader onClose={() => push('/')}>アカウント設定</CardHeader>
         <CardContent sx={{ display: 'flex', gap: '32px', ...(smartPhone ? { flexDirection: 'column' } : {}) }}>
           <Box
             sx={{

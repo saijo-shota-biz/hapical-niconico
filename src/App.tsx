@@ -1,5 +1,6 @@
 import { FirebaseAuthProvider } from '@function/FirebaseAuthProvider';
 import { RoutesProvider } from '@function/RoutesProvider';
+import { Suspense } from '@function/Suspense';
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import { ConfirmModal } from '@ui/modal/ConfirmModal';
 import { Toaster } from '@ui/utils/Toaster';
@@ -17,17 +18,19 @@ function App() {
   const theme = useMemo(() => myTheme(prefersDarkMode ? 'dark' : 'light'), [prefersDarkMode]);
 
   return (
-    <RecoilRoot>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <FirebaseAuthProvider />
-          <RoutesProvider />
-          <Toaster />
-          <ConfirmModal />
-        </BrowserRouter>
-      </ThemeProvider>
-    </RecoilRoot>
+    <Suspense>
+      <RecoilRoot>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <FirebaseAuthProvider />
+            <RoutesProvider />
+            <Toaster />
+            <ConfirmModal />
+          </BrowserRouter>
+        </ThemeProvider>
+      </RecoilRoot>
+    </Suspense>
   );
 }
 

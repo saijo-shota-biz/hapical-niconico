@@ -21,6 +21,8 @@ export const PasswordResetPage: VFC = () => {
   const { register, handleSubmit } = useValidationForm<Form>(
     object({
       email: string() //
+        .defined()
+        .default('')
         .required('メールアドレスを入力してください。')
         .email('メールアドレスの形式で入力してください。'),
     })

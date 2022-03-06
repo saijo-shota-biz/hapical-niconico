@@ -1,19 +1,5 @@
-import { CalendarToday, EventNote, Home, List, ManageAccounts, Settings } from '@mui/icons-material';
+import { CalendarToday, ManageAccounts, Settings } from '@mui/icons-material';
 import { BreadcrumbsPosition, BreadcrumbsType } from '@ui/breadcrumbs/BreadcrumbsType';
-
-export const HomeBreadcrumbs = (position: BreadcrumbsPosition = 'prev'): BreadcrumbsType => ({
-  label: 'ホーム',
-  Icon: Home,
-  link: '/',
-  position,
-});
-
-export const CalendarsBreadcrumbs = (position: BreadcrumbsPosition = 'prev'): BreadcrumbsType => ({
-  label: 'カレンダー一覧',
-  Icon: List,
-  link: '/calendars',
-  position,
-});
 
 export const CalendarBreadcrumbs = (
   calendarId: string,
@@ -23,16 +9,6 @@ export const CalendarBreadcrumbs = (
   label: calendarName,
   Icon: CalendarToday,
   link: `/calendars/${calendarId}`,
-  position,
-});
-
-export const CalendarReportBreadcrumbs = (
-  calendarId: string,
-  position: BreadcrumbsPosition = 'prev'
-): BreadcrumbsType => ({
-  label: '記録',
-  Icon: EventNote,
-  link: `/calendars/${calendarId}/report`,
   position,
 });
 

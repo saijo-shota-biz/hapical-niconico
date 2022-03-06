@@ -1,15 +1,22 @@
 import { Box, SxProps, TextField, TextFieldProps } from '@mui/material';
+import { FormInput } from '@ui/input/FormInput';
 import { Label } from '@ui/typography/Label';
-import { VFC } from 'react';
+import { ChangeEvent, VFC } from 'react';
 import { RefCallBack } from 'react-hook-form';
 
 export type InputTextProps = Omit<TextFieldProps, 'variant' | 'label'> & {
   label?: string;
   textFieldSx?: SxProps;
   forwardRef?: RefCallBack;
-};
+} & FormInput;
 
 export const InputText: VFC<InputTextProps> = ({ label = null, sx, textFieldSx = {}, forwardRef, ...rest }) => {
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (rest.onChange) {
+      rest.onChange(event.target.value);
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', ...sx }}>
       {label && (
@@ -17,7 +24,7 @@ export const InputText: VFC<InputTextProps> = ({ label = null, sx, textFieldSx =
           {label}
         </Label>
       )}
-      <TextField {...rest} variant={'outlined'} sx={textFieldSx} ref={forwardRef} />
+      <TextField {...rest} onChange={onChange} variant={'outlined'} sx={textFieldSx} ref={forwardRef} />
     </Box>
   );
 };

@@ -79,6 +79,15 @@ export const useDate = () => {
     );
   };
 
+  const isBeforeToday = (date: Date) => {
+    const today = new Date();
+    return (
+      date.getFullYear() < today.getFullYear() ||
+      date.getMonth() < today.getMonth() ||
+      (date.getMonth() === today.getMonth() && date.getDate() < today.getDate())
+    );
+  };
+
   const isAfterToday = (date: Date) => {
     const today = new Date();
     return (
@@ -116,6 +125,7 @@ export const useDate = () => {
     prevMonth,
     beforeDate,
     isToday,
+    isBeforeToday,
     isAfterToday,
     isThisMonth,
     isSameYmd,
