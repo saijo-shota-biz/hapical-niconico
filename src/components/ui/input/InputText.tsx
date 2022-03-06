@@ -4,16 +4,24 @@ import { Label } from '@ui/typography/Label';
 import { ChangeEvent, VFC } from 'react';
 import { RefCallBack } from 'react-hook-form';
 
-export type InputTextProps = Omit<TextFieldProps, 'variant' | 'label'> & {
+export type InputTextProps = Omit<TextFieldProps, 'variant' | 'label' | 'value' | 'onChange'> & {
   label?: string;
-  textFieldSx?: SxProps;
+  inputSx?: SxProps;
   forwardRef?: RefCallBack;
 } & FormInput;
 
-export const InputText: VFC<InputTextProps> = ({ label = null, sx, textFieldSx = {}, forwardRef, ...rest }) => {
+export const InputText: VFC<InputTextProps> = ({
+  value,
+  onChange: onChangeValue,
+  label = null,
+  sx,
+  inputSx = {},
+  forwardRef,
+  ...rest
+}) => {
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (rest.onChange) {
-      rest.onChange(event.target.value);
+    if (onChangeValue) {
+      onChangeValue(event.target.value);
     }
   };
 
@@ -24,7 +32,7 @@ export const InputText: VFC<InputTextProps> = ({ label = null, sx, textFieldSx =
           {label}
         </Label>
       )}
-      <TextField {...rest} onChange={onChange} variant={'outlined'} sx={textFieldSx} ref={forwardRef} />
+      <TextField {...rest} value={value} onChange={onChange} variant={'outlined'} sx={inputSx} ref={forwardRef} />
     </Box>
   );
 };
