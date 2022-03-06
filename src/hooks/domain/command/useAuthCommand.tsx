@@ -22,7 +22,7 @@ export const useAuthCommand = () => {
       }));
     },
     '',
-    'ログインに失敗しました。'
+    'ユーザー登録に失敗しました。'
   );
 
   const signInWithEmail = handleCommand(
@@ -35,7 +35,7 @@ export const useAuthCommand = () => {
       }));
     },
     '',
-    'ユーザー登録に失敗しました。'
+    'ログインに失敗しました。'
   );
 
   const signOut = handleCommand(
