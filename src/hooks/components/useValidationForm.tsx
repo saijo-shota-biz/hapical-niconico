@@ -18,14 +18,14 @@ export const useValidationForm = <T extends { [key in string]: any }>(validation
   });
 
   const register = <TFieldName extends FieldPath<T>>(name: TFieldName) => {
-    const { ref, ...rest } = reactHookFormRegister(name);
+    const { ref } = reactHookFormRegister(name);
     const value = watch(name);
     const onChange = (value: FieldValue<T>) => {
       setValue(name, value);
     };
     const error = name in errors;
     const helperText = get(errors, name)?.message;
-    return { forwardRef: ref, value, error, helperText, ...rest, onChange };
+    return { forwardRef: ref, value, error, helperText, onChange };
   };
 
   return { ...rest, watch, setValue, register };
