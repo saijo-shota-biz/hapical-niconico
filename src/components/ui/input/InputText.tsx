@@ -32,7 +32,7 @@ export const InputText: VFC<InputTextProps> = ({
           {label}
         </Label>
       )}
-      <TextField {...rest} value={value} onChange={onChange} variant={'outlined'} sx={inputSx} ref={forwardRef} />
+      <TextField {...rest} value={value} onChange={onChange} variant={'outlined'} sx={inputSx} inputRef={forwardRef} />
     </Box>
   );
 };
