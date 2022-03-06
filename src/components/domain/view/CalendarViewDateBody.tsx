@@ -1,4 +1,4 @@
-import { EmotionIcon } from '@domain/EmotionIcon';
+import { EmotionIcon } from '@domain/icon/EmotionIcon';
 import { useHandleAddReport } from '@hooks/components/useHandleAddReport';
 import { useCalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';
 import { useDate } from '@hooks/util/useDate';

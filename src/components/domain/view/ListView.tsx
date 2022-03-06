@@ -1,5 +1,5 @@
-import { EmotionIcon } from '@domain/EmotionIcon';
-import { UserAvatar } from '@domain/UserAvatar';
+import { EmotionIcon } from '@domain/icon/EmotionIcon';
+import { UserAvatar } from '@domain/icon/UserAvatar';
 import { ListViewEmpty } from '@domain/view/ListViewEmpty';
 import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
 import { useCalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';

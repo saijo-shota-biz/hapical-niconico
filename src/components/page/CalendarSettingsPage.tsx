@@ -1,4 +1,4 @@
-import { UserAvatar } from '@domain/UserAvatar';
+import { UserAvatar } from '@domain/icon/UserAvatar';
 import { useDeleteConfirmModal } from '@hooks/components/useDeleteConfirmModal';
 import { useToaster } from '@hooks/components/useToaster';
 import { useValidationForm } from '@hooks/components/useValidationForm';

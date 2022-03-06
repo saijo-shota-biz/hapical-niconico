@@ -1,5 +1,5 @@
-import { EmotionIcon } from '@domain/EmotionIcon';
-import { UserAvatar } from '@domain/UserAvatar';
+import { EmotionIcon } from '@domain/icon/EmotionIcon';
+import { UserAvatar } from '@domain/icon/UserAvatar';
 import { useHandleAddReport } from '@hooks/components/useHandleAddReport';
 import { useCalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';
 import { useDate } from '@hooks/util/useDate';
