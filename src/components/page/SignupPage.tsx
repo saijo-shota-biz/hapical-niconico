@@ -27,12 +27,18 @@ export const SignupPage: VFC = () => {
   const { register, handleSubmit } = useValidationForm<Form>(
     object({
       email: string() //
+        .defined()
+        .default('')
         .required('メールアドレスを入力してください。')
         .email('メールアドレスの形式で入力してください。'),
       password: string() //
+        .defined()
+        .default('')
         .required('パスワードを入力してください。')
         .min(8, '8文字以上のパスワードを入力してください。'),
       passwordConfirm: string() //
+        .defined()
+        .default('')
         .required('パスワードをもう一度入力してください。')
         .oneOf([ref('password'), null], 'パスワードと一致しません。'),
     })

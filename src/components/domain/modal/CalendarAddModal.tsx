@@ -1,18 +1,19 @@
 import { useCalendarAddModal } from '@hooks/components/useCalendarAddModal';
 import { useValidationForm } from '@hooks/components/useValidationForm';
-import { Box } from '@mui/material';
 import { NeutralButton } from '@ui/button/NeutralButton';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 import { ModalCard } from '@ui/card/Card';
 import { CardActions } from '@ui/card/CardActions';
 import { CardContent } from '@ui/card/CardContent';
 import { CardHeader } from '@ui/card/CardHeader';
+import { InputRadioGroup } from '@ui/input/InputRadioGroup';
 import { InputText } from '@ui/input/InputText';
 import { BaseModal } from '@ui/modal/BaseModal';
 import { VFC } from 'react';
 import { object, string } from 'yup';
 
 type Form = {
+  shared: string;
   calendarName: string;
 };
 
@@ -22,23 +23,35 @@ export const CalendarAddModal: VFC = () => {
   const { register, handleSubmit, reset } = useValidationForm<Form>(
     object({
       calendarName: string() //
+        .defined()
+        .default('')
         .required('カレンダー名は必須です。'),
+      shared: string() //
+        .defined()
+        .default('0')
+        .required('どちらかを選択してください。')
+        .oneOf(['0', '1'], 'ひとりで使う か みんなで使うのどちらかを選択してください。'),
     })
   );
+  const sharedOptions = [
+    { value: '0', label: 'ひとりで使う' },
+    { value: '1', label: 'みんなで使う' },
+  ];
 
-  const onClickOkButton = ({ calendarName }: Form) => {
-    onClickOk({ name: calendarName });
-    reset({ calendarName: '' });
+  const onClickOkButton = ({ calendarName, shared }: Form) => {
+    onClickOk({ name: calendarName, shared: shared === '1' });
+    reset();
   };
+
   const onClickCancelButton = () => {
     onClickCancel();
-    reset({ calendarName: '' });
+    reset();
   };
 
   return (
     <BaseModal
       open={open}
-      onClose={onClickCancel}
+      onClose={onClickCancelButton}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -47,15 +60,15 @@ export const CalendarAddModal: VFC = () => {
       }}
     >
       <ModalCard>
-        <CardHeader onClose={onClickCancel}>新しいカレンダーを作成する</CardHeader>
+        <CardHeader onClose={onClickCancelButton}>新しいカレンダーを作成する</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Box>
-            <InputText
-              label={'新しいカレンダー名'}
-              {...register('calendarName')}
-              placeholder={'新しいカレンダー名を入力してください'}
-            />
-          </Box>
+          <InputRadioGroup row label={''} options={sharedOptions} {...register('shared')} />
+          <InputText
+            sx={{ marginTop: 2 }}
+            label={'新しいカレンダー名'}
+            {...register('calendarName')}
+            placeholder={'新しいカレンダー名を入力してください'}
+          />
         </CardContent>
         <CardActions>
           <NeutralButton onClick={onClickCancelButton}>キャンセル</NeutralButton>

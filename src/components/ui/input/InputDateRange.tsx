@@ -177,50 +177,54 @@ export const DateRangePicker: VFC<Props> = ({
           </Box>
         ))}
       </Box>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         {dateList.map((date) => (
-          <Box
-            key={formatYmd(date)}
-            sx={{
-              padding: 1,
-              height: '40px',
-              width: smartPhone ? 'calc(100% / 7)' : '40px',
-              backgroundColor: dateElemBackgroundColor(date),
-              cursor: 'pointer',
-              ':hover': {
-                backgroundColor: 'primary.main',
-                ' #dateLabel': {
-                  color: 'common.white',
-                },
-              },
-            }}
-            onClick={() => onClickDateElem(date)}
-          >
-            <Badge
-              color="primary"
-              variant="dot"
-              invisible={!batches.find((batch) => isSameYmd(batch.date, date))}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '24px',
-                height: '24px',
-                ' .MuiBadge-badge': {
-                  backgroundColor: batches.find((batch) => isSameYmd(batch.date, date))?.color,
-                },
-              }}
-            >
-              <Label
-                id={'dateLabel'}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+            {date.map((e) => (
+              <Box
+                key={formatYmd(e)}
                 sx={{
-                  ...getDayColor(date.getDay()),
-                  ...getThisMonthColor(date),
+                  padding: 1,
+                  height: '40px',
+                  width: smartPhone ? 'calc(100% / 7)' : '40px',
+                  backgroundColor: dateElemBackgroundColor(e),
+                  cursor: 'pointer',
+                  ':hover': {
+                    backgroundColor: 'primary.main',
+                    ' #dateLabel': {
+                      color: 'common.white',
+                    },
+                  },
                 }}
+                onClick={() => onClickDateElem(e)}
               >
-                {date.getDate() === 1 ? formatMd(date) : date.getDate()}
-              </Label>
-            </Badge>
+                <Badge
+                  color="primary"
+                  variant="dot"
+                  invisible={!batches.find((batch) => isSameYmd(batch.date, e))}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '24px',
+                    height: '24px',
+                    ' .MuiBadge-badge': {
+                      backgroundColor: batches.find((batch) => isSameYmd(batch.date, e))?.color,
+                    },
+                  }}
+                >
+                  <Label
+                    id={'dateLabel'}
+                    sx={{
+                      ...getDayColor(e.getDay()),
+                      ...getThisMonthColor(e),
+                    }}
+                  >
+                    {e.getDate() === 1 ? formatMd(e) : e.getDate()}
+                  </Label>
+                </Badge>
+              </Box>
+            ))}
           </Box>
         ))}
       </Box>

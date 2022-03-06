@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import get from 'lodash.get';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { DefaultValues, FieldValue, useForm } from 'react-hook-form';
 import { FieldPath } from 'react-hook-form/dist/types/path';
 import { SchemaOf } from 'yup';
 
@@ -9,6 +9,8 @@ export const useValidationForm = <T extends { [key in string]: any }>(validation
   const {
     formState: { errors },
     register: reactHookFormRegister,
+    watch,
+    setValue,
     ...rest
   } = useForm<T>({
     defaultValues,
@@ -17,10 +19,14 @@ export const useValidationForm = <T extends { [key in string]: any }>(validation
 
   const register = <TFieldName extends FieldPath<T>>(name: TFieldName) => {
     const { ref, ...rest } = reactHookFormRegister(name);
+    const value = watch(name);
+    const onChange = (value: FieldValue<T>) => {
+      setValue(name, value);
+    };
     const error = name in errors;
     const helperText = get(errors, name)?.message;
-    return { forwardRef: ref, error, helperText, ...rest };
+    return { forwardRef: ref, value, error, helperText, ...rest, onChange };
   };
 
-  return { ...rest, register };
+  return { ...rest, watch, setValue, register };
 };

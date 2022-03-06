@@ -1,22 +1,11 @@
 import { LoginUserState } from '@hooks/util/useLoginUser';
+import { chunk } from '@utils/chunk';
 import { collection, documentId, getDocs, query, where } from 'firebase/firestore';
 import { selector, useRecoilValue } from 'recoil';
 
 import { firestore } from '@/firebase';
 import { Calendar } from '@/types/Calendar';
 import { User } from '@/types/User';
-
-const chunk = <T,>(array: T[], size: number) => {
-  const chunked = [];
-  let index = 0;
-
-  while (index < array.length) {
-    chunked.push(array.slice(index, index + size));
-    index += size;
-  }
-
-  return chunked;
-};
 
 export type CalendarsQueryResult = Calendar & {
   users: User[];
@@ -43,7 +32,7 @@ export const CalendarsQuery = selector<CalendarsQueryResult[]>({
             const qs = await getDocs(q);
             return qs.docs.map((d) => ({ uid: d.id, ...d.data() } as User));
           });
-        const users = await Promise.all(userQueryList);
+        const usersList = await Promise.all(userQueryList);
 
         const entryQueryList = chunk(calendar.entries, 10)
           .map((userIds) => query(userCollectionRef, where(documentId(), 'in', userIds)))
@@ -51,12 +40,16 @@ export const CalendarsQuery = selector<CalendarsQueryResult[]>({
             const qs = await getDocs(q);
             return qs.docs.map((d) => ({ uid: d.id, ...d.data() } as User));
           });
-        const entryUsers = await Promise.all(entryQueryList);
+        const entryUsersList = await Promise.all(entryQueryList);
 
+        const users = usersList.flatMap((e) => e);
+        const entryUsers = entryUsersList.flatMap((e) => e);
+        const userIds = [loginUser.uid, ...calendar.userIds.filter((userId) => userId !== loginUser.uid)];
+        const entries = calendar.entries;
         return {
           ...calendar,
-          users: users.flatMap((e) => e),
-          entryUsers: entryUsers.flatMap((e) => e),
+          users: userIds.map((userId) => users.find((e) => e.uid === userId)!),
+          entryUsers: entries.map((userId) => entryUsers.find((e) => e.uid === userId)!),
         };
       });
 

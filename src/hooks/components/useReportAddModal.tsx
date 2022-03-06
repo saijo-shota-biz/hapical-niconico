@@ -1,3 +1,4 @@
+import { RequireOne } from '@utils/type';
 import { atom, useRecoilState } from 'recoil';
 
 import { Emotion } from '@/types/Calendar';
@@ -10,9 +11,8 @@ type ReportAddModalStateType = {
 
 type ReportState = {
   uid?: string;
-  calendarId: string;
-  date: string;
   emotion: Emotion;
+  date?: Date;
   comment: string;
 };
 
@@ -25,16 +25,26 @@ const ReportAddModalState = atom<ReportAddModalStateType>({
   },
 });
 
-const ReportAddModalDateState = atom<Date>({
+const ReportAddModalReportIdState = atom<string | undefined>({
+  key: 'StateReportAddModalReportId',
+  default: undefined,
+});
+
+const ReportAddModalDateState = atom<Date | undefined>({
   key: 'StateReportAddModalDate',
-  default: new Date(),
+  default: undefined,
 });
 
 export const useReportAddModal = () => {
   const [state, setState] = useRecoilState(ReportAddModalState);
+  const [reportId, setReportId] = useRecoilState(ReportAddModalReportIdState);
   const [date, setDate] = useRecoilState(ReportAddModalDateState);
 
-  const showReportAddModal = (date: Date = new Date()): Promise<ReportState | null> => {
+  const showReportAddModal = ({
+    reportId,
+    date,
+  }: RequireOne<{ reportId?: string; date?: Date }>): Promise<ReportState | null> => {
+    setReportId(reportId);
     setDate(date);
     return new Promise((resolve) => {
       setState((prev) => ({
@@ -59,5 +69,5 @@ export const useReportAddModal = () => {
     });
   };
 
-  return { ...state, date, showReportAddModal, closeReportAddModal };
+  return { ...state, reportId, date, showReportAddModal, closeReportAddModal };
 };

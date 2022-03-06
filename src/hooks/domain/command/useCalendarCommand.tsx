@@ -1,11 +1,7 @@
-import {
-  CalendarQueryCalendarIdState,
-  CalendarReportsQuery,
-  CalendarQueryResult,
-} from '@hooks/domain/query/useCalendarQuery';
+import { CalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';
 import { CalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
-import { MyReportsQuery } from '@hooks/domain/query/useMyReportsQuery';
 import { useHandler } from '@hooks/util/useHandler';
+import { PartialRequire } from '@utils/type';
 import {
   addDoc,
   arrayRemove,
@@ -19,26 +15,25 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { useRecoilRefresher_UNSTABLE, useSetRecoilState } from 'recoil';
+import { useRecoilRefresher_UNSTABLE } from 'recoil';
 
 import { firestore } from '@/firebase';
 import { Calendar, CalendarReport } from '@/types/Calendar';
 import { User } from '@/types/User';
 
 export const useCalendarCommand = () => {
-  const refreshMyReports = useRecoilRefresher_UNSTABLE(MyReportsQuery);
   const refreshReports = useRecoilRefresher_UNSTABLE(CalendarReportsQuery);
   const refreshCalendars = useRecoilRefresher_UNSTABLE(CalendarsQuery);
-  const setQueryCalendarId = useSetRecoilState(CalendarQueryCalendarIdState);
 
   const { handleCommand } = useHandler();
 
   const createCalendar = handleCommand(
-    async (user: User, name?: string) => {
+    async (user: User, name?: string, shared: boolean = false) => {
       const calendarData: Omit<Calendar, 'uid'> = {
         name: name || `${user.name}のカレンダー`,
         userIds: [user.uid],
         entries: [],
+        shared,
       };
       const calendarDocRef = await addDoc(collection(firestore, 'calendars'), calendarData);
       refreshCalendars();
@@ -48,7 +43,7 @@ export const useCalendarCommand = () => {
     'カレンダーの作成に失敗しました。'
   );
 
-  const editCalendar = handleCommand(
+  const editCalendarName = handleCommand(
     async (calendarId: string, name: string) => {
       const calendarDocRef = doc(firestore, 'calendars', calendarId);
       await setDoc(calendarDocRef, { name }, { merge: true });
@@ -58,12 +53,22 @@ export const useCalendarCommand = () => {
     'カレンダー名の変更に失敗しました。'
   );
 
+  const editCalendarShared = handleCommand(
+    async (calendarId: string, shared: boolean) => {
+      const calendarDocRef = doc(firestore, 'calendars', calendarId);
+      await setDoc(calendarDocRef, { shared }, { merge: true });
+      refreshCalendars();
+    },
+    'カレンダーの共有設定を変更しました。',
+    'カレンダーの共有設定の変更に失敗しました。'
+  );
+
   const deleteCalendar = handleCommand(
-    async (calendar: CalendarQueryResult) => {
-      const calendarDocRef = doc(firestore, 'calendars', calendar.uid);
+    async (calendarId: string) => {
+      const calendarDocRef = doc(firestore, 'calendars', calendarId);
       await deleteDoc(calendarDocRef);
       const reportCollectionRef = collection(firestore, 'calendar-reports');
-      const q = query(reportCollectionRef, where('calendarId', '==', calendar.uid));
+      const q = query(reportCollectionRef, where('calendarId', '==', calendarId));
       getDocs(q).then((reportDocs) => {
         const reportDocRefs = reportDocs.docs.map((e) => doc(firestore, 'calendar-reports', e.id));
         reportDocRefs.forEach((e) => deleteDoc(e));
@@ -75,17 +80,15 @@ export const useCalendarCommand = () => {
   );
 
   const addReport = handleCommand(
-    async (report: Omit<CalendarReport, 'uid'>, uid: string = '') => {
+    async ({ uid, date, ...report }: PartialRequire<Partial<CalendarReport>, 'emotion' | 'comment'>) => {
       if (uid) {
         const docRef = await doc(firestore, 'calendar-reports', uid);
         await setDoc(docRef, report, { merge: true });
         refreshReports();
-        refreshMyReports();
         return uid;
       } else {
-        const docRef = await addDoc(collection(firestore, 'calendar-reports'), report);
+        const docRef = await addDoc(collection(firestore, 'calendar-reports'), { date, ...report });
         refreshReports();
-        refreshMyReports();
         return docRef.id;
       }
     },
@@ -129,11 +132,20 @@ export const useCalendarCommand = () => {
         reportDocRefs.forEach((e) => deleteDoc(e));
       });
       refreshCalendars();
-      setQueryCalendarId('');
     },
     'ユーザーをカレンダーから削除しました。',
     'ユーザーをカレンダーからの削除に失敗しました。'
   );
 
-  return { createCalendar, editCalendar, deleteCalendar, addReport, entry, entryAccept, entryReject, deleteUser };
+  return {
+    createCalendar,
+    editCalendarName,
+    editCalendarShared,
+    deleteCalendar,
+    addReport,
+    entry,
+    entryAccept,
+    entryReject,
+    deleteUser,
+  };
 };

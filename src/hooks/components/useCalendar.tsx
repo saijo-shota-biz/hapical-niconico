@@ -1,19 +1,19 @@
 import { useDate } from '@hooks/util/useDate';
+import { chunk } from '@utils/chunk';
 import { useEffect, useState } from 'react';
 
 export const useCalendar = (baseDate: Date) => {
   const { isToday, isSameYm } = useDate();
-  const [dateList, setDateList] = useState<Date[]>([]);
+  const [dateList, setDateList] = useState<Date[][]>([]);
   const dayList = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
   useEffect(() => {
-    setDateList(
-      [...Array(42)].map((_, i) => {
-        const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
-        date.setDate(date.getDate() - date.getDay() + i);
-        return date;
-      })
-    );
+    const allDateList = [...Array(42)].map((_, i) => {
+      const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
+      date.setDate(date.getDate() - date.getDay() + i);
+      return date;
+    });
+    setDateList(chunk(allDateList, 7));
   }, [baseDate]);
 
   const getDayColor = (dayNum: number) => {

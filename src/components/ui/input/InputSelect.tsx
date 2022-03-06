@@ -1,14 +1,13 @@
 import { Box, MenuItem, Select, SelectProps, SxProps } from '@mui/material';
+import { FormInput } from '@ui/input/FormInput';
 import { Label } from '@ui/typography/Label';
 import { VFC } from 'react';
-import { RefCallBack } from 'react-hook-form';
 
 type Props = Omit<SelectProps<string>, 'variant' | 'label'> & {
   label?: string;
   options: { label: string; value: string }[];
-  forwardRef?: RefCallBack;
   inputSx?: SxProps;
-};
+} & FormInput;
 
 export const InputSelect: VFC<Props> = ({ label = null, sx, options, forwardRef, inputSx, ...rest }) => {
   return (

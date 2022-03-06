@@ -1,38 +1,39 @@
 import { EmotionIcon } from '@domain/EmotionIcon';
-import { ReportListEmpty } from '@domain/ReportListEmpty';
 import { UserAvatar } from '@domain/UserAvatar';
+import { ListViewEmpty } from '@domain/view/ListViewEmpty';
+import { useCalendarQuery } from '@hooks/domain/query/useCalendarQuery';
+import { useCalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';
 import { useDate } from '@hooks/util/useDate';
 import { List, ListItem, ListItemAvatar, ListItemText, ListSubheader } from '@mui/material';
 import { VFC } from 'react';
 
-import { CalendarReport } from '@/types/Calendar';
-import { User } from '@/types/User';
-
 type Props = {
-  reports: CalendarReport[];
-  users: User[];
+  baseDate: Date;
 };
 
-export const ReportList: VFC<Props> = ({ reports, users }) => {
+export const ListView: VFC<Props> = ({ baseDate }) => {
+  const { calendar } = useCalendarQuery();
+  const { reports } = useCalendarReportsQuery();
+
   const { formatYmdw, isSameYmd } = useDate();
 
   const getUser = (userId: string) => {
-    return users.find((user) => user.uid === userId);
+    return calendar?.users.find((user) => user.uid === userId);
   };
 
   if (reports.length === 0) {
-    return <ReportListEmpty />;
+    return <ListViewEmpty baseDate={baseDate} />;
   }
 
   return (
     <List
       sx={{
         width: '100%',
+        height: '100%',
         position: 'relative',
         overflow: 'auto',
         border: 'solid 1px',
         borderColor: 'grey.200',
-        height: '458px',
         padding: 2,
         '& ul': { padding: 0 },
         backgroundColor: 'common.white',

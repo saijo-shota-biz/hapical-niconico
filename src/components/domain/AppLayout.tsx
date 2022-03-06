@@ -1,3 +1,4 @@
+import { Suspense } from '@function/Suspense';
 import { useMenu } from '@hooks/components/useMenu';
 import { useAuthCommand } from '@hooks/domain/command/useAuthCommand';
 import { useLoginUser } from '@hooks/util/useLoginUser';
@@ -7,9 +8,8 @@ import { SuperBlueIcon } from '@ui/emotion/SuperBlueIcon';
 import { SuperHappyIcon } from '@ui/emotion/SuperHappyIcon';
 import { Layout } from '@ui/Layout';
 import { Label } from '@ui/typography/Label';
-import { Loading } from '@ui/utils/Loading';
 import { Spacer } from '@ui/utils/Spacer';
-import { Fragment, Suspense } from 'react';
+import { Fragment } from 'react';
 import { Outlet } from 'react-router-dom';
 
 export const AppLayout = () => {
@@ -47,7 +47,7 @@ export const AppLayout = () => {
         )}
       </Fragment>
       <Fragment key={'main'}>
-        <Suspense fallback={<Loading />}>
+        <Suspense>
           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Outlet />
           </Box>

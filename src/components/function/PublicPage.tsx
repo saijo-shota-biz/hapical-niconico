@@ -1,3 +1,4 @@
+import { useCalendarsQuery } from '@hooks/domain/query/useCalendarsQuery';
 import { useLoginUser } from '@hooks/util/useLoginUser';
 import { useRouter } from '@hooks/util/useRouter';
 import { useEffect, VFC } from 'react';
@@ -7,11 +8,13 @@ export const PublicPage: VFC = () => {
   const { loginUser } = useLoginUser();
   const { pushOrRedirectUrl } = useRouter();
 
+  const { calendars } = useCalendarsQuery();
+
   useEffect(() => {
-    if (loginUser) {
-      pushOrRedirectUrl('/');
+    if (loginUser && calendars.length > 0) {
+      pushOrRedirectUrl(`/calendars/${calendars[0].uid}`);
     }
-  }, [loginUser]);
+  }, [loginUser, calendars]);
 
   return <Outlet />;
 };
