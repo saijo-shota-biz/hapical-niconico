@@ -1,4 +1,4 @@
-import { CalendarToday, Settings } from '@mui/icons-material';
+import { Settings } from '@mui/icons-material';
 import { IconButton, IconButtonProps, Tooltip } from '@mui/material';
 import { VFC } from 'react';
 
