@@ -1,13 +1,18 @@
 import { CalendarAddModal } from '@domain/modal/CalendarAddModal';
 import { ReportAddModal } from '@domain/modal/ReportAddModal';
-import { SettingsPageIconButton } from '@domain/SettingsPageIconButton';
 import { CalendarView } from '@domain/view/CalendarView';
 import { ListView } from '@domain/view/ListView';
 import { Suspense } from '@function/Suspense';
 import { useCalendarReportsQueryDate } from '@hooks/domain/query/useCalendarReportsQueryDate';
 import { useDate } from '@hooks/util/useDate';
 import { useRouter } from '@hooks/util/useRouter';
-import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined, CalendarToday, ViewList } from '@mui/icons-material';
+import {
+  ArrowBackIosNewOutlined,
+  ArrowForwardIosOutlined,
+  CalendarToday,
+  Settings,
+  ViewList,
+} from '@mui/icons-material';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { Label } from '@ui/typography/Label';
 import { Spacer } from '@ui/utils/Spacer';
@@ -16,6 +21,7 @@ import { useEffect, useState, VFC } from 'react';
 export const PrivateCalendarPage: VFC = () => {
   const {
     params: { calendarId = '' },
+    push,
   } = useRouter();
   const { setQueryMonth } = useCalendarReportsQueryDate();
 
@@ -53,7 +59,11 @@ export const PrivateCalendarPage: VFC = () => {
           </IconButton>
         </Tooltip>
         <Spacer />
-        <SettingsPageIconButton calendarId={calendarId} />
+        <Tooltip title={'カレンダー設定'} arrow placement={'top'}>
+          <IconButton onClick={() => push(`/calendars/${calendarId}/settings`)}>
+            <Settings />
+          </IconButton>
+        </Tooltip>
       </Box>
       <Suspense>
         {viewType === 1 && <CalendarView baseDate={baseDate} />}
