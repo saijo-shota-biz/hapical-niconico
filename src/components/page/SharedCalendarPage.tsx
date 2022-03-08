@@ -1,5 +1,4 @@
 import { CalendarSettingIconButton } from '@domain/icon/CalendarSettingIconButton';
-import { CalendarViewIconButton } from '@domain/icon/CalendarViewIconButton';
 import { ListViewIconButton } from '@domain/icon/ListViewIconButton';
 import { MapViewIconButton } from '@domain/icon/MapViewIconButton';
 import { CalendarAddModal } from '@domain/modal/CalendarAddModal';
