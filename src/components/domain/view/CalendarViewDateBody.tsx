@@ -6,14 +6,15 @@ import { Box, Tooltip } from '@mui/material';
 import { VFC } from 'react';
 
 type Props = {
+  baseDate: Date;
   date: Date;
   size: number;
 };
 
-export const CalendarViewDateBody: VFC<Props> = ({ date, size }) => {
+export const CalendarViewDateBody: VFC<Props> = ({ baseDate, date, size }) => {
   const { reports } = useCalendarReportsQuery();
 
-  const { isSameYmd } = useDate();
+  const { isSameYmd, isSameYm } = useDate();
 
   const report = reports.find((e) => isSameYmd(e.date, date));
 
@@ -24,7 +25,13 @@ export const CalendarViewDateBody: VFC<Props> = ({ date, size }) => {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}
-      onClick={() => (report ? handleAddReport({ reportId: report.uid }) : handleAddReport({ date }))}
+      onClick={() =>
+        isSameYm(baseDate, date)
+          ? report
+            ? handleAddReport({ reportId: report.uid })
+            : handleAddReport({ date })
+          : null
+      }
     >
       {report && (
         <Tooltip

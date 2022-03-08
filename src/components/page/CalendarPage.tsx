@@ -32,6 +32,7 @@ export const CalendarPage: VFC = () => {
         }}
         MenuProps={{ sx: { ' .MuiPaper-root': { left: '0 !important' } } }}
         value={calendarId}
+        defaultValue={calendarId}
         options={calendars.map((e) => ({ label: e.name, value: e.uid }))}
         onChange={onChangeSelect}
       />

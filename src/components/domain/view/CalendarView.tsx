@@ -94,7 +94,7 @@ export const CalendarView: VFC<Props> = ({ baseDate }) => {
                 >
                   {date.getDate() === 1 ? formatMd(date) : date.getDate()}
                 </Label>
-                <CalendarViewDateBody date={date} size={dateElemSize} />
+                <CalendarViewDateBody baseDate={baseDate} date={date} size={dateElemSize} />
               </Box>
             ))}
           </Box>
