@@ -89,7 +89,7 @@ export const ReportAddModal: VFC = () => {
       }}
     >
       <ModalCard sx={{ width: smartPhone ? '90%' : '60%' }}>
-        <CardHeader onClose={onClickCancelButton}>{targetDate && formatYmdw(targetDate)}の記録を残す</CardHeader>
+        <CardHeader onClose={onClickCancelButton}>{targetDate && formatYmdw(targetDate)}の日記をつける</CardHeader>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Box>
@@ -115,7 +115,7 @@ export const ReportAddModal: VFC = () => {
             </Box>
             <InputText
               label={'コメント'}
-              placeholder={'短くてもいいので今の気持ちを記録しましょう'}
+              placeholder={'短くてもいいので今の気持ちを書いておきましょう'}
               {...register('comment')}
               multiline
               rows={10}

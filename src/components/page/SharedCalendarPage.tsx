@@ -38,7 +38,7 @@ export const SharedCalendarPage: VFC = () => {
       </Box>
       <Suspense>
         {viewType === 1 && <MapView baseDate={date} />}
-        {viewType === 2 && <ListView baseDate={date} />}
+        {viewType === 2 && <ListView baseDate={date} showUserAvatar />}
         <ReportAddModal />
         <CalendarAddModal />
       </Suspense>

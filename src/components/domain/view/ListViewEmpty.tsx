@@ -26,7 +26,7 @@ export const ListViewEmpty: VFC<Props> = ({ baseDate }) => {
       }}
     >
       <Description align={'center'} color={'grey.700'}>
-        記録がありません。
+        日記がありません。
       </Description>
       {isThisMonth(baseDate) && (
         <Description align={'center'} color={'grey.700'}>
@@ -43,7 +43,7 @@ export const ListViewEmpty: VFC<Props> = ({ baseDate }) => {
           >
             +
           </Box>
-          ボタンから記録を残しましょう。
+          ボタンから日記を残しましょう。
         </Description>
       )}
     </Box>
