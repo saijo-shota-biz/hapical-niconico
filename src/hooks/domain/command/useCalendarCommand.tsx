@@ -92,8 +92,8 @@ export const useCalendarCommand = () => {
         return docRef.id;
       }
     },
-    '記録を追加しました。',
-    '記録の追加に失敗しました。'
+    '日記を追加しました。',
+    '日記の追加に失敗しました。'
   );
 
   const entry = handleCommand(async (calendarId: string, userId: string) => {

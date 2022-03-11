@@ -14,7 +14,7 @@ export const FloatingButton: VFC<Props> = ({ onClickAddReport, onClickAddCalenda
       sx={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 9 }}
       icon={<SpeedDialIcon />}
     >
-      <SpeedDialAction icon={<Edit color={'primary'} />} tooltipTitle={'記録を書く'} onClick={onClickAddReport} />
+      <SpeedDialAction icon={<Edit color={'primary'} />} tooltipTitle={'日記を書く'} onClick={onClickAddReport} />
       <SpeedDialAction
         icon={<CalendarToday color={'primary'} />}
         tooltipTitle={'カレンダーを作る'}

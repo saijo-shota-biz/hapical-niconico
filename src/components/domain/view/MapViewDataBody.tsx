@@ -30,7 +30,12 @@ export const MapViewDataBody: VFC<Props> = ({ date, user, isFirst }) => {
   }
 
   if (!report) {
-    return null;
+    return date ? (
+      <Box
+        onClick={() => loginUser?.uid === user.uid && handleAddReport({ date })}
+        sx={{ width: '100%', height: '100%' }}
+      />
+    ) : null;
   }
 
   return (

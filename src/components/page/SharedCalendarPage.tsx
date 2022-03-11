@@ -1,5 +1,5 @@
 import { CalendarSettingIconButton } from '@domain/icon/CalendarSettingIconButton';
-import { CalendarViewIconButton } from '@domain/icon/CalendarViewIconButton';
+import { ListViewIconButton } from '@domain/icon/ListViewIconButton';
 import { MapViewIconButton } from '@domain/icon/MapViewIconButton';
 import { CalendarAddModal } from '@domain/modal/CalendarAddModal';
 import { ReportAddModal } from '@domain/modal/ReportAddModal';
@@ -32,13 +32,13 @@ export const SharedCalendarPage: VFC = () => {
     <Box sx={{ padding: 2, flexGrow: 1, flexBasis: 0, display: 'flex', flexDirection: 'column', width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', paddingY: 1 }}>
         <InputMonth date={date} setDate={setDate} />
-        <CalendarViewIconButton onClick={() => setViewType(1)} color={viewType === 1 ? 'secondary' : undefined} />
-        <MapViewIconButton onClick={() => setViewType(2)} color={viewType === 2 ? 'secondary' : undefined} />
+        <MapViewIconButton onClick={() => setViewType(1)} color={viewType === 1 ? 'secondary' : undefined} />
+        <ListViewIconButton onClick={() => setViewType(2)} color={viewType === 2 ? 'secondary' : undefined} />
         <CalendarSettingIconButton onClick={() => push(`/calendars/${calendarId}/settings`)} />
       </Box>
       <Suspense>
         {viewType === 1 && <MapView baseDate={date} />}
-        {viewType === 2 && <ListView baseDate={date} />}
+        {viewType === 2 && <ListView baseDate={date} showUserAvatar />}
         <ReportAddModal />
         <CalendarAddModal />
       </Suspense>
