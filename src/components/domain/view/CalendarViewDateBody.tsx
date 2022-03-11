@@ -1,8 +1,7 @@
 import { EmotionIcon } from '@domain/icon/EmotionIcon';
-import { useHandleAddReport } from '@hooks/components/useHandleAddReport';
 import { useCalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';
 import { useDate } from '@hooks/util/useDate';
-import { Box, Tooltip } from '@mui/material';
+import { Box } from '@mui/material';
 import { Dispatch, SetStateAction, VFC } from 'react';
 
 type Props = {
