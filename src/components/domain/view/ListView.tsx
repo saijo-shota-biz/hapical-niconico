@@ -9,9 +9,10 @@ import { VFC } from 'react';
 
 type Props = {
   baseDate: Date;
+  showUserAvatar?: boolean;
 };
 
-export const ListView: VFC<Props> = ({ baseDate }) => {
+export const ListView: VFC<Props> = ({ baseDate, showUserAvatar = false }) => {
   const { calendar } = useCalendarQuery();
   const { reports } = useCalendarReportsQuery();
 
@@ -54,9 +55,11 @@ export const ListView: VFC<Props> = ({ baseDate }) => {
                 .filter((report) => isSameYmd(report.date, date))
                 .map((report) => (
                   <ListItem key={`${report.uid}`} alignItems="flex-start">
-                    <ListItemAvatar>
-                      <UserAvatar title={getUser(report.userId)?.name} user={getUser(report.userId)} />
-                    </ListItemAvatar>
+                    {showUserAvatar && (
+                      <ListItemAvatar>
+                        <UserAvatar title={getUser(report.userId)?.name} user={getUser(report.userId)} />
+                      </ListItemAvatar>
+                    )}
                     <ListItemAvatar>
                       <EmotionIcon emotion={report.emotion} />
                     </ListItemAvatar>

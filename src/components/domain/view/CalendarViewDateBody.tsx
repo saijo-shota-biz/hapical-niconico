@@ -1,17 +1,17 @@
 import { EmotionIcon } from '@domain/icon/EmotionIcon';
-import { useHandleAddReport } from '@hooks/components/useHandleAddReport';
 import { useCalendarReportsQuery } from '@hooks/domain/query/useCalendarReportsQuery';
 import { useDate } from '@hooks/util/useDate';
-import { Box, Tooltip } from '@mui/material';
-import { VFC } from 'react';
+import { Box } from '@mui/material';
+import { Dispatch, SetStateAction, VFC } from 'react';
 
 type Props = {
   baseDate: Date;
   date: Date;
   size: number;
+  selectDate: Dispatch<SetStateAction<Date>>;
 };
 
-export const CalendarViewDateBody: VFC<Props> = ({ baseDate, date, size }) => {
+export const CalendarViewDateBody: VFC<Props> = ({ baseDate, date, size, selectDate }) => {
   const { reports } = useCalendarReportsQuery();
 
   const { isSameYmd, isSameYm } = useDate();
@@ -20,28 +20,12 @@ export const CalendarViewDateBody: VFC<Props> = ({ baseDate, date, size }) => {
 
   const avatarSize = (size - 20) * 0.75;
 
-  const handleAddReport = useHandleAddReport();
-
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}
-      onClick={() =>
-        isSameYm(baseDate, date)
-          ? report
-            ? handleAddReport({ reportId: report.uid })
-            : handleAddReport({ date })
-          : null
-      }
+      onClick={() => (isSameYm(baseDate, date) ? selectDate(date) : null)}
     >
-      {report && (
-        <Tooltip
-          arrow
-          placement={'top'}
-          title={report.comment && <Box sx={{ whiteSpace: 'pre-wrap' }}>{report.comment}</Box>}
-        >
-          <EmotionIcon emotion={report.emotion} sx={{ width: avatarSize, height: avatarSize }} />
-        </Tooltip>
-      )}
+      {report && <EmotionIcon emotion={report.emotion} sx={{ width: avatarSize, height: avatarSize }} />}
     </Box>
   );
 };
