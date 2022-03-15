@@ -27,7 +27,7 @@ export const CalendarViewDateBody: VFC<Props> = ({ baseDate, date, size, selectD
   const handleOnClick = () => {
     if (smartPhone) {
       handleAddReport(report ? { reportId: report.uid } : { date });
-    } else {
+    } else if (isSameYm(baseDate, date)) {
       selectDate(date);
     }
   };
