@@ -117,7 +117,7 @@ export const CalendarView: VFC<Props> = ({ baseDate }) => {
           ))}
         </Box>
       </Box>
-      <CalendarViewDetail date={selectedDate} />
+      {!smartPhone && <CalendarViewDetail date={selectedDate} />}
     </Box>
   );
 };
